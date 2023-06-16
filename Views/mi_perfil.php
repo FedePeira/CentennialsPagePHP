@@ -552,6 +552,8 @@ $(document).ready(function() {
     obtener_datos();
     llenar_departamentos();
     llenar_direcciones();
+    // Metodo llenar el historial de un cliente
+    llenar_historial();
 
     $('#departamento').select2({
       placeholder: 'Seleccione un departamento',
@@ -587,6 +589,18 @@ $(document).ready(function() {
         }
       }
     });
+
+    // Funcion "llenar_historial()"
+    function llenar_historial(){
+      funcion="llenar_historial";
+      $.post('../Controllers/HistorialController.php', { funcion }, (response)=>{
+        let historiales = JSON.parse(response);
+        //console.log(response);
+        historiales.forEach(historial => {
+          console.log(historial);
+        })
+      })
+    }
 
     function llenar_direcciones(){
       funcion = 'llenar_direcciones';
