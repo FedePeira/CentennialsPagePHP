@@ -7,7 +7,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Cambiar password</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Cambiar contra pa</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -384,7 +384,7 @@
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="timeline">
                     <!-- The timeline -->
-                    <div class="timeline timeline-inverse">
+                    <div id="historiales" class="timeline timeline-inverse">
                       <!-- timeline time label -->
                       <div class="time-label">
                         <span class="bg-danger">
@@ -595,10 +595,43 @@ $(document).ready(function() {
       funcion="llenar_historial";
       $.post('../Controllers/HistorialController.php', { funcion }, (response)=>{
         let historiales = JSON.parse(response);
+        let template = '';
         //console.log(response);
+        // Template de cada historial con sus variables: modulo, hora, tipo_historial, etc.
         historiales.forEach(historial => {
-          console.log(historial);
-        })
+          //console.log(historial);
+          template += `
+                <div class="time-label">
+                  <span class="bg-danger">
+                    ${historial[0].fecha}
+                  </span>
+                </div>
+          `;
+          historial.forEach(cambio => { 
+            // console.log(cambio.descripcion);
+            template += `
+                      <div>
+                        ${cambio.m_icono}
+
+                        <div class="timeline-item">
+                          <span class="time"><i class="far fa-clock"></i> ${cambio.hora}</span>
+
+                          <h3 class="timeline-header">${cambio.th_icono} Se realizo la accion ${cambio.tipo_historial} en ${cambio.modulo}</h3>
+
+                          <div class="timeline-body">
+                            ${cambio.descripcion}
+                          </div>
+                        </div>
+                      </div>
+                      `;
+          });
+        });
+        template += `
+        <div>
+          <i class="far fa-clock bg-gray"></i>
+        </div>
+        `;
+        $('historiales').html(template);
       })
     }
 
