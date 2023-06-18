@@ -784,6 +784,14 @@ $(document).ready(function() {
                 }).then(function(){
                   verificar_sesion();
                   obtener_datos();
+                  // Agrega que se editaron datos en el historial
+                  llenar_historial();
+                });
+              } else if(response == 'danger') {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'No altero ningun cambio',
+                  text: 'Modifique algun cambio para realizar la edicion!',
                 });
               } else {
                 Swal.fire({
@@ -890,6 +898,7 @@ $(document).ready(function() {
                   timer: 500,
                 }).then(function(){ 
                   $('#form-contra').trigger('reset');
+                  llenar_historial();
                 });
             } else if (response = "error") {
               Swal.fire({

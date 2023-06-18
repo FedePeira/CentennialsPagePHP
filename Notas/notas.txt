@@ -1,0 +1,11 @@
+Faltantes
+1. Cambio de Password
+- New pass no puede ser igual a pass actual
+2. Editar datos Historial
+- Avatar se edita aunque no cambies el avatar
+3. Editar datos
+- Una vez tocado el boton "crear", se debe vaciar los inputs de editar datos
+4. Eliminar Direccion Historial
+- Revisar historial de eliminar direccion 
+5. Agregar comentarios
+- Usar comentarios como guia de codigo

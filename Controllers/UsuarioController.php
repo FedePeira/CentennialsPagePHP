@@ -1,8 +1,10 @@
 <?php
     // echo "Llegaste hasta aca";
     include_once '../Models/Usuario.php';
+    include_once '../Models/Historial.php';
     include_once '../Util/Config/config.php';
     $usuario = new Usuario();
+    $historial = new Historial();
     session_start();
     if($_POST['funcion'] == 'login'){
         $user = $_POST['user'];
@@ -84,27 +86,51 @@
         $email = $_POST['email_mod'];
         $telefono = $_POST['telefono_mod'];
         $avatar = $_FILES['avatar_mod']['name'];
-        if($avatar != ''){
-            $nombre = uniqid().'-'.$avatar;
-            $ruta = '../Util/Img/Users/'.$nombre;
-            move_uploaded_file($_FILES['avatar_mod']['tmp_name'], $ruta);
-            $usuario->obtener_datos($id_usuario);
-            foreach($usuario->objetos as $objeto){
-                $avatar_actual = $objeto->avatar;
-                if($avatar_actual!='user_default.png'){
-                    unlink('../Util/Img/Users/'.$avatar_actual);
-                }   
+        $usuario->obtener_datos($id_usuario);
+        // Aviso de que se cambian datos
+        $datos_cambiados = 'ha echo los siguientes cambios: ';
+        // var_dump($usuario);
+        if($nombres!=$usuario->objetos[0]->nombres||$apellidos!=$usuario->objetos[0]->apellidos||$dni!=$usuario->objetos[0]->dni||$email!=$usuario->objetos[0]->email||$telefono!=$usuario->objetos[0]->telefono||$avatar!=''){
+            // echo $avatar;
+            if($nombres!=$usuario->objetos[0]->nombres){
+                $datos_cambiados.=' su nombre cambio de '.$usuario->objetos[0]->nombres.' a '.$nombres.', ';
             }
-            $_SESSION['avatar'] = $nombre;
+            if($apellidos!=$usuario->objetos[0]->apellidos){
+                $datos_cambiados.=' su apellido cambio de '.$usuario->objetos[0]->apellidos.' a '.$apellidos.', ';
+            }
+            if($dni!=$usuario->objetos[0]->dni){
+                $datos_cambiados.=' su dni cambio de '.$usuario->objetos[0]->dni.' a '.$dni.', ';
+            }
+            if($email!=$usuario->objetos[0]->email){
+                $datos_cambiados.=' su email cambio de '.$usuario->objetos[0]->email.' a '.$email.', ';
+            }
+            if($telefono!=$usuario->objetos[0]->telefono){
+                $datos_cambiados.=' su telefono cambio de '.$usuario->objetos[0]->telefono.' a '.$telefono.', ';
+            }
+            if($avatar != ''){
+                $datos_cambiados.='su avatar fue cambiado.';
+                $nombre = uniqid().'-'.$avatar;
+                $ruta = '../Util/Img/Users/'.$nombre;
+                move_uploaded_file($_FILES['avatar_mod']['tmp_name'], $ruta);
+                $usuario->obtener_datos($id_usuario);
+                foreach($usuario->objetos as $objeto){
+                    $avatar_actual = $objeto->avatar;
+                    if($avatar_actual!='user_default.png'){
+                        unlink('../Util/Img/Users/'.$avatar_actual);
+                    }   
+                }
+                $_SESSION['avatar'] = $nombre;
+            }
+            else {
+                $nombre = '';
+            }
+            $usuario->editar_datos($id_usuario,$nombres,$apellidos,$dni,$email,$telefono, $nombre);
+            $descripcion = 'Ha editado sus datos pesonales, '.$datos_cambiados;
+            $historial->crear_historial($descripcion, 1, 1, $id_usuario);
+            echo 'success';
+        } else {
+            echo 'danger';
         }
-        else {
-            $nombre = '';
-        }
-        $usuario->editar_datos($id_usuario, $nombres, $apellidos, $dni, $email, $telefono, $nombre);
-
-        // echo $avatar;
-        // $usuario->editar_datos($id_usuario,$nombres,$apellidos,$dni,$email,$telefono);
-        echo 'success';
     } 
 
     // Llamada al UsuarioController para llamar a la funcion "comprobar_pass" que va a estar en el Models de Usuario
@@ -123,6 +149,8 @@
                 $pass_new_encriptada = openssl_encrypt($pass_new,CODE,KEY);
                 // Como no esta vacio, osea existe el usuario, ahora si llama al "cambiar_contra" del model Usuario y le paso la new password
                 $usuario->cambiar_contra($id_usuario, $pass_new_encriptada);
+                $descripcion = 'Ha cambiado su password';
+                $historial->crear_historial($descripcion, 1, 1, $id_usuario);
                 echo 'success';
             } else {
                 echo 'error';
