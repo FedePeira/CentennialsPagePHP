@@ -29,4 +29,17 @@
             $query = $this->acceso->prepare($sql);
             $query->execute(array(':id_direccion'=>$id_direccion)); 
         }
+
+        function recuperar_direccion($id_direccion){
+            $sql = "SELECT ud.id as id, direccion, referencia, d.nombre as distrito, p.nombre as provincia, dep.nombre as departamento FROM usuario_distrito ud
+                JOIN distrito d ON d.id=ud.id_distrito
+                JOIN provincia p ON p.id = d.id_provincia
+                JOIN departamento dep ON dep.id = p.id_departamento
+                WHERE ud.id = :id and estado='A'";    
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':id'=>$id_direccion));
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
+        }
+
     }

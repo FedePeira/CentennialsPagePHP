@@ -29,7 +29,7 @@
                     'tipo_historial'=>$objeto->tipo_historial,
                     'th_icono'=>$objeto->th_icono,
                     'modulo'=>$objeto->modulo,
-                    'm_icono'=>$objeto->m_icono,
+                    'm_icono'=>$objeto->m_icono
                 );
             } else {
                 if($cont == 5){
@@ -43,7 +43,7 @@
                         'tipo_historial'=>$objeto->tipo_historial,
                         'th_icono'=>$objeto->th_icono,
                         'modulo'=>$objeto->modulo,
-                        'm_icono'=>$objeto->m_icono,
+                        'm_icono'=>$objeto->m_icono
                     );
                 }
             }

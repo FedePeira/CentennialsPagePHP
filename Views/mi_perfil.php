@@ -527,7 +527,7 @@ $(document).ready(function() {
                         <div class="timeline-item">
                           <span class="time"><i class="far fa-clock"></i> ${cambio.hora}</span>
 
-                          <h3 class="timeline-header">${cambio.th_icono} Se realizo la accion ${cambio.tipo_historial} en ${cambio.modulo}</h3>
+                          <h3 class="timeline-header">${cambio.th_icono} Se realizo la accion "${cambio.tipo_historial}"  en ${cambio.modulo}</h3>
 
                           <div class="timeline-body">
                             ${cambio.descripcion}
@@ -549,7 +549,7 @@ $(document).ready(function() {
     function llenar_direcciones(){
       funcion = 'llenar_direcciones';
       $.post('../Controllers/UsuarioDistritoController.php', { funcion }, (response)=>{
-        console.log(response);
+        // console.log(response);
         let direcciones = JSON.parse(response);
         let contador = 0;
         let template = '';
@@ -603,6 +603,7 @@ $(document).ready(function() {
         if (result.isConfirmed) {
           funcion = "eliminar_direccion";
           $.post('../Controllers/UsuarioDistritoController.php', { funcion, id }, (response) => {
+            console.log(response);
             if(response == "success") {
               swalWithBootstrapButtons.fire(
                 'Borrado!',
@@ -610,6 +611,7 @@ $(document).ready(function() {
                 'success'
               )
               llenar_direcciones();
+              llenar_historial();
             } else if(response == "error") {
                 swalWithBootstrapButtons.fire(
                   'No se borro!',
@@ -720,7 +722,8 @@ $(document).ready(function() {
     let id_distrito = $('#distrito').val();
     let direccion = $('#direccion').val();
     let referencia = $('#referencia').val();
-    $.post('../Controllers/UsuarioController.php', {id_distrito, direccion, referencia, funcion}, (response) =>{
+    $.post('../Controllers/UsuarioDistritoController.php', {id_distrito, direccion, referencia, funcion}, (response) =>{
+      console.log(response);
       if(response == 'success'){
         Swal.fire({
           position:'center',
@@ -731,6 +734,8 @@ $(document).ready(function() {
         }).then(function(){
           $('#form-direccion').trigger('reset');
           $('#departamento').val('').trigger('change');
+          llenar_historial();
+          llenar_direcciones();
         });
       } else {
         Swal.fire({
