@@ -179,8 +179,33 @@ $(document).ready(function(){
         let response = await data.text();
         // console.log(response);
         try {
-          let productos =  JSON.parse(response);
-          console.log(productos);
+          let producto =  JSON.parse(response);
+          console.log(producto);
+          let template = '';
+          if(producto.imagenes.length>0){
+            template+=`
+                <div class="col-12">
+                  <img id="imagen_principal" src="../Util/Img/producto/${producto.imagenes[0].nombre}" class="img-fluid">
+                </div>
+                <div class="col-12 product-image-thumbs">`;
+              productos.imagenes.forEach(imagen => {
+                template += `
+                  <button prod_img="${imagen.nombre}" class="imagen_pasarelas product-image-thumb">
+                    <img src="../Util/Img/producto/${imagen.nombre}"
+                  </button>
+                `;
+              });
+              template += `
+                  </div>`;
+          } else {
+            template += `
+              <div class="col-12">
+                <img id="imagen_principal" src="../Util/Img/producto/${producto.imagen}"
+                class="product-image img-fluid">
+              </div>
+              `;
+          }
+          $('#imagenes').html(template);
 
 
         } catch(error) {
@@ -197,5 +222,11 @@ $(document).ready(function(){
         });
       }
     }
+
+    $(document).on('click', '.imagen_pasarelas', (e) => {
+      let elemento = $(this)[0].activeElement;
+      let img = $(elemento).attr('prod_img');
+      $('#imagen_principal').attr('src', '../Util/Img/producto/' + img)
+    })
 })
 </script>

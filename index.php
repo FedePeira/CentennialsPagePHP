@@ -124,7 +124,7 @@ $(document).ready(function() {
         let response = await data.text();
         try {
           let productos =  JSON.parse(response);
-          // console.log(productos);
+          console.log(productos);
           let template = ``;
           productos.forEach(producto => {
             template += `

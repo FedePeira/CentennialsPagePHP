@@ -79,7 +79,7 @@
             );
         }
         // var_dump($producto_tienda);
-        $json[]=array(
+        $json=array(
             'id'=>$id_producto_tienda,
             'producto'=>$producto,
             'sku'=>$sku,
@@ -91,6 +91,13 @@
             'descuento'=>$descuento,
             'precio_descuento'=>$precio_descuento,
             'calificacion'=>number_format($calificacion),
+            'direccion_tienda'=>$direccion_tienda,
+            'numero_resenas'=>$numero_resenas,
+            'promedio_calificacion_tienda'=>$promedio_calificacion_tienda,
+            'tienda'=>$tienda,
+            'imagenes'=>$imagenes,
+            'caracteristicas'=>$caracteristicas,
+            'resenas'=>$resenas,
         );
         
         $jsonstring = json_encode($json);
