@@ -47,17 +47,17 @@ if(!empty($_GET['id'])&& $_GET['name']){
 
                 </div>
               </div>
-              <h4>Envio y vendido por: </h4>
+              <h4>Enviado y vendido por: </h4>
             
               <div class="bg-light py-2 px-3 mt-4 border">
                 <h2 class="mb-0">
                   <button class="btn btn-primary">
-                    <i class="fas fa-star text-muted mr-1"></i><span id="promedio_calificacion_tienda">4.5</span>
+                    <i class="fas fa-star text-warning mr-1"></i><span id="promedio_calificacion_tienda"></span>
                   </button>
                   <span id="nombre_tienda" class="text-muted ml-1">nombre de tienda</span>
                 </h2>
                 <h4 class="mt-0">
-                  <small id="numero_resenas">250 resenas</small>
+                  <small id="numero_resenas"></small>
                 </h4>
                 <div class="mt-2 product-share">
                     <a href="#" class="text-gray">
@@ -115,7 +115,7 @@ if(!empty($_GET['id'])&& $_GET['name']){
                     <thead>
                         <tr>
                             <th class="col">#</th>
-                            <th class="col">Caracteristicas</th>
+                            <th class="col">Caracteristica</th>
                             <th class="col">Descripcion</th>
                         </tr>
                     </thead>
@@ -125,7 +125,9 @@ if(!empty($_GET['id'])&& $_GET['name']){
                 </table>
               </div>
               <div class="tab-pane fade" id="product-rese" role="tabpanel" aria-labelledby="product-rese-tab">
-                resenas
+                <div id="resenas" class="card-footer card-comments">
+
+                </div>
               </div>
             </div>
           </div>
@@ -188,7 +190,7 @@ $(document).ready(function(){
                   <img id="imagen_principal" src="../Util/Img/producto/${producto.imagenes[0].nombre}" class="img-fluid">
                 </div>
                 <div class="col-12 product-image-thumbs">`;
-              productos.imagenes.forEach(imagen => {
+              producto.imagenes.forEach(imagen => {
                 template += `
                   <button prod_img="${imagen.nombre}" class="imagen_pasarelas product-image-thumb">
                     <img src="../Util/Img/producto/${imagen.nombre}"
@@ -206,12 +208,117 @@ $(document).ready(function(){
               `;
           }
           $('#imagenes').html(template);
+          $('#producto').text(producto.producto);
+          $('#marca').text('Marca: ' + producto.marca);
+          $('#sku').text('SKU: ' + producto.sku);
+          let template1 = '';
+          if(producto.calificacion != 0){
+                  // template1 += `</br>`;
+                  for(let index = 0; index < producto.calificacion; index++){
+                    template1 += `<i class="fas fa-star text-warning"></i>`;
+                  }
+                  let estrellas_faltantes = 5 - producto.calificacion;
+                  for(let index = 0; index < estrellas_faltantes; index++) {
+                    template1 += `<i class="far fa-star text-warning"></i>`;
+                  }
+                  template1 += `</br>`;
+                }
+          if(producto.descuento != 0) {
+            template1 += `
+                  <span class="text-muted" style="text-decoration: line-through">S/ ${producto.precio}</span>
+                  <span class="text-muted">-${producto.descuento}%</span></br>
+            `;
+          }
+          template1 += `<h4 class="text-danger">S/ ${producto.precio_descuento}</h4>`
+          $('#informacion_precios').html(template1);
+          let template2 = '';
+          if(producto.envio == 'gratis'){
+                  template2 += `<i class="fas fa-truck-moving text-danger"></i>
+                                <span class="ml-1">Envio: </span>
+                                <span class="badge bg-success">Envio gratis</span>`;
+          } else {
+                  template2 += `<i class="fas fa-truck-moving text-danger"></i>
+                                <span class="ml-1">Envio: </span>
+                                <span class="mr-1">S/ 15.00</span>`;
+          }
+          template2 += `</br>`;
+          template2 += `<i class="fas fa-store text-danger"></i>
+                        <span class="ml-1">Recogelo en tienda: ${producto.direccion_tienda}</span>`;
+          $('#informacion_envio').html(template2);
+          $('#nombre_tienda').text(producto.tienda);
+          $('#numero_resenas').text(producto.numero_resenas + ' resenas');
+          $('#promedio_calificacion_tienda').text(producto.promedio_calificacion_tienda);
+          $('#product-desc').text(producto.detalles);
+          // console.log(producto.promedio_calificacion_tienda);
+          let template3 = '';
+          let cont = 0;
+          producto.caracteristicas.forEach(caracteristica => {
+            cont++;
+            template3 += `  
+                          <tr>
+                            <td>${cont}</td>
+                            <td>${caracteristica.titulo}</td>
+                            <td>${caracteristica.descripcion}</td>
+                          </tr>
+            `;
+          })
+          $('#caracteristicas').html(template3);
 
+          // producto.resenas.sort((a, b) => moment(b.fecha_creacion).diff(moment(a.fecha_creacion)));
+          let template4 = '';
+          producto.resenas.forEach(resena => {
+              // Obtener la fecha actual
+            const fechaActual = moment();
+            
+            // Obtener la fecha de creación de la reseña
+            const fechaCreacion = moment(resena.fecha_creacion);
+            
+            // Calcular la diferencia en segundos entre las dos fechas
+            const segundosTranscurridos = fechaActual.diff(fechaCreacion, 'seconds');
+            
+            // Crear una variable para almacenar el texto de tiempo transcurrido
+            let tiempoTranscurrido = '';
+            
+            if (segundosTranscurridos < 60) {
+              tiempoTranscurrido = 'hace unos segundos';
+            } else if (segundosTranscurridos < 3600) {
+              const minutosTranscurridos = fechaActual.diff(fechaCreacion, 'minutes');
+              tiempoTranscurrido = `hace ${minutosTranscurridos} minutos`;
+            } else if (segundosTranscurridos < 86400) {
+              const horasTranscurridas = fechaActual.diff(fechaCreacion, 'hours');
+              tiempoTranscurrido = `hace ${horasTranscurridas} horas`;
+            } else {
+              tiempoTranscurrido = fechaCreacion.format('DD [de] MMMM [de] YYYY HH:mm');
+            }
+            template4 += `
+                    <div class="card-comment">
+                      <img class="img-circle img-sm" src="../Util/Img/Users/${resena.avatar}" alt="User Image">
+  
+                      <div class="comment-text">
+                        <span class="username">
+                          ${resena.usuario}`;
+                  for(let index = 0; index < resena.calificacion; index++){
+                    template4 += `<i class="fas fa-star text-warning"></i>`;
+                  }
+                  let estrellas_faltantes = 5 - resena.calificacion;
+                  for(let index = 0; index < estrellas_faltantes; index++) {
+                    template4 += `<i class="far fa-star text-warning"></i>`;
+                  }
 
+                      template4 += `<span class="text-muted float-right">${tiempoTranscurrido}</span>
+                        </span>
+                        ${resena.descripcion}
+                      </div>
+                    </div>
+            `;
+          });
+          $('#resenas').html(template4);
         } catch(error) {
           console.error(error);
           console.log(response);
-
+          if(response == 'error'){
+            // location.href = '../index.php';
+          }
         }
         
       } else {

@@ -30,7 +30,7 @@
                         JOIN tienda t ON t.id = pt.id_tienda
                         AND pt.estado = 'A' AND pt.id=:id";
                 $query = $this->acceso->prepare($sql);
-                $query->execute(array(':id'->$id));
+                $query->execute(array(':id'=>$id));
                 $this->objetos = $query->fetchAll();
                 return $this->objetos;
             } else {
@@ -77,7 +77,7 @@
                     WHERE imagen.id_producto = :id_producto
                     AND imagen.estado = 'A'";
             $query = $this->acceso->prepare($sql);
-            $query->execute(array(':id_producto_tienda'=>$id_producto_tienda));
+            $query->execute(array(':id_producto'=>$id_producto));
             $this->objetos = $query->fetchAll();
             return $this->objetos;
         }
@@ -115,7 +115,7 @@
                     FROM resena r
                     JOIN usuario u ON u.id=r.id_usuario
                     WHERE r.id_producto_tienda = :id_producto_tienda
-                    AND r.estado = 'A'";
+                    AND r.estado = 'A' ORDER BY r.fecha_creacion DESC";
             $query = $this->acceso->prepare($sql);
             $query->execute(array(':id_producto_tienda'=>$id_producto_tienda));
             $this->objetos = $query->fetchAll();
