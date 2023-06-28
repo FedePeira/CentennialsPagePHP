@@ -138,17 +138,17 @@ if(!empty($_GET['id'])&& $_GET['name']){
                     <div class="direct-chat-text">
                       Is this template really for free? That's unbelievable!
                     </div>
-                  </div>
-                  <div class="card-footer">
-                    <form action="#" method="post">
-                      <div class="input-group">
-                        <img class="direct-chat-img mr-1" src="../Util/Img/Users/6483f76af38e1-1.png" alt="Message User Image">
-                        <input type="text" name="message" placeholder="Responder pregunta" class="form-control">
-                        <span class="input-group-append">
-                          <button type="submit" class="btn btn-danger">Enviar</button>
-                        </span>
-                      </div>
-                    </form>
+                    <div class="card-footer">
+                      <form action="#" method="post">
+                        <div class="input-group">
+                          <img class="direct-chat-img mr-1" src="../Util/Img/Users/6483f76af38e1-1.png" alt="Message User Image">
+                          <input type="text" name="message" placeholder="Responder pregunta" class="form-control">
+                          <span class="input-group-append">
+                            <button type="submit" class="btn btn-danger">Enviar</button>
+                          </span>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                   <div class="direct-chat-msg right">
                     <div class="direct-chat-infos clearfix">
@@ -375,8 +375,9 @@ $(document).ready(function(){
             `;
           });
           $('#resenas').html(template4);
+
           let template5 = '';
-          if(producto.bandera == '2'){
+          if(producto.bandera == '1'){
             template5 += `
             <div class="card-footer">
                 <form action="#" method="post">
@@ -393,7 +394,19 @@ $(document).ready(function(){
             template5 +=`
               <div class="direct-chat-messages direct-chat-danger preguntas">`;
               producto.preguntas.forEach(pregunta => {
-                  console.log(pregunta);
+                  //console.log(pregunta);
+                  template5 += `
+                  <div class="direct-chat-msg">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name float-left">${pregunta.username}</span>
+                      <span class="direct-chat-timestamp float-right">${pregunta.fecha_creacion}</span>
+                    </div>
+                    <img class="direct-chat-img" src="../Util/Img/Users/${pregunta.avatar}" alt="Message User Image">
+                    <div class="direct-chat-text">
+                     ${pregunta.contenido}
+                    </div>
+                  `;
+                  template5+= `</div>`;
               });
             template5 +=`</div>`;
 
@@ -403,7 +416,7 @@ $(document).ready(function(){
           console.error(error);
           console.log(response);
           if(response == 'error'){
-            // location.href = '../index.php';
+              location.href = '../index.php';
           }
         }
         

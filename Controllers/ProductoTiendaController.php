@@ -7,6 +7,7 @@
     include_once '../Models/Tienda.php';
     include_once '../Models/Caracteristica.php';
     include_once '../Models/Pregunta.php';
+    include_once '../Models/Respuesta.php';
 
     $producto_tienda = new ProductoTienda();
     $resena = new Resena();
@@ -14,6 +15,8 @@
     $tnd = new Tienda();
     $caracteristica = new Caracteristica();
     $pregunta = new Pregunta();
+    $respuesta = new Respuesta();
+
     session_start();
 
     if($_POST['funcion'] == 'llenar_productos'){
@@ -128,6 +131,17 @@
             $pregunta->read($id_producto_tienda);
             $preguntas = array();
             foreach($pregunta->objetos as $objeto){
+                $respuesta->read($objeto->id);
+                $rpst=array();
+                if(!empty($respuesta)){
+                    foreach($respuesta->objetos as $objeto1){
+                        $rspt=array(
+                            'id'=>$objeto1->id,
+                            'contenido'=>$objeto1->contenido,
+                            'fecha_creacion'=>$objeto1->fecha_creacion,
+                        );
+                    }
+                }
                 $preguntas[]=array(
                     'id'=>$objeto->id,
                     'contenido'=>$objeto->contenido,
@@ -135,6 +149,7 @@
                     'estado_respuesta'=>$objeto->estado_respuesta,
                     'username'=>$objeto->username,
                     'avatar'=>$objeto->avatar,
+                    'respuesta'=>$rpst
                 );
             };
 
