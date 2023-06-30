@@ -105,11 +105,11 @@
             $avatar_sesion = '';
             $bandera = '0';
             if(!empty($_SESSION['id'])){
-                $id_usuario_sesion=1;
+                $id_usuario_sesion= 1;
                 $usuario_sesion=$_SESSION['id'];
                 $avatar_sesion=$_SESSION['avatar'];
             }
-            if($id_usuario_sesion==1){
+            if($id_usuario_sesion == 1){
                 if($id_usuario==$_SESSION['id']){
                     // el usuario en sesion es el dueño de la tienda o producto
                     // puedo responder preguntas
@@ -135,7 +135,7 @@
                 $rpst=array();
                 if(!empty($respuesta)){
                     foreach($respuesta->objetos as $objeto1){
-                        $rspt=array(
+                        $rpst=array(
                             'id'=>$objeto1->id,
                             'contenido'=>$objeto1->contenido,
                             'fecha_creacion'=>$objeto1->fecha_creacion,
@@ -175,6 +175,7 @@
                 'username'=>$username,
                 'avatar'=>$avatar,
                 'usuario_sesion'=>$usuario_sesion,
+                'avatar_sesion'=>$avatar_sesion,
                 'imagenes'=>$imagenes,
                 'caracteristicas'=>$caracteristicas,
                 'resenas'=>$resenas,
