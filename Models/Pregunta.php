@@ -26,4 +26,27 @@
             $this->objetos = $query->fetchAll();
             return $this->objetos;
         }
+
+        function create($pgt, $id_producto_tienda, $id_usuario){
+            $sql = "INSERT INTO pregunta(contenido, id_producto_tienda, id_usuario) 
+                    VALUES(:pgt, :id_producto_tienda, :id_usuario)";
+            $query = $this->acceso->prepare($sql);
+            $variables = array(
+                ':pgt'=>$pgt,
+                ':id_producto_tienda'=>$id_producto_tienda,
+                ':id_usuario'=>$id_usuario
+            );
+            $query->execute($variables);
+        }
+
+        function read_propietario_pregunta($id_pregunta){
+            $sql = "SELECT p.id_usuario as id
+                    FROM pregunta p
+                    WHERE p.id = :id_pregunta
+                    AND p.estado = 'A'";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':id_pregunta'=>$id_pregunta));
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
+        }
     }

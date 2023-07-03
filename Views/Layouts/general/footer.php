@@ -31,6 +31,7 @@
 
 <script src="../Util/Js/bootstrap.min.js"></script>
 <script src="../Util/Js/select2.min.js"></script>
+<script src="../Util/Js/toastr.min.js"></script> 
 <!-- Necesarios para el modal datos, el form -->
 <script src="../Util/Js/jquery.validate.min.js"></script>
 <script src="../Util/Js/additional-methods.min.js"></script>

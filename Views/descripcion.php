@@ -211,6 +211,73 @@ $(document).ready(function(){
     verificar_sesion();
     verificar_producto();
 
+    async function read_notificaciones(id_usuario){
+      funcion = "read_notificaciones";
+      let data = await fetch('../Controllers/NotificacionController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id_usuario=' + id_usuario 
+      });
+      if(data.ok){
+        let response = await data.text();
+        // console.log(response);
+        try {
+          let notificaciones =  JSON.parse(response);
+          console.log(notificaciones);
+          let template1 = '';
+          if(notificaciones.length == 0){
+            template1 += ` 
+                 <i class="far fa-bell"></i>
+            `; 
+          } else {
+            template1 += ` 
+                 <i class="far fa-bell"></i>
+                 <span class="badge badge-warning navbar-badge">${notificaciones.length}</span>
+            `; 
+          }
+          $('#numero_notificacion').html(template1);
+          let template = '';
+          template += `
+              <span class="dropdown-item dropdown-header">${notificaciones.length} Notificaciones</span>
+          `;
+          notificaciones.forEach(notificacion => {
+            template += `
+            <div class="dropdown-divider"></div>
+              <a href="../${notificacion.url_1}" class="dropdown-item">
+                <!-- Message Start -->
+                <div class="media">
+                  <img src="../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <div class="media-body">
+                    <h3 class="dropdown-item-title">
+                      ${notificacion.titulo}
+                    </h3>
+                    <p class="text-sm">${notificacion.asunto}</p>
+                    <p class="text-sm text-muted">${notificacion.contenido}</p>
+                    <span class="float-right text-muted text-sm">${notificacion.fecha_creacion}</span>
+                  </div>
+                </div>
+                <!-- Message End -->
+              </a>
+            <div class="dropdown-divider"></div>
+            `;
+          });
+          template += `
+              <a href="#" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
+          `;
+          $('#notificaciones').html(template);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
 
     function verificar_sesion() {
       funcion = 'verificar_sesion';
@@ -225,7 +292,7 @@ $(document).ready(function(){
           $('#avatar_nav').attr('src', '../Util/Img/Users/' + sesion.avatar);
           $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
           $('usuario_menu').text(sesion.user);
-            
+          read_notificaciones(sesion.id);
         } else {
             $('#nav_usuario').hide();
         }
@@ -379,10 +446,10 @@ $(document).ready(function(){
           if(producto.bandera == '2'){
             template5 += `
               <div class="card-footer">
-                  <form action="#" method="post">
+                  <form id="form_pregunta">
                     <div class="input-group">
-                      <img class="direct-chat-img mr-1" src="../Util/Img/Users/user_default.png" alt="Message User Image">
-                      <input type="text" name="message" placeholder="Escribir pregunta" class="form-control">
+                      <img class="direct-chat-img mr-1" src="../Util/Img/Users/${producto.avatar_sesion}" alt="Message User Image">
+                      <input type="text" id="pregunta" placeholder="Escribir pregunta" class="form-control" required>
                       <span class="input-group-append">
                         <button type="submit" class="btn btn-success">Enviar</button>
                       </span>
@@ -407,15 +474,16 @@ $(document).ready(function(){
                     ${pregunta.contenido}
                   </div>`;
                   if(pregunta.estado_respuesta == '0'){
-                    if(producto.bandera == '2'){
+                    if(producto.bandera == '1'){
                       template5 += `
                       <div class="card-footer">
-                        <form action="#" method="post">
+                        <form>
                           <div class="input-group">
                             <img class="direct-chat-img mr-1" src="../Util/Img/Users/${producto.avatar}" alt="Message User Image">
-                            <input type="text" name="message" placeholder="Responder pregunta" class="form-control">
+                            <input type="text" placeholder="Responder pregunta" class="form-control respuesta" required>
+                            <input type="hidden" value="${pregunta.id}" class="id_pregunta">
                             <span class="input-group-append">
-                              <button type="submit" class="btn btn-danger">Enviar</button>
+                              <button class="btn btn-danger enviar_respuesta">Enviar</button>
                             </span>
                           </div>
                         </form>
@@ -439,72 +507,6 @@ $(document).ready(function(){
           });
           template5+= `</div>`;
           $('#product-pre').html(template5);
-          /*
-          let template5 = '';
-          if(producto.bandera == '2'){
-            template5 += `
-            <div class="card-footer">
-                <form action="#" method="post">
-                  <div class="input-group">
-                    <img class="direct-chat-img mr-1" src="../Util/Img/Users/user_default.png" alt="Message User Image">
-                    <input type="text" name="message" placeholder="Escribir pregunta" class="form-control">
-                    <span class="input-group-append">
-                      <button type="submit" class="btn btn-success">Enviar</button>
-                    </span>
-                  </div>
-                </form>
-            </div>
-            `;
-          }
-            template5 +=`
-              <div class="direct-chat-messages direct-chat-danger preguntas">`;
-            producto.preguntas.forEach(pregunta => {
-                  console.log(pregunta.fecha_creacion);
-                  template5 += `
-                  <div class="direct-chat-msg">
-                    <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name float-left">${pregunta.username}</span>
-                      <span class="direct-chat-timestamp float-right">${pregunta.fecha_creacion}</span>
-                    </div>
-                    <img class="direct-chat-img" src="../Util/Img/Users/${pregunta.avatar}" alt="Message User Image">
-                    <div class="direct-chat-text">
-                      ${pregunta.contenido}
-                    </div>
-                  `;
-                  if(pregunta.estado_respuesta == '0'){
-                    if(producto.bandera=='1'){
-                      template5 += `
-                      <div class="card-footer">
-                        <form action="#" method="post">
-                          <div class="input-group">
-                            <img class="direct-chat-img mr-1" src="../Util/Img/Users/${producto.avatar}" alt="Message User Image">
-                            <input type="text" name="message" placeholder="Responder pregunta" class="form-control">
-                            <span class="input-group-append">
-                              <button type="submit" class="btn btn-danger">Enviar</button>
-                            </span>
-                          </div>
-                        </form>
-                      </div>`;
-                    }
-                  } else {
-                    template5 += `
-                    <div class="direct-chat-msg right">
-                      <div class="direct-chat-infos clearfix">
-                        <span class="direct-chat-name float-right">${producto.username}</span>
-                        <span class="direct-chat-timestamp float-left">${producto.respuesta.fecha_creacion}</span>
-                      </div>
-                      <img class="direct-chat-img" src="../Util/Img/Users/${producto.avatar}" alt="Message User Image">
-                      <div class="direct-chat-text">
-                        ${pregunta.respuesta.contenido}
-                      </div>
-                    </div>
-                    `
-                  }
-                  template5+= `</div>`;
-              });
-            template5 +=`</div>`;
-            $('#product-pre').html(template5);
-            */
         } catch(error) {
           console.error(error);
           console.log(response);
@@ -522,10 +524,92 @@ $(document).ready(function(){
       }
     }
 
+    // Imagen Pasarelas
     $(document).on('click', '.imagen_pasarelas', (e) => {
       let elemento = $(this)[0].activeElement;
       let img = $(elemento).attr('prod_img');
       $('#imagen_principal').attr('src', '../Util/Img/producto/' + img)
     })
+
+    // Realizar Pregunta
+    async function realizar_pregunta(pregunta){
+      funcion = "realizar_pregunta";
+      let data = await fetch('../Controllers/PreguntaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&pregunta=' + pregunta
+      });
+      if(data.ok){
+        let response = await data.text();
+        // console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          console.log(respuesta);
+          verificar_producto();
+          $('#form_pregunta').trigger('reset');
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
+    // Submit realizar pregunta
+    $(document).on('submit', '#form_pregunta', (e) => {
+      let pregunta = $('#pregunta').val();
+      realizar_pregunta(pregunta);
+      e.preventDefault();
+    });
+
+    // Realizar Respuesta
+    async function realizar_respuesta(respuesta, id_pregunta){
+      funcion = "realizar_respuesta";
+      let data = await fetch('../Controllers/RespuestaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&respuesta=' + respuesta + '&&id_pregunta=' + id_pregunta
+      });
+      if(data.ok){
+        let response = await data.text();
+        // console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          console.log(respuesta);
+          verificar_producto();
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
+
+    // Enviar respuesta
+    $(document).on('click', '.enviar_respuesta', (e) => {
+      let elemento = $(this)[0].activeElement.parentElement.parentElement;
+      let respuesta = $(elemento).children('input.respuesta').val();
+      let id_pregunta = $(elemento).children('input.id_pregunta').val();
+      // console.log(respuesta + ' ' + id_pregunta);
+      if(respuesta != ''){
+        realizar_respuesta(respuesta, id_pregunta)
+      } else {
+        toastr.error('* La respuesta esta vacia');
+      }
+      e.preventDefault();
+    });  
 })
 </script>
