@@ -3,7 +3,10 @@
 if(!empty($_GET['id'])&& $_GET['name']){
     session_start();
     $_SESSION['product-verification']=$_GET['id'];
-    echo $_SESSION['product-verification'];
+    if(!empty($_GET['noti'])){
+      $_SESSION['noti']=$_GET['noti'];
+    }
+   // echo $_SESSION['product-verification'];
     include_once 'Layouts/general/header.php';
 ?>
 <!-- Descripcion Page -->
@@ -225,17 +228,25 @@ $(document).ready(function(){
           let notificaciones =  JSON.parse(response);
           console.log(notificaciones);
           let template1 = '';
+          let template2 = '';
           if(notificaciones.length == 0){
             template1 += ` 
                  <i class="far fa-bell"></i>
+            `; 
+            template2 += ` 
+                Notificaciones
             `; 
           } else {
             template1 += ` 
                  <i class="far fa-bell"></i>
                  <span class="badge badge-warning navbar-badge">${notificaciones.length}</span>
             `; 
+            template2 += ` 
+                Notificaciones <span class="badge badge-warning right">${notificaciones.length}</span>
+            `; 
           }
           $('#numero_notificacion').html(template1);
+          $('#nav_cont_noti').html(template2);
           let template = '';
           template += `
               <span class="dropdown-item dropdown-header">${notificaciones.length} Notificaciones</span>
@@ -243,7 +254,7 @@ $(document).ready(function(){
           notificaciones.forEach(notificacion => {
             template += `
             <div class="dropdown-divider"></div>
-              <a href="../${notificacion.url_1}" class="dropdown-item">
+              <a href="../${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
                   <img src="../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
@@ -262,7 +273,7 @@ $(document).ready(function(){
             `;
           });
           template += `
-              <a href="#" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
+            <a href="../Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
           `;
           $('#notificaciones').html(template);
         } catch(error) {
@@ -293,8 +304,12 @@ $(document).ready(function(){
           $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
           $('usuario_menu').text(sesion.user);
           read_notificaciones(sesion.id);
+          $('#notificacion').show();
+          $('#nav_notificaciones').show();
         } else {
             $('#nav_usuario').hide();
+            $('#notificacion').hide();
+            $('#nav_notificacion').hide();
         }
       }) 
     }
@@ -312,6 +327,9 @@ $(document).ready(function(){
         try {
           let producto =  JSON.parse(response);
           console.log(producto);
+          if(producto.usuario_sesion != ''){
+            read_notificaciones(producto.usuario_sesion);
+          }
           let template = '';
           if(producto.imagenes.length>0){
             template+=`

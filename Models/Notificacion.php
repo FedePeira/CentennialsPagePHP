@@ -35,4 +35,15 @@
             $this->objetos = $query->fetchAll();
             return $this->objetos;
         }
+
+        function update_estado_abierto($id_noti){
+            $sql = "UPDATE notificacion
+                    SET estado_abierto = 1
+                    WHERE id =:id_noti";
+            $query = $this->acceso->prepare($sql);
+            $variables = array(
+                ':id_noti'=>$id_noti,
+            );
+            $query->execute($variables);
+        }
     }
