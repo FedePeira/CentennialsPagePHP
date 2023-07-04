@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css" >
   <link rel="stylesheet" href="../Util/Css/toastr.min.css">
+  <link rel="stylesheet" href="../Util/Css/datatables.min.css">
 
 </head> 
 <body class="hold-transition sidebar-mini">
@@ -206,7 +207,7 @@
                with font-awesome or any other icon font library -->
           <li class="nav-header">Perfil</li>
           <li id="nav_notificaciones" class="nav-item">
-            <a id="active_nav_notificaciones" href="../Views/notificaciones.php" class="nav-link active">
+            <a id="active_nav_notificaciones" href="../Views/notificaciones.php" class="nav-link">
               <i class="nav-icon far fa-bell"></i>
               <p id="nav_cont_noti">
                 Notificaciones
