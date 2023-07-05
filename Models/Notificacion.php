@@ -46,6 +46,7 @@
             );
             $query->execute($variables);
         }
+
         function read_all_notificaciones($id_usuario){
             $sql = "SELECT *
                     FROM notificacion n
@@ -56,5 +57,17 @@
             $query->execute(array(':id_usuario'=>$id_usuario));
             $this->objetos = $query->fetchAll();
             return $this->objetos;
+        }
+
+        function update_remove($id_notificacion){
+            $sql = "UPDATE notificacion
+                    SET estado = :estado
+                    WHERE id =:id_notificacion";
+            $query = $this->acceso->prepare($sql);
+            $variables = array(
+                ':id_notificacion'=>$id_notificacion,
+                ':estado'=>'I'
+            );
+            $query->execute($variables);
         }
     }

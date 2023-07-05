@@ -13,3 +13,7 @@ Faltantes
 - El promedio de la calificacion del producto en la tienda, esta mal. Tira 4000 significa que debe de haber algo mal en el calculo del promedio
 7. Fecha de creacion de Respuesta
 - No funcion la fehca de creacion, parece que "fecha_creacion = undefined". Revisar eso
+8. URL para notificaciones
+- No funciona la URL para notificaciones, funciona desde la campanita solo, Revisar (SOLUCIONADO)
+9. Time en Historial de Mi Perfil
+- Actualizar el tiempo del historial como aparece en las preguntas del producto

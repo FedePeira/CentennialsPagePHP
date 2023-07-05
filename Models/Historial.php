@@ -30,7 +30,7 @@
                 ':descripcion'=>$descripcion,
                 ':id_tipo_historial'=>$tipo_historial,
                 ':id_modulo'=>$modulo,
-                ':id_usuario'=>$id_usuario
+                ':id_usuario'=>$id_usuario,
             );
             $query->execute($variables);
         }

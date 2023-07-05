@@ -260,14 +260,14 @@
             <div class="card">
               <div class="card-header p-2">
                 <ul class="nav nav-pills">
-                  <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Activity</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#activity" data-toggle="tab">Activity</a></li>
+                  <li class="nav-item"><a class="nav-link active" href="#timeline" data-toggle="tab">Historial</a></li>
                   <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
                 <div class="tab-content">
-                  <div class="active tab-pane" id="activity">
+                  <div class="tab-pane" id="activity">
                     <!-- Post -->
                     <div class="post">
                       <div class="user-block">
@@ -381,7 +381,7 @@
                     <!-- /.post -->
                   </div>
                   <!-- /.tab-pane -->
-                  <div class="tab-pane" id="timeline">
+                  <div class="tab-pane active" id="timeline">
                     <!-- The timeline -->
                     <div id="historiales" class="timeline timeline-inverse">
 
@@ -682,12 +682,12 @@ $(document).ready(function() {
       })
     })
 
-    async function read_notificaciones(id_usuario){
+    async function read_notificaciones(){
       funcion = "read_notificaciones";
       let data = await fetch('../Controllers/NotificacionController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id_usuario=' + id_usuario 
+        body: 'funcion=' + funcion
       });
       if(data.ok){
         let response = await data.text();
@@ -771,7 +771,7 @@ $(document).ready(function() {
           $('#avatar_nav').attr('src', '../Util/Img/Users/' + sesion.avatar);
           $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
           $('usuario_menu').text(sesion.user);
-          read_notificaciones(sesion.id);
+          read_notificaciones();
           $('#notificacion').show();
           $('#nav_notificacion').show();
         } else {

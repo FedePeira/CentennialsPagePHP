@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css" >
   <link rel="stylesheet" href="../Util/Css/toastr.min.css">
-  <link rel="stylesheet" href="../Util/Css/datatables.min.css">
-
+  <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.13.5/datatables.min.css">
+  <!--<link rel="stylesheet" href="../Util/Css/datatables.min.css">-->
 </head> 
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->

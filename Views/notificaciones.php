@@ -52,13 +52,22 @@
 $(document).ready(function(){
     verificar_sesion();
     $('#active_nav_notificaciones').addClass('active');
+    toastr.options = {
+      'debug': false,
+      'positionClass': 'toast-bottom-full-width',
+      'onclick': null,
+      'fadeIn': 300,
+      'fadeOut': 1000,
+      'timeOut': 5000,
+      'extendedTimeOut': 1000,
+    }
 
-    async function read_notificaciones(id_usuario){
+    async function read_notificaciones(){
       funcion = "read_notificaciones";
       let data = await fetch('../Controllers/NotificacionController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id_usuario=' + id_usuario 
+        body: 'funcion=' + funcion 
       });
       if(data.ok){
         let response = await data.text();
@@ -142,8 +151,8 @@ $(document).ready(function(){
           $('#avatar_nav').attr('src', '../Util/Img/Users/' + sesion.avatar);
           $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
           $('usuario_menu').text(sesion.user);
-          read_notificaciones(sesion.id);
-          read_all_notificaciones(sesion.id);
+          read_notificaciones();
+          read_all_notificaciones();
           $('#notificacion').show();
           $('#nav_notificaciones').show();
         } else {
@@ -155,12 +164,12 @@ $(document).ready(function(){
       }) 
     }
 
-    async function read_all_notificaciones(id_usuario){
+    async function read_all_notificaciones(){
       funcion = "read_all_notificaciones";
       let data = await fetch('../Controllers/NotificacionController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id_usuario=' + id_usuario 
+        body: 'funcion=' + funcion
       });
       if(data.ok){
         let response = await data.text();
@@ -175,28 +184,37 @@ $(document).ready(function(){
           notificaciones.forEach(notificacion => {
             template = '';
             template += `
-              <a href="../${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
-                <!-- Message Start -->
-                <div class="media">
-                  <img src="../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                  <div class="media-body">
-                    <h3 class="dropdown-item-title">
-                      ${notificacion.titulo}
-                      `;
-            if(notificacion.estado_abierto == '0') {
-              template += `<span class="badge badge-success">Cerrado</span>`;
-            } else {
-              template += `<span class="badge badge-dager">Abierto</span>`;
-            }
-            template += `
-                    </h3>
-                        <p class="text-sm">${notificacion.asunto}</p>
-                        <p class="text-sm text-muted">${notificacion.contenido}</p>
-                        <span class="float-right text-muted text-sm">${notificacion.fecha_creacion}</span>
-                  </div>
+              <div class="row">
+                <div class="col-sm-1 text-center">
+                  <button type="button" class="btn eliminar_noti" attrid="${notificacion.id}">
+                    <i class="far fa-trash-alt text-danger"></i>
+                  </button>
                 </div>
-                <!-- Message End -->
-              </a>
+                <div class="col-sm-11">
+                  <a href="../${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
+                    <!-- Message Start -->
+                    <div class="media">
+                      <img src="../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                      <div class="media-body">
+                        <h3 class="dropdown-item-title">
+                          ${notificacion.titulo}
+                          `;
+                  if(notificacion.estado_abierto == '0') {
+                    template += `<span class="badge badge-success">Cerrado</span>`;
+                  } else {
+                    template += `<span class="badge badge-dager">Abierto</span>`;
+                  }
+                  template += `
+                        </h3>
+                            <p class="text-sm">${notificacion.asunto}</p>
+                            <p class="text-sm text-muted">${notificacion.contenido}</p>
+                            <span class="float-right text-muted text-sm">${notificacion.fecha_creacion}</span>
+                      </div>
+                    </div>
+                    <!-- Message End -->
+                  </a>
+                </div>
+              </div>
             `;
             notification.push({celda: template});
           });
@@ -226,6 +244,49 @@ $(document).ready(function(){
         });
       }
     }
+
+    async function eliminar_notificacion(id_notificacion){
+      funcion = "eliminar_notificacion";
+      let data = await fetch('../Controllers/NotificacionController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id_notificacion=' + id_notificacion
+      });
+      if(data.ok){
+        let response = await data.text();
+        // console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          console.log(respuesta);
+          if(respuesta.mensaje1 == "notificacion eliminada") {
+            toastr.success('El item se elimino de sus notificaciones');
+          }
+          else if(respuesta.mensaje1 == "error al eliminar") {
+            toastr.success('No intente vulnerar el sistema');
+          } else {
+            toastr.success('Comuniquese con el area de sistemas');
+          }
+          read_all_notificaciones();
+          read_notificaciones();
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.eliminar_noti', (e)=> {
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('attrid');
+      eliminar_notificacion(id);
+      // console.log(id);
+    })
 })
 let espanol = 
 {
