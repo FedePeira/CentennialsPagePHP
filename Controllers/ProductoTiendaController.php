@@ -9,6 +9,7 @@
     include_once '../Models/Pregunta.php';
     include_once '../Models/Respuesta.php';
     include_once '../Models/Notificacion.php';
+    include_once '../Models/Favorito.php';
 
     $producto_tienda = new ProductoTienda();
     $resena = new Resena();
@@ -18,6 +19,7 @@
     $pregunta = new Pregunta();
     $respuesta = new Respuesta();
     $notificacion = new Notificacion();
+    $favorito = new Favorito();
 
     session_start();
 
@@ -164,6 +166,13 @@
                 );
             };
 
+            $favorito->read_favorito_usuario_protienda($usuario_sesion, $id_producto_tienda);
+            $id_favorito = '';
+            $estado_favorito = '';
+            if(count($favorito->objetos)> 0){
+                $id_favorito =  openssl_decrypt($favorito->objetos[0]->id, CODE, KEY);
+                $estado_favorito = $favorito->objetos[0]->estado;
+            }
             // var_dump($producto_tienda);
             $json=array(
                 'id'=>$id_producto_tienda,
@@ -191,6 +200,8 @@
                 'caracteristicas'=>$caracteristicas,
                 'resenas'=>$resenas,
                 'preguntas'=>$preguntas,
+                'id_favorito'=>$id_favorito,
+                'estado_favorito'=>$estado_favorito
             );
             
             $jsonstring = json_encode($json);
