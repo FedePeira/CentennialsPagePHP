@@ -43,7 +43,7 @@ if(!empty($_GET['id'])&& $_GET['name']){
 
             </div>
             <div class="col-12 col-sm-6">
-              <h3 id="producto" class="my-3">LOWA Men’s Renegade GTX Mid Hiking Boots Review</h3>
+              <h3 id="producto" class="my-3"></h3>
               <span id="marca"></span><br>
               <span id="sku"></span>
               <div id="informacion_precios">
@@ -98,7 +98,6 @@ if(!empty($_GET['id'])&& $_GET['name']){
                         <i class="fas fa-cart-plus fa-lg mr-2"></i>
                         Agregar al carrito
                     </div>
-                    <button type="button" class="btn"><i class="fas fa-heart fa-lg text-danger"></i></button>
                 </div>
               </div>
             </div>
@@ -223,7 +222,7 @@ $(document).ready(function(){
         // console.log(response);
         try {
           let notificaciones =  JSON.parse(response);
-          console.log(notificaciones);
+          // console.log(notificaciones);
           let template1 = '';
           let template2 = '';
           if(notificaciones.length == 0){
@@ -290,7 +289,7 @@ $(document).ready(function(){
     function verificar_sesion() {
       funcion = 'verificar_sesion';
       $.post('../Controllers/UsuarioController.php', { funcion }, (response) => {
-        console.log(response);
+        // console.log(response);
         if(response != ''){
           // location.href = '../index.php';
           let sesion = JSON.parse(response);
@@ -323,7 +322,7 @@ $(document).ready(function(){
         // console.log(response);
         try {
           let producto =  JSON.parse(response);
-          console.log(producto);
+          // console.log(producto);
           if(producto.usuario_sesion != ''){
             read_notificaciones();
           }
@@ -355,8 +354,7 @@ $(document).ready(function(){
           let template6 = '';
           if(producto.usuario_sesion != '') {
             if(producto.estado_favorito == ''){
-              template6 = `<button type="button" id_favorito="${producto.id_favorito}" estado_fav="${producto.estado_favorito}" class="btn bandera_favorito"><i class="far fa-heart fa-lg text-danger"></i></button>`;
- 
+              template6 = `${producto.producto} <button type="button" id_favorito="${producto.id_favorito}" estado_fav="${producto.estado_favorito}" class="btn bandera_favorito"><i class="far fa-heart fa-lg text-danger"></i></button>`;
             }
             else {
               if(producto.estado_favorito == 'I'){
@@ -577,7 +575,7 @@ $(document).ready(function(){
         // console.log(response);
         try {
           let respuesta =  JSON.parse(response);
-          console.log(respuesta);
+          // console.log(respuesta);
           verificar_producto();
           $('#form_pregunta').trigger('reset');
         } catch(error) {
@@ -614,7 +612,7 @@ $(document).ready(function(){
         // console.log(response);
         try {
           let respuesta =  JSON.parse(response);
-          console.log(respuesta);
+          // console.log(respuesta);
           verificar_producto();
         } catch(error) {
           console.error(error);
@@ -645,12 +643,41 @@ $(document).ready(function(){
       e.preventDefault();
     });  
 
+    // Realizar Favorito
+    async function cambiar_estado_favorito(id_favorito, estado_favorito){
+      funcion = "cambiar_estado_favorito";
+      let data = await fetch('../Controllers/FavoritoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id_favorito=' + id_favorito + '&&estado_favorito=' + estado_favorito
+      });
+      if(data.ok){
+        let response = await data.text();
+        // console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          // console.log(respuesta);
+          verificar_producto();
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
     // Favoritos
     $(document).on('click', '.bandera_favorito', (e) => {
       let elemento = $(this)[0].activeElement;
       let id_favorito = $(elemento).attr('id_favorito');
       let estado_favorito = $(elemento).attr('estado_fav');
-      console.log(id_favorito);
+      cambiar_estado_favorito(id_favorito, estado_favorito);
     });  
 })
 </script>

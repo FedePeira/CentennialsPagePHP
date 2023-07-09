@@ -169,8 +169,8 @@
             $favorito->read_favorito_usuario_protienda($usuario_sesion, $id_producto_tienda);
             $id_favorito = '';
             $estado_favorito = '';
-            if(count($favorito->objetos)> 0){
-                $id_favorito =  openssl_decrypt($favorito->objetos[0]->id, CODE, KEY);
+            if(count($favorito->objetos) > 0){
+                $id_favorito =  openssl_encrypt($favorito->objetos[0]->id, CODE, KEY);
                 $estado_favorito = $favorito->objetos[0]->estado;
             }
             // var_dump($producto_tienda);
