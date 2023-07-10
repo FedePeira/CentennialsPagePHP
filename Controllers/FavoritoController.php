@@ -78,3 +78,28 @@
         $jsonstring = json_encode($json);
         echo $jsonstring;
     }   
+
+    if($_POST['funcion'] == 'read_favoritos'){
+        if(!empty($_SESSION['id'])){
+            $id_usuario = $_SESSION['id'];
+            $favorito->read($id_usuario);
+            $json = array();
+            foreach($favorito->objetos as $objeto) {
+                $json[] = array(
+                    'id'=>openssl_encrypt($objeto->id, CODE, KEY),
+                    'titulo'=>$objeto->titulo,
+                    'precio'=>$objeto->precio,
+                    'imagen'=>$objeto->imagen,
+                    'url'=>$objeto->url,
+                    'fecha_creacion'=>$objeto->fecha_creacion,
+
+                );
+            }
+            // var_dump($favorito);
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        }
+        else {
+            echo 'error, el usuario no esta en sesion';
+        }
+    }   
