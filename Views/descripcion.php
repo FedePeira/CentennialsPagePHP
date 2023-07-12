@@ -756,6 +756,7 @@ $(document).ready(function(){
             toastr.error('No intente vulnerar el sistema');
           }
           verificar_producto();
+          read_favoritos();
         } catch(error) {
           console.error(error);
           console.log(response);

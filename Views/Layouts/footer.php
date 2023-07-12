@@ -24,6 +24,8 @@
 <script src="Util/Js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="Util/Js/demo.js"></script>
+<!-- Toastr -->
+<script src="Util/Js/toastr.min.js"></script> 
 
 <script src="Util/Js/bootstrap.min.js"></script>
 <script src="Util/Js/sweetalert2.min.js"></script>

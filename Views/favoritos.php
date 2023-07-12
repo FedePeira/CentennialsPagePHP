@@ -1,18 +1,18 @@
 <?php
   include_once 'Layouts/general/header.php';
 ?>
-    <title>Notificaciones | CodeWar</title>
+    <title>Favoritos | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Notificaciones</h1>
+            <h1>Favoritos</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Notificaciones</li>
+              <li class="breadcrumb-item active">Favoritos</li>
             </ol>
           </div>
         </div>
@@ -23,10 +23,10 @@
       <!-- Default box -->
       <div class="card">
         <div class="card-body">
-          <table id="noti" class="table table-hover">
+          <table id="fav" class="table table-hover">
             <thead>
               <tr>
-                <th>Notificaciones</th>
+                <th>Favoritos</th>
               </tr>
             </thead>
             <tbody>
@@ -51,7 +51,7 @@
 <script>
 $(document).ready(function(){
     verificar_sesion();
-    $('#active_nav_notificaciones').addClass('active');
+    $('#active_nav_favoritos').addClass('active');
     toastr.options = {
       'debug': false,
       'positionClass': 'toast-bottom-full-width',
@@ -74,7 +74,7 @@ $(document).ready(function(){
         // console.log(response);
         try {
           let notificaciones =  JSON.parse(response);
-          console.log(notificaciones);
+          // console.log(notificaciones);
           let template1 = '';
           let template2 = '';
           if(notificaciones.length == 0){
@@ -227,7 +227,7 @@ $(document).ready(function(){
           $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
           $('usuario_menu').text(sesion.user);
           read_notificaciones();
-          read_all_notificaciones();
+          read_all_favoritos();
           $('#notificacion').show();
           $('#nav_notificaciones').show();
           read_favoritos();
@@ -244,51 +244,43 @@ $(document).ready(function(){
       }) 
     }
 
-    async function read_all_notificaciones(){
-      funcion = "read_all_notificaciones";
-      let data = await fetch('../Controllers/NotificacionController.php', {
+    async function read_all_favoritos(){
+      funcion = "read_all_favoritos";
+      let data = await fetch('../Controllers/FavoritoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
       });
       if(data.ok){
         let response = await data.text();
-        // console.log(response);
+        //console.log(response);
         try {
-          let notificaciones =  JSON.parse(response);
-          console.log(notificaciones);
+          let favoritos =  JSON.parse(response);
+          // console.log(favoritos);
           let template = '';
-          let notification = [];
+          let favorites = [];
           // let ejemplo = [{ celda: 'Hola primera celda' }, { celda: 'Adios' }];
           // ejemplo.push({ celda:'hola adios' });
-          notificaciones.forEach(notificacion => {
+          favoritos.forEach(favorito => {
             template = '';
             template += `
               <div class="row">
                 <div class="col-sm-1 text-center">
-                  <button type="button" class="btn eliminar_noti" attrid="${notificacion.id}">
+                  <button type="button" class="btn eliminar_fav" attrid="${favorito.id}">
                     <i class="far fa-trash-alt text-danger"></i>
                   </button>
                 </div>
                 <div class="col-sm-11">
-                  <a href="../${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
+                  <a href="../${favorito.url}" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                      <img src="../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                      <img src="../Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
                       <div class="media-body">
                         <h3 class="dropdown-item-title">
-                          ${notificacion.titulo}
-                          `;
-                  if(notificacion.estado_abierto == '0') {
-                    template += `<span class="badge badge-success">Cerrado</span>`;
-                  } else {
-                    template += `<span class="badge badge-dager">Abierto</span>`;
-                  }
-                  template += `
+                          ${favorito.titulo}
                         </h3>
-                            <p class="text-sm">${notificacion.asunto}</p>
-                            <p class="text-sm text-muted">${notificacion.contenido}</p>
-                            <span class="float-right text-muted text-sm">${notificacion.fecha_creacion}</span>
+                        <p class="text-sm text-muted">${favorito.precio}</p>
+                        <span class="float-right text-muted text-sm">${favorito.fecha_creacion}</span>
                       </div>
                     </div>
                     <!-- Message End -->
@@ -296,11 +288,11 @@ $(document).ready(function(){
                 </div>
               </div>
             `;
-            notification.push({celda: template});
+            favorites.push({celda: template});
           });
-          console.log(notification);
-          $('#noti').DataTable({
-            data: notification,
+          // console.log(notification);
+          $('#fav').DataTable({
+            data: favorites,
             "aaShorting": [],
             "searching": true,
             "scrollX": true,
@@ -325,32 +317,33 @@ $(document).ready(function(){
       }
     }
 
-    async function eliminar_notificacion(id_notificacion){
-      funcion = "eliminar_notificacion";
-      let data = await fetch('../Controllers/NotificacionController.php', {
+    async function eliminar_favorito(id_favorito){
+      funcion = "eliminar_favorito";
+      let data = await fetch('../Controllers/FavoritoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id_notificacion=' + id_notificacion
+        body: 'funcion=' + funcion + '&&id_favorito=' + id_favorito
       });
       if(data.ok){
         let response = await data.text();
         // console.log(response);
         try {
           let respuesta =  JSON.parse(response);
-          console.log(respuesta);
-          if(respuesta.mensaje1 == "notificacion eliminada") {
-            toastr.success('El item se elimino de sus notificaciones');
+          // console.log(respuesta.mensaje);
+          if(respuesta.mensaje == "favorito eliminado") {
+            toastr.success('El item se elimino de tus favoritos');
           }
-          else if(respuesta.mensaje1 == "error al eliminar") {
+          else if(respuesta.mensaje == "error al eliminar") {
             toastr.success('No intente vulnerar el sistema');
-          } else {
-            toastr.success('Comuniquese con el area de sistemas');
-          }
-          read_all_notificaciones();
-          read_notificaciones();
+          } 
+
+          read_all_favoritos();
+          read_favoritos();
+
         } catch(error) {
           console.error(error);
           console.log(response);
+          toastr.success('Comuniquese con el area de sistemas');
         }
         
       } else {
@@ -361,10 +354,10 @@ $(document).ready(function(){
         });
       }
     }
-    $(document).on('click', '.eliminar_noti', (e)=> {
+    $(document).on('click', '.eliminar_fav', (e)=> {
       let elemento = $(this)[0].activeElement;
       let id = $(elemento).attr('attrid');
-      eliminar_notificacion(id);
+      eliminar_favorito(id);
       // console.log(id);
     })
 })
