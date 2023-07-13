@@ -140,39 +140,6 @@
                 // ni puede hacer preguntas ni responderlas
                 $bandera = '0';
             }
-            
-            $pregunta->read($id_producto_tienda);
-            $preguntas = array();
-            foreach($pregunta->objetos as $objeto){
-                $respuesta->read($objeto->id);
-                $rpst=array();
-                if(!empty($respuesta)){
-                    foreach($respuesta->objetos as $objeto1){
-                        $rpst=array(
-                            'id'=>$objeto1->id,
-                            'contenido'=>$objeto1->contenido,
-                            'fecha_creacion'=>$objeto1->fecha_creacion,
-                        );
-                    }
-                }
-                $preguntas[]=array(
-                    'id'=>$objeto->id,
-                    'contenido'=>$objeto->contenido,
-                    'fecha_creacion'=>$objeto->fecha_creacion,
-                    'estado_respuesta'=>$objeto->estado_respuesta,
-                    'username'=>$objeto->username,
-                    'avatar'=>$objeto->avatar,
-                    'respuesta'=>$rpst
-                );
-            };
-
-            $favorito->read_favorito_usuario_protienda($usuario_sesion, $id_producto_tienda);
-            $id_favorito = '';
-            $estado_favorito = '';
-            if(count($favorito->objetos) > 0){
-                $id_favorito =  openssl_encrypt($favorito->objetos[0]->id, CODE, KEY);
-                $estado_favorito = $favorito->objetos[0]->estado;
-            }
             // var_dump($producto_tienda);
             $json=array(
                 'id'=>$id_producto_tienda,
@@ -199,9 +166,6 @@
                 'imagenes'=>$imagenes,
                 'caracteristicas'=>$caracteristicas,
                 'resenas'=>$resenas,
-                'preguntas'=>$preguntas,
-                'id_favorito'=>$id_favorito,
-                'estado_favorito'=>$estado_favorito
             );
             
             $jsonstring = json_encode($json);
