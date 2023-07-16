@@ -120,9 +120,8 @@ else {
 <script>
 $(document).ready(function(){
     Loader();
-    setTimeout(verificar_sesion, 2000);
-    // verificar_sesion();
-    // verificar_producto();
+    // setTimeout(verificar_sesion, 2000);
+    verificar_sesion();
     toastr.options = {
       'debug': false,
       'positionClass': 'toast-bottom-full-width',

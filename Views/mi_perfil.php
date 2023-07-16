@@ -143,90 +143,37 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-3">
-          <div class="card card-widget widget-user">
-              <!-- Add the bg color to the header using any of the bg-* classes -->
-              <div class="widget-user-header bg-info">
-                <h3 id="username" class="widget-user-username"></h3>
-                <h5 id="tipo_usuario" class="widget-user-desc"></h5>
-              </div>
-              <div class="widget-user-image">
-                <img id="avatar_perfil" class="img-circle elevation-2" alt="User Avatar">
-              </div>
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-4 border-right">
-                    <div class="description-block">
-                      <h5 class="description-header">3,200</h5>
-                      <span class="description-text">SALES</span>
-                    </div>
-                    <!-- /.description-block -->
+            <div id="card_usuario" class="card card-widget widget-user">
+              <div class="card">
+                <div class="card-body">
+                  <div id="loader_3" class="overlay">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                   </div>
-                  <!-- /.col -->
-                  <div class="col-sm-4 border-right">
-                    <div class="description-block">
-                      <h5 class="description-header">13,000</h5>
-                      <span class="description-text">FOLLOWERS</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-4">
-                    <div class="description-block">
-                      <h5 class="description-header">35</h5>
-                      <span class="description-text">PRODUCTS</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
                 </div>
-                <!-- /.row -->
               </div>
             </div>
 
             <!-- About Me Box -->
             <!-- Llamada del Modal Datos, para ingresar los datos personales de la persona -->
-            <div class="card card-light">
-                <div class="card-header border-bottom-0">
-                   <strong>Mis Datos personales</strong>
-                   <div class="card-tools">
-                    <!-- Boton de llamada al modal -->
-                    <button type="button" class="editar_datos btn btn-tool" data-bs-toggle="modal" data-bs-target="#modal_datos">
-                      <i class="fas fa-pencil-alt"></i>
-                    </button>
-                   </div>
-                </div>
-                <div class="card-body pt-0 mt-3">
-                  <div class="row">
-                    <div class="col-7">
-                      <h2 id="nombres" class="lead"><b></b></h2>
-                      <ul class="ml-4 mb-0 fa-ul text-muted">
-                        <li class="small"><span class="fa-li"><i class="fas fa-address-card"></i></span>DNI: <span id="dni"></span></li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-at"></i></span>Email: <span id="email"></span></li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span>Telefono: <span id="telefono"></span></li>
-                      </ul>
-                    </div>
-                    <div class="col-4 text-center">
-                      <img src="../Util/Img/datos.png" alt="user-avatar" class="img-circle img-fluid">
-                    </div>
+            <div id="card_datos_personales" class="card card-light">
+              <div class="card">
+                <div class="card-body">
+                  <div id="loader_4" class="overlay">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                   </div>
                 </div>
-                <div class="card-footer">
-                  <button class="btn btn-warning btn-block" data-bs-toggle="modal" data-bs-target="#modal_contra">Cambiar password</button>
-                </div>
               </div>
+            </div>
             <!-- /.card -->
-            <div class="card card-light">
-                <div class="card-header border-bottom-0">
-                   <strong>Mis direcciones de envios</strong>
-                   <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-bs-toggle="modal" data-bs-target="#modal_direcciones"  >
-                      <i class="fas fa-plus"></i>
-                    </button>
-                   </div>
-                </div>
-                <div id="direcciones" class="card-body pt-0 mt-3">
+            <div id="card_direcciones" class="card card-light">
+              <div class="card">
+                <div class="card-body">
+                  <div id="loader_5" class="overlay">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                  </div>
                 </div>
               </div>
+            </div>
             <!-- /.card -->
             <div class="card card-light">
                 <div class="card-header border-bottom-0">
@@ -380,15 +327,13 @@
                     </div>
                     <!-- /.post -->
                   </div>
-                  <!-- /.tab-pane -->
                   <div class="tab-pane active" id="timeline">
-                    <!-- The timeline -->
                     <div id="historiales" class="timeline timeline-inverse">
-
+                      <div id="loader_5" class="overlay">
+                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                      </div>
                     </div>
                   </div>
-                  <!-- /.tab-pane -->
-
                   <div class="tab-pane" id="settings">
                     <form class="form-horizontal">
                       <div class="form-group row">
@@ -459,12 +404,10 @@
 $(document).ready(function() {
     var funcion;
     bsCustomFileInput.init();
-    verificar_sesion();
-    obtener_datos();
-    llenar_departamentos();
-    llenar_direcciones();
-    // Metodo llenar el historial de un cliente
-    llenar_historial();
+    Loader();
+    setTimeout(verificar_sesion, 2000);
+    // verificar_sesion();
+
     toastr.options = {
       'debug': false,
       'positionClass': 'toast-bottom-full-width',
@@ -486,6 +429,7 @@ $(document).ready(function() {
         }
       }
     });
+
     $('#provincia').select2({
       placeholder: 'Seleccione una provincia',
       language: {
@@ -510,187 +454,6 @@ $(document).ready(function() {
       }
     });
 
-    // Funcion "llenar_historial()"
-    function llenar_historial(){
-      funcion="llenar_historial";
-      $.post('../Controllers/HistorialController.php', { funcion }, (response)=>{
-        let historiales = JSON.parse(response);
-        let template = '';
-        // console.log(response);
-        // Template de cada historial con sus variables: modulo, hora, tipo_historial, etc.
-        historiales.forEach(historial => {
-          //console.log(historial);
-          template += `
-                <div class="time-label">
-                  <span class="bg-danger">
-                    ${historial[0].fecha}
-                  </span>
-                </div>
-          `;
-          historial.forEach(cambio => { 
-            // console.log(cambio.descripcion);
-            template += `
-                      <div>
-                        ${cambio.m_icono}
-
-                        <div class="timeline-item">
-                          <span class="time"><i class="far fa-clock"></i> ${cambio.hora}</span>
-
-                          <h3 class="timeline-header">${cambio.th_icono} Se realizo la accion "${cambio.tipo_historial}"  en ${cambio.modulo}</h3>
-
-                          <div class="timeline-body">
-                            ${cambio.descripcion}
-                          </div>
-                        </div>
-                      </div>
-                      `;
-          });
-        });
-        template += `
-        <div>
-          <i class="far fa-clock bg-gray"></i>
-        </div>
-        `;
-        $('#historiales').html(template);
-      })
-    }
-
-    function llenar_direcciones(){
-      funcion = 'llenar_direcciones';
-      $.post('../Controllers/UsuarioDistritoController.php', { funcion }, (response)=>{
-        // console.log(response);
-        let direcciones = JSON.parse(response);
-        let contador = 0;
-        let template = '';
-        direcciones.forEach(direccion => {
-          contador++;
-          template+=` 
-            <div class="callout callout-info">
-              <div class="card-header">
-                <strong>direccion ${contador}</strong>
-                <div class="card-tools">
-                  <button dir_id="${direccion.id}" type="button" class="eliminar_direccion btn btn-tool">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <h2 class="lead"><b>${direccion.direccion}</b></h2>
-                <p class="text-muted text-sm"><b>Referencia: ${direccion.referencia}</p>
-                <ul class="ml-4 mb-0 fa-ul text-muted">
-                  <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span>
-                    ${direccion.distrito}, ${direccion.provincia}, ${direccion.departamento}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          `;
-        });
-        $('#direcciones').html(template);
-      })
-    }
-    $(document).on('click', '.eliminar_direccion', (e) => {
-      let elemento = $(this)[0].activeElement;
-      let id = $(elemento).attr('dir_id'); 
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: 'btn btn-success m-3',
-          cancelButton: 'btn btn-danger'
-        },
-        buttonsStyling: false
-      })
-
-      swalWithBootstrapButtons.fire({
-        title: 'Desea borrar esta direccion?',
-        text: "Esta accion puede traer consecuencias!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Si, borra esto!',
-        cancelButtonText: 'No, deseo cancelar!',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          funcion = "eliminar_direccion";
-          $.post('../Controllers/UsuarioDistritoController.php', { funcion, id }, (response) => {
-            console.log(response);
-            if(response == "success") {
-              swalWithBootstrapButtons.fire(
-                'Borrado!',
-                'La direccion fue borrado',
-                'success'
-              )
-              llenar_direcciones();
-              llenar_historial();
-            } else if(response == "error") {
-                swalWithBootstrapButtons.fire(
-                  'No se borro!',
-                  'Hubo alternaciones en la integridad de datos',
-                  'success'
-                )
-            } else {
-                swalWithBootstrapButtons.fire(
-                  'No se ha borrado!',
-                  'Tenemos problemas en el sistema',
-                  'success'
-                )
-            }
-          });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire(
-            'Cancelado',
-            'La direccion no se borro',
-            'error'
-          )
-        }
-      })
-    })
-
-    function llenar_departamentos(){
-      funcion = 'llenar_departamentos';
-      $.post('../Controllers/DepartamentoController.php', { funcion }, (response)=>{
-        let departamentos = JSON.parse(response);
-        let template = '';
-        departamentos.forEach(departamento => {
-          template += `
-            <option value="${departamento.id}">${departamento.nombre}</option>
-          `;
-        });
-        $('#departamento').html(template);
-        $('#departamento').val('').trigger('change');
-      })
-    } 
-
-    $('#departamento').change(function(){
-      let id_departamento = $('#departamento').val();
-      funcion = "llenar_provincia"
-      $.post('../Controllers/ProvinciaController.php', { funcion, id_departamento }, (response)=>{
-        let provincias = JSON.parse(response);
-        let template = '';
-        provincias.forEach(provincia => {
-          template += `
-            <option value="${provincia.id}">${provincia.nombre}</option>
-          `;
-        });
-        $('#provincia').html(template);
-        $('#provincia').val('').trigger('change');
-      })
-    })
-
-    $('#provincia').change(function(){
-      let id_provincia = $('#provincia').val();
-      funcion = "llenar_distritos";
-      $.post('../Controllers/DistritoController.php', { funcion, id_provincia }, (response)=>{
-        let distritos = JSON.parse(response);
-        let template = '';
-        distritos.forEach(distrito => {
-          template += `
-            <option value="${distrito.id}">${distrito.nombre}</option>
-          `;
-        });
-        $('#distrito').html(template);
-      })
-    })
-
     async function read_notificaciones(){
       funcion = "read_notificaciones";
       let data = await fetch('../Controllers/NotificacionController.php', {
@@ -700,31 +463,31 @@ $(document).ready(function() {
       });
       if(data.ok){
         let response = await data.text();
-        // console.log(response);
         try {
           let notificaciones =  JSON.parse(response);
-          console.log(notificaciones);
           let template1 = '';
-          let template2 = '';
+          let template = `
+          <a class="nav-link" data-toggle="dropdown" href="#">`;
           if(notificaciones.length == 0){
-            template1 += ` 
+            template += ` 
                  <i class="far fa-bell"></i>
             `; 
-            template2 += ` 
+            template1 += ` 
                 Notificaciones
             `; 
           } else {
-            template1 += ` 
+            template += ` 
                  <i class="far fa-bell"></i>
                  <span class="badge badge-warning navbar-badge">${notificaciones.length}</span>
             `; 
-            template2 += ` 
+            template1 += ` 
                 Notificaciones <span class="badge badge-warning right">${notificaciones.length}</span>
             `; 
           }
-          $('#numero_notificacion').html(template1);
-          $('#nav_cont_noti').html(template2);
-          let template = '';
+          template += `</a>
+          <div id="notificaciones" class="dropdown-menu dropdown-menu-lg dropdown-menu-right">`;
+
+          $('#nav_cont_noti').html(template1);
           template += `
               <span class="dropdown-item dropdown-header">${notificaciones.length} Notificaciones</span>
           `;
@@ -750,9 +513,9 @@ $(document).ready(function() {
             `;
           });
           template += `
-            <a href="../Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
-          `;
-          $('#notificaciones').html(template);
+              <a href="../Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
+              </div>`;
+          $('#notificacion').html(template);
         } catch(error) {
           console.error(error);
           console.log(response);
@@ -766,7 +529,7 @@ $(document).ready(function() {
         });
       }
     }
-    
+
     async function read_favoritos(){
       funcion = "read_favoritos";
       let data = await fetch('../Controllers/FavoritoController.php', {
@@ -776,31 +539,31 @@ $(document).ready(function() {
       });
       if(data.ok){
         let response = await data.text();
-        // console.log(response);
         try {
           let favoritos =  JSON.parse(response);
-          // console.log(notificaciones);
           let template1 = '';
-          let template2 = '';
-          if(favoritos.length == 0){
-            template1 += ` 
-                 <i class="far fa-heart"></i>
-            `; 
-            template2 += ` 
-                Favoritos
-            `; 
-          } else {
-            template1 += ` 
-                 <i class="far fa-heart"></i>
-                 <span class="badge badge-warning navbar-badge">${favoritos.length}</span>
-            `; 
-            template2 += ` 
-              Favoritos <span class="badge badge-warning right">${favoritos.length}</span>
-            `; 
-          }
-          $('#numero_favorito').html(template1);
-          $('#nav_cont_fav').html(template2);
-          let template = '';
+          let template = `
+          <a class="nav-link" data-toggle="dropdown" href="#">`;
+
+            if(favoritos.length == 0){
+              template += ` 
+                   <i class="far fa-heart"></i>
+              `; 
+              template1 += ` 
+                  Favoritos
+              `; 
+            } else {
+              template += ` 
+                   <i class="far fa-heart"></i>
+                   <span class="badge badge-warning navbar-badge">${favoritos.length}</span>
+              `; 
+              template1 += ` 
+                Favoritos <span class="badge badge-warning right">${favoritos.length}</span>
+              `; 
+            }
+          template += `</a>
+          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">`;
+
           template += `
               <span class="dropdown-item dropdown-header">${favoritos.length} Favoritos</span>
           `;
@@ -825,9 +588,10 @@ $(document).ready(function() {
             `;
           });
           template += `
-            <a href="../Views/favoritos.php" class="dropdown-item dropdown-footer">ver todos tus favoritos</a>
-          `;
-          $('#favoritos').html(template);
+              <a href="../Views/favoritos.php" class="dropdown-item dropdown-footer">ver todos tus favoritos</a>
+            </div>`;
+          $('#nav_cont_fav').html(template1);
+          $('#favorito').html(template);
         } catch(error) {
           console.error(error);
           console.log(response);
@@ -842,37 +606,425 @@ $(document).ready(function() {
       }
     }
 
+    function llenar_menu_superior(usuario) {
+      let template = ``;
+      if(usuario===undefined || usuario == '' || usuario == null){
+        template = `
+        <li class="nav-item"> 
+          <a class="nav-link" href="../Views/register.php" role="button">
+            <i class="fas fa-user-plus"></i> Registrarse
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../Views/login.php" role="button">
+            <i class="far fa-user"></i> Iniciar Sesion
+          </a>
+        </li>
+        `;
+      }
+      else{
+        template = `
+        <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="badge badge-danger navbar-badge">3</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <a href="#" class="dropdown-item">
+                <!-- Message Start -->
+                <div class="media">
+                  <img src="../../dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                  <div class="media-body">
+                    <h3 class="dropdown-item-title">
+                      Brad Diesel
+                      <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                    </h3>
+                    <p class="text-sm">Call me whenever you can...</p>
+                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                  </div>
+                </div>
+                <!-- Message End -->
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <!-- Message Start -->
+                <div class="media">
+                  <img src="../../dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <div class="media-body">
+                    <h3 class="dropdown-item-title">
+                      John Pierce
+                      <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                    </h3>
+                    <p class="text-sm">I got your message bro</p>
+                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                  </div>
+                </div>
+                <!-- Message End -->
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <!-- Message Start -->
+                <div class="media">
+                  <img src="../../dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <div class="media-body">
+                    <h3 class="dropdown-item-title">
+                      Nora Silvester
+                      <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                    </h3>
+                    <p class="text-sm">The subject goes here</p>
+                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                  </div>
+                </div>
+                <!-- Message End -->
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+            </div>
+        </li>
 
-    function verificar_sesion() {
-      funcion = 'verificar_sesion';
-      $.post('../Controllers/UsuarioController.php', { funcion }, (response) => {
-        console.log(response);
-        if(response != ''){
-          // location.href = '../index.php';
-          let sesion = JSON.parse(response);
-          $('#nav_login').hide();
-          $('#nav_register').hide();
-          $('#usuario_nav').text(sesion.user + ' #' + sesion.id);
-          $('#avatar_nav').attr('src', '../Util/Img/Users/' + sesion.avatar);
-          $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
-          $('usuario_menu').text(sesion.user);
-          read_notificaciones();
-          $('#notificacion').show();
-          $('#nav_notificacion').show();
-          read_favoritos();
-          $('#favorito').show();
-          $('#nav_favoritos').show();
-        } else {
-            $('#nav_usuario').hide();
-            $('#notificacion').hide();
-            $('#nav_notificacion').hide();
-            $('#favorito').hide();
-            $('#nav_favoritos').hide();
-            location.href = 'login.php';
-        }
-      }) 
+          <li id="notificacion" class="nav-item dropdown">
+            
+          </li>
+          <li id="favorito" class="nav-item dropdown">
+           
+          </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="../Util/Img/Users/${usuario.avatar}" width="30" height="30" class="img-fluid img-circle">
+                <spa>${usuario.user}</span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li><a class="dropdown-item" href="../Views/mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-basket"></i> Mis pedidos</a></li>
+                <li><a class="dropdown-item" href="../Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesion</a></li>
+              </ul>
+          </li>
+        `;
+      }
+      $('#loader_1').hide(500);
+      $('#menu_superior').html(template);
     }
 
+    function llenar_menu_lateral(usuario){
+      let template = ``;
+      if(usuario===undefined || usuario == '' || usuario == null){
+        
+      }
+      else{
+        template = `
+        <li class="nav-header">Perfil</li>
+          <li id="nav_notificaciones" class="nav-item">
+            <a id="active_nav_notificaciones" href="../Views/notificaciones.php" class="nav-link">
+              <i class="nav-icon far fa-bell"></i>
+              <p id="nav_cont_noti">
+                Notificaciones
+              </p>
+            </a>
+          </li>
+          <li id="nav_favoritos" class="nav-item">
+            <a id="active_fav_favoritos" href="../Views/favoritos.php" class="nav-link">
+              <i class="nav-icon far fa-heart"></i>
+              <p id="nav_cont_fav">
+                Favoritos
+              </p>
+            </a>
+          </li>
+        `;
+      }
+      $('#loader_2').hide(500);
+      $('#menu_lateral').html(template);
+    }
+
+    async function mostrar_card_usuario(){
+      funcion = "obtener_datos";
+      let data = await fetch('../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let usuario = JSON.parse(response);
+          let template = `
+              <div class="widget-user-header bg-info">
+                <h3 class="widget-user-username">${usuario.username}</h3>
+                <h5 class="widget-user-desc">${usuario.tipo_usuario}</h5>
+              </div>
+              <div class="widget-user-image">
+                <img class="img-circle elevation-2" src="../Util/Img/Users/${usuario.avatar}" alt="User Avatar">
+              </div>
+              <div class="card-footer">
+                <div class="row">
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">3,200</h5>
+                      <span class="description-text">SALES</span>
+                    </div>
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">13,000</h5>
+                      <span class="description-text">FOLLOWERS</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="description-block">
+                      <h5 class="description-header">35</h5>
+                      <span class="description-text">PRODUCTS</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              `;
+              let template_1 = `
+                <div class="card-header border-bottom-0">
+                  <strong>Mis Datos personales</strong>
+                  <div class="card-tools">
+                    <!-- Boton de llamada al modal -->
+                    <button type="button" class="editar_datos btn btn-tool" data-bs-toggle="modal" data-bs-target="#modal_datos">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body pt-0 mt-3">
+                  <div class="row">
+                    <div class="col-7">
+                      <h2 class="lead"><b>${usuario.nombres + ' ' + usuario.apellidos}</b></h2>
+                      <ul class="ml-4 mb-0 fa-ul text-muted">
+                        <li class="small"><span class="fa-li"><i class="fas fa-address-card"></i></span>DNI: <span>${usuario.dni}</span></li>
+                        <li class="small"><span class="fa-li"><i class="fas fa-at"></i></span>Email: <span>${usuario.email}</span></li>
+                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span>Telefono: <span>${usuario.telefono}</span></li>
+                      </ul>
+                    </div>
+                    <div class="col-4 text-center">
+                      <img src="../Util/Img/datos.png" alt="user-avatar" class="img-circle img-fluid">
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-warning btn-block" data-bs-toggle="modal" data-bs-target="#modal_contra">Cambiar password</button>
+                </div>`;
+              $('#loader_3').hide(500);
+              $('#loader_4').hide(500);
+              $('#card_usuario').html(template);
+              $('#card_datos_personales').html(template_1);
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    } 
+
+    async function mostrar_card_direcciones(){
+      funcion = "llenar_direcciones";
+      let data = await fetch('../Controllers/UsuarioDistritoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let direcciones = JSON.parse(response);
+          console.log(direcciones);
+          let contador = 0;
+          let template = `
+              <div class="card-header border-bottom-0">
+                  <strong>Mis direcciones de envios</strong>
+                  <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-bs-toggle="modal" data-bs-target="#modal_direcciones"  >
+                    <i class="fas fa-plus"></i>
+                  </button>
+                  </div>
+              </div>
+              <div class="card-body pt-0 mt-3">`;
+                direcciones.forEach(direccion => {
+                  contador++;
+                  template+= ` 
+                    <div class="callout callout-info">
+                      <div class="card-header">
+                        <strong>direccion ${contador}</strong>
+                        <div class="card-tools">
+                          <button dir_id="${direccion.id}" type="button" class="eliminar_direccion btn btn-tool">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <h2 class="lead"><b>${direccion.direccion}</b></h2>
+                        <p class="text-muted text-sm"><b>Referencia: ${direccion.referencia}</p>
+                        <ul class="ml-4 mb-0 fa-ul text-muted">
+                          <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span>
+                            ${direccion.distrito}, ${direccion.provincia}, ${direccion.departamento}
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  `;
+                });
+          template += `
+              </div>
+          `;
+          $('#loader_5').hide(500);
+          $('#card_direcciones').html(template);
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    } 
+
+    async function mostrar_historial(){
+      funcion = "llenar_historial";
+      let data = await fetch('../Controllers/HistorialController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let historiales = JSON.parse(response);
+          let template = '';
+        // Template de cada historial con sus variables: modulo, hora, tipo_historial, etc.
+          historiales.forEach(historial => {
+            //console.log(historial);
+            template += `
+                  <div class="time-label">
+                    <span class="bg-danger">
+                      ${historial[0].fecha}
+                    </span>
+                  </div>
+            `;
+            historial.forEach(cambio => { 
+              // console.log(cambio.descripcion);
+              template += `
+                        <div>
+                          ${cambio.m_icono}
+
+                          <div class="timeline-item">
+                            <span class="time"><i class="far fa-clock"></i> ${cambio.hora}</span>
+
+                            <h3 class="timeline-header">${cambio.th_icono} Se realizo la accion "${cambio.tipo_historial}"  en ${cambio.modulo}</h3>
+
+                            <div class="timeline-body">
+                              ${cambio.descripcion}
+                            </div>
+                          </div>
+                        </div>
+                        `;
+            });
+          });
+          template += `
+          <div>
+            <i class="far fa-clock bg-gray"></i>
+          </div>
+          `;
+          $('#historiales').html(template);
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    } 
+
+    async function llenar_departamentos(){
+      funcion = "llenar_departamentos";
+      let data = await fetch('../Controllers/DepartamentoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let departamentos = JSON.parse(response);
+          let template = '';
+          departamentos.forEach(departamento => {
+            template += `
+              <option value="${departamento.id}">${departamento.nombre}</option>
+            `;
+          });
+          $('#departamento').html(template);
+          $('#departamento').val('').trigger('change');
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    } 
+
+    async function verificar_sesion() {
+      funcion = "verificar_sesion";
+      let data = await fetch('../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          if(response != ''){
+          // location.href = '../index.php';
+            let sesion = JSON.parse(response);
+            llenar_menu_superior(sesion);
+            llenar_menu_lateral(sesion);
+            $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
+            $('usuario_menu').text(sesion.user);
+            read_notificaciones();
+            read_favoritos();
+            mostrar_card_usuario();
+            mostrar_card_direcciones();
+            mostrar_historial();
+            llenar_departamentos();
+            CloseLoader();
+          } else {
+            // llenar_menu_superior();
+            // llenar_menu_lateral();
+            location.href = 'login.php';
+          }
+          // setTimeout(verificar_sesion, 2000);
+
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
+    /*
     function obtener_datos() {
       funcion = 'obtener_datos';
       $.post('../Controllers/UsuarioController.php', { funcion }, (response) => {
@@ -886,94 +1038,320 @@ $(document).ready(function() {
         $('#telefono').text(usuario.telefono);
       }) 
     }
+    */
 
-    $('#form-direccion').submit(e => {
-    funcion = 'crear_direccion';
-    let id_distrito = $('#distrito').val();
-    let direccion = $('#direccion').val();
-    let referencia = $('#referencia').val();
-    $.post('../Controllers/UsuarioDistritoController.php', {id_distrito, direccion, referencia, funcion}, (response) =>{
-      console.log(response);
-      if(response == 'success'){
-        Swal.fire({
-          position:'center',
-          icon: 'success',
-          title: 'Se ha registrado su direccion',
-          showConfirmButton: false,
-          timer: 500,
-        }).then(function(){
-          $('#form-direccion').trigger('reset');
-          $('#departamento').val('').trigger('change');
-          llenar_historial();
-          llenar_direcciones();
-        });
+    $('#departamento').change(async function(){
+      let id_departamento = $('#departamento').val();
+      if(id_departamento == null){
+        id_departamento = '';
+      }
+      funcion = "llenar_provincia";
+      let data = await fetch('../Controllers/ProvinciaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id_departamento=' + id_departamento
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          if(response!='error'){
+            let provincias = JSON.parse(response);
+            let template = '';
+            provincias.forEach(provincia => {
+              template += `
+                <option value="${provincia.id}">${provincia.nombre}</option>
+              `;
+            });
+            $('#provincia').html(template);
+            $('#provincia').val('').trigger('change');
+          } else {
+            $('#provincia').html('');
+            $('#distrito').html('');
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intentes vulnerar el sistema, presione F5',
+            });
+          }
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+        }
       } else {
         Swal.fire({
           icon: 'error',
-          title: 'Error',
-          text: 'Hubo conflicto al crear su direccion, comuniquese con el area de sistemas',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
         });
       }
-    });
+    })
+
+    $('#provincia').change(async function(){
+      let id_provincia = $('#provincia').val();
+      if(id_provincia == null){
+        id_provincia = '';
+      }
+      funcion = "llenar_distritos";
+      let data = await fetch('../Controllers/DistritoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id_provincia=' + id_provincia
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          if(response != 'error'){
+            let distritos = JSON.parse(response);
+            let template = '';
+            distritos.forEach(distrito => {
+              template += `
+                <option value="${distrito.id}">${distrito.nombre}</option>
+              `;
+            });
+            $('#distrito').html(template);
+          } else {
+            $('#distrito').html('');
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intentes vulnerar el sistema, presione F5',
+            });
+          }
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    })
+
+    async function crear_direccion(){
+      let data = await fetch('../Controllers/UsuarioDistritoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id_distrito=' + id_distrito + '&&direccion=' + direccion + '&&referencia=' + referencia
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          if(respuesta.mensaje == 'success'){
+            Swal.fire({
+              position:'center',
+              icon: 'success',
+              title: 'Se ha registrado su direccion',
+              showConfirmButton: false,
+              timer: 500,
+            }).then(function(){
+              $('#form-direccion').trigger('reset');
+              $('#departamento').val('').trigger('change');
+              mostrar_historial();
+              mostrar_card_direcciones();
+            });
+          } else if(respuesta.mensaje == 'error'){
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No intente vulnerar el sistema',
+            });
+          }
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
+    $('#form-direccion').submit(e => {
+      funcion = 'crear_direccion';
+      let id_distrito = $('#distrito').val();
+      let direccion = $('#direccion').val();
+      let referencia = $('#referencia').val();
+      crear_direccion(id_distrito, direccion, referencia);
       e.preventDefault();
     })
 
-    // Javascript Modal Datos
-    $(document).on('click', 'editar_datos', (e) => {
-      funcion = "obtener_datos";
-      $.post('../Controllers/UsuarioController.php', {funcion}, (response) => {
-        let usuario = JSON.parse(response);
-        $('#nombres_mod').val(usuario.nombres);
-        $('#apellidos_mod').val(usuario.apellidos);
-        $('#dni_mod').val(usuario.dni);
-        $('#email_mod').val(usuario.email);
-        $('#telefono_mod').val(usuario.telefono);
+    async function eliminar_direccion(id){
+      funcion = "eliminar_direccion";
+      let respuesta = '';
+      let data = await fetch('../Controllers/UsuarioDistritoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id 
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          respuesta = JSON.parse(response);
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Comuniquese con el area de sistemas',
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+      return respuesta;
+    }
+
+    $(document).on('click', '.eliminar_direccion', (e) => {
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('dir_id'); 
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success m-3',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
       })
+
+      swalWithBootstrapButtons.fire({
+        title: 'Desea borrar esta direccion?',
+        text: "Esta accion puede traer consecuencias!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, borra esto!',
+        cancelButtonText: 'No, deseo cancelar!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          eliminar_direccion(id).then(respuesta => {
+            if(respuesta.mensaje == "success") {
+              swalWithBootstrapButtons.fire(
+                'Borrado!',
+                'La direccion fue borrado',
+                'success'
+              )
+              mostrar_card_direcciones();
+              mostrar_historial();
+            } else if(respuesta.mensaje == "error") {
+                swalWithBootstrapButtons.fire(
+                  'No se borro!',
+                  'Hubo alternaciones en la integridad de datos',
+                  'error'
+                )
+              } 
+          });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'La direccion no se borro',
+            'error'
+          )
+        }
+      })
+    })
+
+    // Javascript Modal Datos
+    $(document).on('click', 'editar_datos', async (e) => {
+      funcion = "obtener_datos";
+      let data = await fetch('../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let usuario = JSON.parse(response);
+          $('#nombres_mod').val(usuario.nombres);
+          $('#apellidos_mod').val(usuario.apellidos);
+          $('#dni_mod').val(usuario.dni);
+          $('#email_mod').val(usuario.email);
+          $('#telefono_mod').val(usuario.telefono);
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Comuniquese con el area de sistemas',
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
     }) 
+
+    async function editar_datos(datos){
+      let data = await fetch('../Controllers/UsuarioController.php', {
+        method:'POST',
+        body: datos
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          if(respuesta.mensaje == 'success'){
+            Swal.fire({ 
+              position:'center',
+              icon: 'success',
+              title: 'Se ha editado sus datos',
+              showConfirmButton: false,
+              timer: 500,
+            }).then(function(){
+              verificar_sesion();
+              mostrar_card_usuario();
+              // Agrega que se editaron datos en el historial
+              mostrar_historial();
+            });
+          } else if(respuesta.mensaje == 'danger') {
+            Swal.fire({
+              icon: 'warning',
+              title: 'No altero ningun cambio',
+              text: 'Modifique algun cambio para realizar la edicion!',
+            });
+          }
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Comuniquese con el area de sistemas',
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
     $.validator.setDefaults({
       submitHandler: function () {
-          funcion="editar_datos";
-          let datos = new FormData($('#form-datos')[0]);
-          datos.append("funcion", funcion);
-          $.ajax({
-            type: "POST",
-            url: '../Controllers/UsuarioController.php',
-            data: datos,
-            cache: false,
-            processData: false,
-            contentType: false,
-            success: function(response){
-              console.log(response);
-              if(response == "success"){
-                Swal.fire({ 
-                  position:'center',
-                  icon: 'success',
-                  title: 'Se ha editado sus datos',
-                  showConfirmButton: false,
-                  timer: 500,
-                }).then(function(){
-                  verificar_sesion();
-                  obtener_datos();
-                  // Agrega que se editaron datos en el historial
-                  llenar_historial();
-                });
-              } else if(response == 'danger') {
-                Swal.fire({
-                  icon: 'warning',
-                  title: 'No altero ningun cambio',
-                  text: 'Modifique algun cambio para realizar la edicion!',
-                });
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: 'Hubo conflicto al editar sus datos, comuniquese con el area de sistemas',
-                });
-              };
-            }
-          })
+        funcion="editar_datos";
+        let datos = new FormData($('#form-datos')[0]);
+        datos.append("funcion", funcion);
+        editar_datos(datos);
       }
     });
+
     jQuery.validator.addMethod("letras",
       function(value, element){
         // Permite espacios en el formulario
@@ -981,6 +1359,7 @@ $(document).ready(function() {
         return /^[A-Za-z]+$/.test(variable);
       }, "*Este campo solo permite letras"
     );
+
     // Validaciones del formulario datos
     $('#form-datos').validate({
       rules: {
@@ -1047,7 +1426,6 @@ $(document).ready(function() {
         $(element).addClass('is-valid')
       }
     });
-
     // Form Contra Validator
     $.validator.setDefaults({
       submitHandler: function () {
@@ -1058,7 +1436,6 @@ $(document).ready(function() {
         let pass_new = $('#pass_new').val();
         $.post('../Controllers/UsuarioController.php', { funcion, pass_old, pass_new }, (response)=> {
           // Si la "response == 'success' significa que salio todo bien y se cambio la contra y se tira el swal que va a mostrar que salio todo bien"
-          console.log(response)  
           if(response == "success"){
               Swal.fire({ 
                   position:'center',
@@ -1068,7 +1445,7 @@ $(document).ready(function() {
                   timer: 500,
                 }).then(function(){ 
                   $('#form-contra').trigger('reset');
-                  llenar_historial();
+                  mostrar_historial();
                 });
             } else if (response = "error") {
               Swal.fire({
@@ -1139,5 +1516,33 @@ $(document).ready(function() {
       $(element).addClass('is-valid')
     }
   });
+
+  // Loader
+  function Loader(mensaje){
+    if(mensaje==''||mensaje==null){
+      mensaje = 'Cargano datos...';
+    }
+    Swal.fire({
+        position: 'center',
+        html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
+        title: mensaje,
+        showConfirmButton: false
+    });
+  }
+  // Close Loader
+  function CloseLoader(mensaje, tipo){
+    if(mensaje==''||mensaje==null){
+      Swal.close();
+    }
+    else {
+      Swal.fire({
+          position: 'center',
+          icon: tipo,
+          title: mensaje,
+          showConfirmButton: false
+      });
+    }
+  }
+
 })
 </script>

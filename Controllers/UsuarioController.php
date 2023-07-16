@@ -89,6 +89,7 @@
         $usuario->obtener_datos($id_usuario);
         // Aviso de que se cambian datos
         $datos_cambiados = 'ha echo los siguientes cambios: ';
+        $mensaje = '';
         // var_dump($usuario);
         if($nombres!=$usuario->objetos[0]->nombres||$apellidos!=$usuario->objetos[0]->apellidos||$dni!=$usuario->objetos[0]->dni||$email!=$usuario->objetos[0]->email||$telefono!=$usuario->objetos[0]->telefono||$avatar!=''){
             // echo $avatar;
@@ -127,10 +128,15 @@
             $usuario->editar_datos($id_usuario,$nombres,$apellidos,$dni,$email,$telefono, $nombre);
             $descripcion = 'Ha editado sus datos pesonales, '.$datos_cambiados;
             $historial->crear_historial($descripcion, 1, 1, $id_usuario);
-            echo 'success';
+            $mensaje = 'success';
         } else {
-            echo 'danger';
+            $mensaje = 'danger';
         }
+        $json = array(
+            'mensaje'=>$mensaje
+        );
+        $jsonstring= json_encode($json);
+        echo $jsonstring;
     } 
 
     // Llamada al UsuarioController para llamar a la funcion "comprobar_pass" que va a estar en el Models de Usuario
@@ -159,25 +165,4 @@
             echo 'error';
         }
     } 
-
-/*
-    include_once '../Models/Usuario.php';
-    $usuario = new Usuario();
-    session_start();
-    if($_POST['funcion'] == 'login'){
-        echo "Llegaste";
-        $user = $_POST['user'];
-        $pass = $_POST['pass'];
-        $usuario->loguearse($user, $pass);
-        var_dump($usuario);
-        if($usuario->objetos!=null){
-            foreach($usuario->objetos as $objeto){
-                $_SESSION['id']=$objeto->id;
-                $_SESSION['user']=$objeto->user;
-                $_SESSION['tipo_usuario']=$objeto->id_tipo;
-                $_SESSION['avatar']=$objeto->avatar;
-            }
-        }
-    }
-    */
 ?>

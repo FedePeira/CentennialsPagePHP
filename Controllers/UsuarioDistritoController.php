@@ -9,17 +9,29 @@
 
     if($_POST['funcion'] == 'crear_direccion'){
         $id_usuario = $_SESSION['id'];
-        $id_distrito = $_POST['id_distrito'];
+        $formateado = str_replace(" ", "+", $_POST['id_distrito']);
+        $id_distrito = openssl_decrypt($formateado, CODE, KEY);
         $direccion = $_POST['direccion'];
         $referencia = $_POST['referencia'];
-        $usuario_distrito->crear_direccion($id_usuario, $id_distrito, $direccion, $referencia);
-        // Descripcion del historial
-        $descripcion = 'Ha creado una nueva direccion: '.$direccion;
-        // Para que se muestre en el historial, en este caso, cuando se CREA una direccion nueva
-        // 2: Referencia al tipo_de_historial, 2 = Crear
-        // 1: Referencia al modulo, 1 = Mi perfil
-        $historial->crear_historial($descripcion, 2, 1, $id_usuario);
-        echo 'success';
+        $mensaje = '';
+        if(is_numeric($id_distrito)) {
+            $usuario_distrito->crear_direccion($id_usuario, $id_distrito, $direccion, $referencia);
+            // Descripcion del historial
+            $descripcion = 'Ha creado una nueva direccion: '.$direccion;
+            // Para que se muestre en el historial, en este caso, cuando se CREA una direccion nueva
+            // 2: Referencia al tipo_de_historial, 2 = Crear
+            // 1: Referencia al modulo, 1 = Mi perfil
+            $historial->crear_historial($descripcion, 2, 1, $id_usuario);
+            $mensaje = 'success';
+        }
+        else {
+            $mensaje = 'error';
+        }
+        $json = array(
+            'mensaje'=>$mensaje
+        );
+        $jsonstring= json_encode($json);
+        echo $jsonstring;
     }   
 
     if($_POST['funcion'] == 'llenar_direcciones'){
@@ -41,7 +53,9 @@
     }   
 
     if($_POST['funcion'] == 'eliminar_direccion'){
-        $id_direccion = openssl_decrypt($_POST['id'], CODE, KEY);
+        $formateado = str_replace(" ", "+", $_POST['id']);
+        $id_direccion = openssl_decrypt($formateado, CODE, KEY);
+        $mensaje = '';
         if(is_numeric($id_direccion)){
             // Para que se muestre en el historial, en este caso, cuando se BORRA una direccion 
             $usuario_distrito->recuperar_direccion($id_direccion);
@@ -50,10 +64,14 @@
             $usuario_distrito->eliminar_direccion($id_direccion);
             $descripcion = 'Ha eliminado la direccion: '.$direccion_borrada;
             $historial->crear_historial($descripcion, 3, 1, $_SESSION['id']);
-            echo 'success';
+            $mensaje = 'success';
         } else {
-            echo 'error';
+            $mensaje = 'error';
         }
-        
+        $json = array(
+            'mensaje'=>$mensaje
+        );
+        $jsonstring= json_encode($json);
+        echo $jsonstring;
     }   
 ?>
