@@ -405,8 +405,8 @@ $(document).ready(function() {
     var funcion;
     bsCustomFileInput.init();
     Loader();
-    setTimeout(verificar_sesion, 2000);
-    // verificar_sesion();
+    // setTimeout(verificar_sesion, 2000);
+    verificar_sesion();
 
     toastr.options = {
       'debug': false,
@@ -1296,6 +1296,7 @@ $(document).ready(function() {
       }
     }) 
 
+
     async function editar_datos(datos){
       let data = await fetch('../Controllers/UsuarioController.php', {
         method:'POST',
@@ -1342,7 +1343,6 @@ $(document).ready(function() {
         });
       }
     }
-
     $.validator.setDefaults({
       submitHandler: function () {
         funcion="editar_datos";
@@ -1351,6 +1351,7 @@ $(document).ready(function() {
         editar_datos(datos);
       }
     });
+
 
     jQuery.validator.addMethod("letras",
       function(value, element){
@@ -1426,17 +1427,20 @@ $(document).ready(function() {
         $(element).addClass('is-valid')
       }
     });
-    // Form Contra Validator
-    $.validator.setDefaults({
-      submitHandler: function () {
-        // Nombre Funcion
-        funcion = "cambiar_contra";
-        // Variables de la old contra y la new contra
-        let pass_old = $('#pass_old').val();
-        let pass_new = $('#pass_new').val();
-        $.post('../Controllers/UsuarioController.php', { funcion, pass_old, pass_new }, (response)=> {
+
+
+    async function cambiar_contra(funcion, pass_old, pass_new){
+      let data = await fetch('../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&pass_old=' + pass_old + '&&pass_new=' + pass_new 
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
           // Si la "response == 'success' significa que salio todo bien y se cambio la contra y se tira el swal que va a mostrar que salio todo bien"
-          if(response == "success"){
+          if(respuesta.mensaje == "success"){
               Swal.fire({ 
                   position:'center',
                   icon: 'success',
@@ -1447,102 +1451,123 @@ $(document).ready(function() {
                   $('#form-contra').trigger('reset');
                   mostrar_historial();
                 });
-            } else if (response = "error") {
+            } else if (respuesta.mensaje = "error") {
               Swal.fire({
                   icon: 'warning',
                   title: 'Password Incorrecta',
                   text: 'Ingrese su contraseña actual para poder cambiarla',
                 });
-            } else {
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: 'Hubo conflicto al cambiar su password, comuniquese con el area de sistemas',
-                });
-            }
-        })
+            } 
+        } catch(error) {
+          console.log(error);
+          console.log(response);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Comuniquese con el area de sistemas',
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
       }
-  });
-  jQuery.validator.addMethod("letras",
-  function(value, element){
-      let variable = value.replace(/ /g, "");
-      return /^[A-Za-z]+$/.test(variable);
-    }, "*Este campo solo permite letras"
-  );
-  $('#form-contra').validate({
-    rules: {
-      pass_old:{
-        required: true,
-        minlength: 4,
-        maxlength: 20,
-      }, 
-      pass_new:{
-        required: true,
-        minlength: 8,
-        maxlength: 20,
-      }, 
-      pass_repeat:{
-        required: true,
-        equalTo: "#pass_new"
-      }
-    },
-    messages: {
-      pass_old: {
-        required: "*Este campo es obligatorio",
-        minlength: "*El password debe ser de minimo 4 caracteres",
-        maxlength: "*El password dede ser de maximo 20 caracteres"
-      },
-      pass_new: {
-        required: "*Este campo es obligatorio",
-        minlength: "*El password debe ser de minimo 8 caracteres",
-        maxlength: "*El password dede ser de maximo 20 caracteres"
-      },
-      pass_repeat: {
-        required: "*Este campo es obligatorio",
-        equalTo: "*El password no coincide con el ingresado"
-      }
-    },
-    errorElement: 'span',
-    errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
-      element.closest('.form-group').append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass('is-invalid');
-      $(element).removeClass('is-valid');
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass('is-invalid');
-      $(element).addClass('is-valid')
     }
-  });
-
-  // Loader
-  function Loader(mensaje){
-    if(mensaje==''||mensaje==null){
-      mensaje = 'Cargano datos...';
-    }
-    Swal.fire({
-        position: 'center',
-        html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
-        title: mensaje,
-        showConfirmButton: false
+    $.validator.setDefaults({
+      submitHandler: function () {
+        // Nombre Funcion
+        funcion = "cambiar_contra";
+        // Variables de la old contra y la new contra
+        let pass_old = $('#pass_old').val();
+        let pass_new = $('#pass_new').val();
+        cambiar_contra(funcion, pass_old, pass_new);
+      }
     });
-  }
-  // Close Loader
-  function CloseLoader(mensaje, tipo){
-    if(mensaje==''||mensaje==null){
-      Swal.close();
-    }
-    else {
+
+
+    jQuery.validator.addMethod("letras",
+    function(value, element){
+        let variable = value.replace(/ /g, "");
+        return /^[A-Za-z]+$/.test(variable);
+      }, "*Este campo solo permite letras"
+    );
+
+    $('#form-contra').validate({
+      rules: {
+        pass_old:{
+          required: true,
+          minlength: 4,
+          maxlength: 20,
+        }, 
+        pass_new:{
+          required: true,
+          minlength: 8,
+          maxlength: 20,
+        }, 
+        pass_repeat:{
+          required: true,
+          equalTo: "#pass_new"
+        }
+      },
+      messages: {
+        pass_old: {
+          required: "*Este campo es obligatorio",
+          minlength: "*El password debe ser de minimo 4 caracteres",
+          maxlength: "*El password dede ser de maximo 20 caracteres"
+        },
+        pass_new: {
+          required: "*Este campo es obligatorio",
+          minlength: "*El password debe ser de minimo 8 caracteres",
+          maxlength: "*El password dede ser de maximo 20 caracteres"
+        },
+        pass_repeat: {
+          required: "*Este campo es obligatorio",
+          equalTo: "*El password no coincide con el ingresado"
+        }
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+        $(element).removeClass('is-valid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+        $(element).addClass('is-valid')
+      }
+    });
+
+    // Loader
+    function Loader(mensaje){
+      if(mensaje==''||mensaje==null){
+        mensaje = 'Cargano datos...';
+      }
       Swal.fire({
           position: 'center',
-          icon: tipo,
+          html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
           title: mensaje,
           showConfirmButton: false
       });
     }
-  }
 
+    // Close Loader
+    function CloseLoader(mensaje, tipo){
+      if(mensaje==''||mensaje==null){
+        Swal.close();
+      }
+      else {
+        Swal.fire({
+            position: 'center',
+            icon: tipo,
+            title: mensaje,
+            showConfirmButton: false
+        });
+      }
+    }
 })
 </script>

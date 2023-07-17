@@ -78,6 +78,7 @@
 
 <!-- jQuery -->
 <script src="../Util/Js/jquery.min.js"></script>
+<script src="../Util/Js/sweetalert2.min.js"></script>
 
 <!--<script src="login.js"></script>-->
 
@@ -93,41 +94,103 @@
   $(document).ready(function() {
     var funcion;
     verificar_sesion();
-    toastr.options = {
-      'debug': false,
-      'positionClass': 'toast-bottom-full-width',
-      'onclick': null,
-      'fadeIn': 300,
-      'fadeOut': 1000,
-      'timeOut': 5000,
-      'extendedTimeOut': 1000,
+    Loader();
+    // setTimeout(verificar_sesion, 2000);
+
+    async function verificar_sesion() {
+      funcion = "verificar_sesion";
+      let data = await fetch('../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          if(response != ''){
+            location.href = '../index.php';
+          } 
+          CloseLoader();
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
     }
 
-    function verificar_sesion() {
-      funcion = 'verificar_sesion';
-      $.post('../Controllers/UsuarioController.php', { funcion }, (response) => {
-        if(response != ''){
-          location.href = '../index.php';
+    async function login(user, pass) {
+      funcion = "login";
+      let data = await fetch('../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&user=' + user + '&&pass=' + pass
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+            let respuesta =  JSON.parse(response);
+             if(respuesta.mensaje == 'logueado'){
+                toastr.success('* Logueado !!!');
+                location.href = '../index.php';
+            } else if(respuesta.mensaje == 'error'){
+                toastr.error('* Usuario o contraseña incorrectas!');
+            }
+          CloseLoader();
+        } catch(error) {
+          console.error(error);
+          console.log(response);
         }
-      }) 
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
     }
 
     $('#form-login').submit(e => {
         funcion = 'login';
         let user = $('#user').val();
         let pass = $('#pass').val();
-        $.post('../Controllers/UsuarioController.php', {user, pass, funcion}, (response) =>{
-            console.log(response);
-             if(response == 'logueado'){
-                toastr.success('* Logueado !!!');
-                location.href = '../index.php';
-            } else {
-                toastr.error('* Usuario o contraseña incorrectas!');
-            }
-        })
-
+        Loader('Iniciando Sesion...');
+        // setTimeout(login(), 2000);
+        login(user, pass);
         e.preventDefault();
     })   
+
+    // Loader
+    function Loader(mensaje){
+      if(mensaje==''||mensaje==null){
+        mensaje = 'Cargano datos...';
+      }
+      Swal.fire({
+          position: 'center',
+          html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
+          title: mensaje,
+          showConfirmButton: false
+      });
+    }
+    // Close Loader
+    function CloseLoader(mensaje, tipo){
+      if(mensaje==''||mensaje==null){
+        Swal.close();
+      }
+      else {
+        Swal.fire({
+            position: 'center',
+            icon: tipo,
+            title: mensaje,
+            showConfirmButton: false
+        });
+      }
+    } 
 })
 </script>
 </body>

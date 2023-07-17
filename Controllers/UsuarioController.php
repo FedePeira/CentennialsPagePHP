@@ -6,10 +6,12 @@
     $usuario = new Usuario();
     $historial = new Historial();
     session_start();
+
     if($_POST['funcion'] == 'login'){
         $user = $_POST['user'];
         $pass = $_POST['pass'];
         $usuario->verificar_usuario($user);
+        $mensaje = '';
         if($usuario->objetos!=null){
             // Desencripto la contraseña asi puedo hacer el if 
             $pass_bd = openssl_decrypt($usuario->objetos[0]->pass, CODE, KEY);
@@ -18,12 +20,20 @@
                 $_SESSION['user']=$usuario->objetos[0]->user;
                 $_SESSION['tipo_usuario']=$usuario->objetos[0]->id_tipo;
                 $_SESSION['avatar']=$usuario->objetos[0]->avatar;
-                echo 'logueado'; // respuesta para el archivo JS
+                $mensaje = 'logueado'; // respuesta para el archivo JS
+            } else {
+                $mensaje = 'error';
             }
         } else {
-            echo 'no_logueado'; // respuesta para el archivo JS
+            $mensaje = 'error'; // respuesta para el archivo JS
         }
+        $json = array(
+            'mensaje'=>$mensaje
+        );
+        $jsonstring= json_encode($json);
+        echo $jsonstring;
     }
+
     if($_POST['funcion'] == 'verificar_sesion'){
         if(!empty($_SESSION['id'])) {
             $json[]=array(
@@ -57,7 +67,11 @@
         $email = $_POST['email'];
         $telefono = $_POST['telefono'];
         $usuario->registrar_usuario($username,$pass,$nombres,$apellidos,$dni,$email,$telefono);
-        echo 'success';
+        $json = array(
+            'mensaje'=>'success'
+        );
+        $jsonstring= json_encode($json);
+        echo $jsonstring;
     } 
 
     if($_POST['funcion'] == 'obtener_datos'){
@@ -146,6 +160,7 @@
         $pass_old = $_POST['pass_old'];
         $pass_new = $_POST['pass_new'];
         $usuario->verificar_usuario($user);
+        $mensaje = '';
         // Si esta vacio significa que no existe el usuario
         if(!empty($usuario->objetos)){
             // Desencriptamos la contraseña y chequeamos que sea la misma que "$pass_old" si es llamamos a "cambiar_contra" y sino tiramos error
@@ -157,12 +172,17 @@
                 $usuario->cambiar_contra($id_usuario, $pass_new_encriptada);
                 $descripcion = 'Ha cambiado su password';
                 $historial->crear_historial($descripcion, 1, 1, $id_usuario);
-                echo 'success';
+                $mensaje = 'success';
             } else {
-                echo 'error';
+                $mensaje = 'error';
             }
         } else {
-            echo 'error';
+            $mensaje = 'error';
         }
+        $json = array(
+            'mensaje'=>$mensaje
+        );
+        $jsonstring= json_encode($json);
+        echo $jsonstring;
     } 
 ?>

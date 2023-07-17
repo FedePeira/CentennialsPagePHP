@@ -387,6 +387,15 @@ $(document).ready(function() {
               </p>
             </a>
           </li>
+          <li class="nav-header">Producto</li>
+          <li id="nav_marcas" class="nav-item">
+            <a id="active_nav_marcas" href="Views/marcas.php" class="nav-link">
+              <i class="nav-icon fas fa-apple-alt"></i>
+              <p id="nav_cont_marcSS">
+                Marcas
+              </p>
+            </a>
+          </li>
         `;
       }
       $('#loader_2').hide(500);

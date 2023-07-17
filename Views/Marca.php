@@ -1,18 +1,18 @@
 <?php
   include_once 'Layouts/general/header.php';
 ?>
-    <title>Notificaciones | CodeWar</title>
+    <title>Marcas | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Notificaciones</h1>
+            <h1>Marcas</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Notificaciones</li>
+              <li class="breadcrumb-item active">Marcas</li>
             </ol>
           </div>
         </div>
@@ -23,10 +23,10 @@
       <!-- Default box -->
       <div class="card">
         <div class="card-body">
-          <table id="noti" class="table table-hover">
+          <table id="marca" class="table table-hover">
             <thead>
               <tr>
-                <th>Notificaciones</th>
+                <th>Marca</th>
               </tr>
             </thead>
             <tbody>
@@ -338,6 +338,15 @@ $(document).ready(function(){
               </p>
             </a>
           </li>
+          <li class="nav-header">Producto</li>
+          <li id="nav_marcas" class="nav-item">
+            <a id="active_nav_marcas" href="../Views/marcas.php" class="nav-link">
+              <i class="nav-icon fas fa-apple-alt"></i>
+              <p id="nav_cont_marcSS">
+                Marcas
+              </p>
+            </a>
+          </li>
         `;
       }
       $('#loader_2').hide(500);
@@ -359,12 +368,12 @@ $(document).ready(function(){
             let sesion = JSON.parse(response);
             llenar_menu_superior(sesion);
             llenar_menu_lateral(sesion);
-            $('#active_nav_notificaciones').addClass('active');
+            $('#active_nav_marcas').addClass('active');
             $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();
-            read_all_notificaciones();
+            read_all_marcas();
             CloseLoader();
           } else {
             location.href = 'login.php';
@@ -382,51 +391,43 @@ $(document).ready(function(){
       }
     }
 
-    async function read_all_notificaciones(){
-      funcion = "read_all_notificaciones";
-      let data = await fetch('../Controllers/NotificacionController.php', {
+    async function read_all_marcas(){
+      funcion = "read_all_marcas";
+      let data = await fetch('../Controllers/MarcaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
       });
       if(data.ok){
         let response = await data.text();
-        // console.log(response);
+        //console.log(response);
         try {
-          let notificaciones =  JSON.parse(response);
-          console.log(notificaciones);
+          let marcas =  JSON.parse(response);
+          // console.log(marcas);
           let template = '';
-          let notification = [];
+          let favorites = [];
           // let ejemplo = [{ celda: 'Hola primera celda' }, { celda: 'Adios' }];
           // ejemplo.push({ celda:'hola adios' });
-          notificaciones.forEach(notificacion => {
+          favoritos.forEach(favorito => {
             template = '';
             template += `
               <div class="row">
                 <div class="col-sm-1 text-center">
-                  <button type="button" class="btn eliminar_noti" attrid="${notificacion.id}">
+                  <button type="button" class="btn eliminar_fav" attrid="${favorito.id}">
                     <i class="far fa-trash-alt text-danger"></i>
                   </button>
                 </div>
                 <div class="col-sm-11">
-                  <a href="../${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
+                  <a href="../${favorito.url}" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                      <img src="../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                      <img src="../Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
                       <div class="media-body">
                         <h3 class="dropdown-item-title">
-                          ${notificacion.titulo}
-                          `;
-                  if(notificacion.estado_abierto == '0') {
-                    template += `<span class="badge badge-success">Cerrado</span>`;
-                  } else {
-                    template += `<span class="badge badge-dager">Abierto</span>`;
-                  }
-                  template += `
+                          ${favorito.titulo}
                         </h3>
-                            <p class="text-sm">${notificacion.asunto}</p>
-                            <p class="text-sm text-muted">${notificacion.contenido}</p>
-                            <span class="float-right text-muted text-sm">${notificacion.fecha_creacion}</span>
+                        <p class="text-sm text-muted">${favorito.precio}</p>
+                        <span class="float-right text-muted text-sm">${favorito.fecha_creacion}</span>
                       </div>
                     </div>
                     <!-- Message End -->
@@ -434,11 +435,11 @@ $(document).ready(function(){
                 </div>
               </div>
             `;
-            notification.push({celda: template});
+            favorites.push({celda: template});
           });
-          console.log(notification);
-          $('#noti').DataTable({
-            data: notification,
+          // console.log(notification);
+          $('#fav').DataTable({
+            data: favorites,
             "aaShorting": [],
             "searching": true,
             "scrollX": true,
@@ -463,52 +464,8 @@ $(document).ready(function(){
       }
     }
 
-    async function eliminar_notificacion(id_notificacion){
-      funcion = "eliminar_notificacion";
-      let data = await fetch('../Controllers/NotificacionController.php', {
-        method:'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id_notificacion=' + id_notificacion
-      });
-      if(data.ok){
-        let response = await data.text();
-        // console.log(response);
-        try {
-          let respuesta =  JSON.parse(response);
-          console.log(respuesta);
-          if(respuesta.mensaje1 == "notificacion eliminada") {
-            toastr.success('El item se elimino de sus notificaciones');
-          }
-          else if(respuesta.mensaje1 == "error al eliminar") {
-            toastr.success('No intente vulnerar el sistema');
-          } else {
-            toastr.success('Comuniquese con el area de sistemas');
-          }
-          read_all_notificaciones();
-          read_notificaciones();
-        } catch(error) {
-          console.error(error);
-          console.log(response);
-        }
-        
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: data.statusText,
-          text: 'Hubo conflicto de codigo: ' + data.status,
-        });
-      }
-    }
-
-    $(document).on('click', '.eliminar_noti', (e)=> {
-      let elemento = $(this)[0].activeElement;
-      let id = $(elemento).attr('attrid');
-      eliminar_notificacion(id);
-      // console.log(id);
-    })
-
-     // Loader
-     function Loader(mensaje){
+    // Loader
+    function Loader(mensaje){
       if(mensaje==''||mensaje==null){
         mensaje = 'Cargano datos...';
       }
