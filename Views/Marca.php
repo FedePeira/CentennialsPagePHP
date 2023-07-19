@@ -17,6 +17,10 @@
                   <label for="nombre">Nombre</label>
                   <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Ingrese nombre">
                 </div>
+                <div class="form-group">
+                  <label for="desc">Descripcion</label>
+                  <input type="text" name="desc" class="form-control" id="desc" placeholder="Ingrese descripcion">
+                </div>
                 <!-- Nueva pass de Persona -->
                 <div class="form-group">
                   <label for="exampleInputFile">Avatar</label>
@@ -49,7 +53,7 @@
             <div class="card card-widget widget-user">
               <div class="widget-user-header bg-info">
                 <h3 id="widget_nombre_marca" class="widget-user-username"></h3>
-                <h5 class="widget-user-desc">Founder &amp; CEO</h5>
+                <h5 id="widget_desc_marca" class="widget-user-desc"></h5>
               </div>
               <div class="widget-user-image">
                 <img id="widget_imagen_marca" class="img-circle elevation-2" src="" alt="imagen marca">
@@ -83,6 +87,10 @@
                 <div class="form-group">
                   <label for="nombre_mod">Nombre</label>
                   <input type="text" name="nombre_mod" class="form-control" id="nombre_mod" placeholder="Ingrese nombre">
+                </div>
+                <div class="form-group">
+                  <label for="desc_mod">Descripcion</label>
+                  <input type="text" name="desc_mod" class="form-control" id="desc_mod" placeholder="Ingrese descripcion">
                 </div>
                 <div class="form-group">
                   <label for="exampleInputFile">Imagen</label>
@@ -131,6 +139,7 @@
             <thead>
               <tr>
                 <th>Marca</th>
+                <th>Descripcion</th>
                 <th>Imagen</th>
                 <th>Fecha de creacion</th>
                 <th>Acciones</th>
@@ -445,17 +454,43 @@ $(document).ready(function(){
                 Favoritos
               </p>
             </a>
-          </li>
-          <li class="nav-header">Producto</li>
-          <li id="nav_marcas" class="nav-item">
-            <a id="active_nav_marcas" href="../Views/marcas.php" class="nav-link">
-              <i class="nav-icon fas fa-apple-alt"></i>
-              <p id="nav_cont_marcSS">
-                Marcas
-              </p>
-            </a>
-          </li>
-        `;
+          </li>`;
+          if(usuario.tipo_usuario == 1){
+            template+= `<li class="nav-header">Producto</li>
+            <li id="nav_marcas" class="nav-item">
+              <a id="active_nav_marcas" href="../Views/marcas.php" class="nav-link">
+                <i class="nav-icon fas fa-apple-alt"></i>
+                <p id="nav_cont_marcSS">
+                  Marcas
+                </p>
+              </a>
+            </li>
+            `;
+          }
+          if(usuario.tipo_usuario == 2){
+            template+= `<li class="nav-header">Producto</li>
+            <li id="nav_marcas" class="nav-item">
+              <a id="active_nav_marcas" href="../Views/marcas.php" class="nav-link">
+                <i class="nav-icon fas fa-apple-alt"></i>
+                <p id="nav_cont_marcSS">
+                  Marcas
+                </p>
+              </a>
+            </li>
+            `;
+          }
+          if(usuario.tipo_usuario == 3){
+            template+= `<li class="nav-header">Producto</li>
+            <li id="nav_marcas" class="nav-item">
+              <a id="active_nav_marcas" href="../Views/marcas.php" class="nav-link">
+                <i class="nav-icon fas fa-apple-alt"></i>
+                <p id="nav_cont_marcSS">
+                  Marcas
+                </p>
+              </a>
+            </li>
+            `;
+          }
       }
       $('#loader_2').hide(500);
       $('#menu_lateral').html(template);
@@ -474,15 +509,19 @@ $(document).ready(function(){
           if(response != ''){
           // location.href = '../index.php';
             let sesion = JSON.parse(response);
-            llenar_menu_superior(sesion);
-            llenar_menu_lateral(sesion);
-            $('#active_nav_marcas').addClass('active');
-            $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
-            $('usuario_menu').text(sesion.user);
-            read_notificaciones();
-            read_favoritos();
-            read_all_marcas();
-            CloseLoader();
+            if(sesion.tipo_usuario!=4) {
+              llenar_menu_superior(sesion);
+              llenar_menu_lateral(sesion);
+              $('#active_nav_marcas').addClass('active');
+              $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
+              $('usuario_menu').text(sesion.user);
+              read_notificaciones();
+              read_favoritos();
+              read_all_marcas();
+              CloseLoader();
+            } else {
+              location.href = '../index.php';
+            }
           } else {
             location.href = 'login.php';
           }
@@ -523,6 +562,7 @@ $(document).ready(function(){
             "processing": true,
             columns: [
               { data: 'nombre' },
+              { data: 'descripcion' },
               { 
                 "render": function(data, type, datos, meta) {
                   return `<img width="100" height="100" src="../Util/Img/marca/${datos.imagen}">`;
@@ -531,7 +571,7 @@ $(document).ready(function(){
               { data: 'fecha_creacion' },
               { 
                 "render": function(data, type, datos, meta) {
-                  return `<button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" class="edit btn btn-info" title="Editar marca" type="button" data-bs-toggle="modal" data-bs-target="#modal_editar_marca"><i class="fas fa-pencil-alt"></i></button>
+                  return `<button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" desc="${datos.descripcion}"  class="edit btn btn-info" title="Editar marca" type="button" data-bs-toggle="modal" data-bs-target="#modal_editar_marca"><i class="fas fa-pencil-alt"></i></button>
                           <button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" class="remove btn btn-danger" title="Eliminar marca"><i class="fas fa-trash-alt"></i></button>`;
                 } 
               },
@@ -610,6 +650,9 @@ $(document).ready(function(){
         nombre:{
           required: true
         }, 
+        desc:{
+          required: true
+        }, 
         imagen:{
           required: true,
           extension: "png|jpg|jpeg"
@@ -617,6 +660,9 @@ $(document).ready(function(){
       },
       messages: {
         nombre: {
+          required: "*Este campo es obligatorio",
+        },
+        desc: {
           required: "*Este campo es obligatorio",
         },
         imagen: {
@@ -660,6 +706,7 @@ $(document).ready(function(){
               timer: 1000
             }).then(function() {
               $('#widget_nombre_marca').text(respuesta.nombre_marca);
+              $('#widget_desc_marca').text(respuesta.desc_marca);
               if(respuesta.img != '') {
                 $('#widget_imagen_marca').attr('src', '../Util/Img/marca/' + respuesta.img);
               }
@@ -700,10 +747,13 @@ $(document).ready(function(){
       let id = $(elemento).attr('id');
       let nombre = $(elemento).attr('nombre');
       let img = $(elemento).attr('img');
+      let descripcion = $(elemento).attr('desc');
       // console.log(nombre, img);
       $('#widget_nombre_marca').text(nombre);
+      $('#widget_desc_marca').text(descripcion);
       $('#widget_imagen_marca').attr('src', '../Util/Img/marca/' + img);
       $('#nombre_mod').val(nombre);
+      $('#desc_mod').val(descripcion);
       $('#id_marca_mod').val(id);
     })
     $.validator.setDefaults({
@@ -720,15 +770,21 @@ $(document).ready(function(){
         nombre_mod:{
           required: true
         }, 
+        desc_mod:{
+          required: true
+        }, 
         imagen_mod:{
           extension: "png|jpg|jpeg"
         }
       },
       messages: {
-        nombre: {
+        nombre_mod: {
           required: "*Este campo es obligatorio",
         },
-        imagen: {
+        desc_mod: {
+          required: "*Este campo es obligatorio",
+        },
+        imagen_mod: {
           extension: "*Debe elegir el formato png, jpg, jpeg",
         },
       },
