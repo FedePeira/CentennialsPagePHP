@@ -1360,7 +1360,6 @@ $(document).ready(function() {
         return /^[A-Za-z]+$/.test(variable);
       }, "*Este campo solo permite letras"
     );
-
     // Validaciones del formulario datos
     $('#form-datos').validate({
       rules: {

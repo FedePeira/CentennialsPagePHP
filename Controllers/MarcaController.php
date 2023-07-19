@@ -22,4 +22,88 @@
         $jsonstring= json_encode($json);
         echo $jsonstring;
     } 
+
+    if($_POST['funcion'] == 'crear_marca'){
+        $id_usuario = $_SESSION['id'];
+        $nombre = $_POST['nombre'];
+        $img = $_FILES['imagen']['name'];
+        $nombre_imagen = uniqid().'-'.$img;
+        $ruta = '../Util/Img/marca/'. $nombre_imagen;
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta);
+        $marca->crear($nombre, $nombre_imagen);
+        $descripcion='Ha creado una marca, '.$nombre;
+        $historial->crear_historial($descripcion, 2, 7, $id_usuario);
+        $mensaje = 'success';
+        $json = array(
+            'mensaje'=>$mensaje
+        );
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
+    } 
+
+    if($_POST['funcion'] == 'editar_marca'){
+        $id_usuario = $_SESSION['id'];
+        $nombre = $_POST['nombre_mod'];
+        $img = $_FILES['imagen_mod']['name'];
+        $formateado = str_replace(" ", "+",  $_POST['id_marca_mod']);
+        $id_marca = openssl_decrypt($formateado, CODE, KEY);
+        $mensaje = '';
+        $nombre_imagen = '';
+        $datos_cambiados = 'ha hecho los siguiente cambios: ';
+        if(is_numeric($id_marca)) {
+            $marca->obtener_marca($id_marca);
+            if($nombre!=$marca->objetos[0]->nombre || $img!='') {
+                // $mensaje = 'cambio';
+                if($nombre!=$marca->objetos[0]->nombre) {
+                    $datos_cambiados.='Una marca cambio su nombre de '.$marca->objetos[0]->nombre.' a '.$nombre.', ';
+                }
+                if($img!='') {
+                    $datos_cambiados.='Su imagen fue cambiada.';
+                    $nombre_imagen = uniqid().' - '.$img;
+                    $ruta = '../Util/Img/marca/'.$nombre_imagen;
+                    move_uploaded_file($_FILES['imagen_mod']['tmp_name'], $ruta);
+                    $avatar_actual=$marca->objetos[0]->imagen;
+                    if($avatar_actual!='marca_default.png') {
+                        unlink('../Util/Img/marca/'.$avatar_actual);
+                    }   
+                }
+                $marca->editar($id_marca, $nombre, $nombre_imagen);
+                $descripcion='Ha editado una marca, '.$datos_cambiados;
+                $historial->crear_historial($descripcion, 1, 7, $id_usuario);
+                $mensaje = 'success';
+            } else {
+                $mensaje = 'danger';
+            }
+            $json = array(
+                'mensaje'=>$mensaje,
+                'nombre_marca'=>$nombre,
+                'img'=>$nombre_imagen
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    } 
+
+    if($_POST['funcion'] == 'eliminar_marca'){
+        $id_usuario = $_SESSION['id'];
+        $nombre = $_POST['nombre'];
+        $formateado = str_replace(" ", "+",$_POST['id']);
+        $id_marca = openssl_decrypt($formateado, CODE, KEY);
+        if(is_numeric($id_marca)){
+            $marca->eliminar_marca($id_marca);
+            $descripcion='Ha eliminado una marca, '.$nombre;
+            $historial->crear_historial($descripcion, 3, 7, $id_usuario);
+            $mensaje = 'success';
+            $json = array(
+                'mensaje'=>$mensaje
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    } 
+
 ?>

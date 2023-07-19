@@ -1,13 +1,117 @@
 <?php
   include_once 'Layouts/general/header.php';
 ?>
+    <!-- Modal Crear Marca -->
+    <div class="modal fade" id="modal_crear_marca" role="dialog" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Crear marca</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-marca" enctype="multipart/form-data">
+              <div class="form-group">
+                <!-- Actual pass de Persona -->
+                <div class="form-group">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Ingrese nombre">
+                </div>
+                <!-- Nueva pass de Persona -->
+                <div class="form-group">
+                  <label for="exampleInputFile">Avatar</label>
+                  <div class="input-group">
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" id="imagen" name="imagen">
+                      <label class="custom-file-label" for="exampleInputFile">Seleccione una imagen</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Editar Marca -->
+    <div class="modal fade" id="modal_editar_marca" role="dialog" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar marca</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="card card-widget widget-user">
+              <div class="widget-user-header bg-info">
+                <h3 id="widget_nombre_marca" class="widget-user-username"></h3>
+                <h5 class="widget-user-desc">Founder &amp; CEO</h5>
+              </div>
+              <div class="widget-user-image">
+                <img id="widget_imagen_marca" class="img-circle elevation-2" src="" alt="imagen marca">
+              </div>
+              <div class="card-footer">
+                <div class="row">
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">3,200</h5>
+                      <span class="description-text">SALES</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">13,000</h5>
+                      <span class="description-text">FOLLOWERS</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="description-block">
+                      <h5 class="description-header">35</h5>
+                      <span class="description-text">PRODUCTS</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <form id="form-marca_mod" enctype="multipart/form-data">
+              <input type="hidden" id="id_marca_mod" name="id_marca_mod">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="nombre_mod">Nombre</label>
+                  <input type="text" name="nombre_mod" class="form-control" id="nombre_mod" placeholder="Ingrese nombre">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputFile">Imagen</label>
+                  <div class="input-group">
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" id="imagen_mod" name="imagen_mod">
+                      <label class="custom-file-label" for="exampleInputFile">Seleccione una imagen</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marcas -->
     <title>Marcas | CodeWar</title>
-    <!-- Content Header (Page header) -->
+
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Marcas</h1>
+            <h1>Marcas <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal_crear_marca">Crear marca</button></h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -18,8 +122,8 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
-    <section class="content">
 
+    <section class="content">
       <!-- Default box -->
       <div class="card">
         <div class="card-body">
@@ -27,6 +131,9 @@
             <thead>
               <tr>
                 <th>Marca</th>
+                <th>Imagen</th>
+                <th>Fecha de creacion</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -50,6 +157,7 @@
 ?>
 <script>
 $(document).ready(function(){
+    bsCustomFileInput.init();
     verificar_sesion();
     Loader();
     // setTimeout(verificar_sesion, 2000);
@@ -391,6 +499,7 @@ $(document).ready(function(){
       }
     }
 
+    // Mostrar Marcas
     async function read_all_marcas(){
       funcion = "read_all_marcas";
       let data = await fetch('../Controllers/MarcaController.php', {
@@ -404,52 +513,33 @@ $(document).ready(function(){
         try {
           let marcas =  JSON.parse(response);
           // console.log(marcas);
-          let template = '';
-          let favorites = [];
-          // let ejemplo = [{ celda: 'Hola primera celda' }, { celda: 'Adios' }];
-          // ejemplo.push({ celda:'hola adios' });
-          favoritos.forEach(favorito => {
-            template = '';
-            template += `
-              <div class="row">
-                <div class="col-sm-1 text-center">
-                  <button type="button" class="btn eliminar_fav" attrid="${favorito.id}">
-                    <i class="far fa-trash-alt text-danger"></i>
-                  </button>
-                </div>
-                <div class="col-sm-11">
-                  <a href="../${favorito.url}" class="dropdown-item">
-                    <!-- Message Start -->
-                    <div class="media">
-                      <img src="../Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                      <div class="media-body">
-                        <h3 class="dropdown-item-title">
-                          ${favorito.titulo}
-                        </h3>
-                        <p class="text-sm text-muted">${favorito.precio}</p>
-                        <span class="float-right text-muted text-sm">${favorito.fecha_creacion}</span>
-                      </div>
-                    </div>
-                    <!-- Message End -->
-                  </a>
-                </div>
-              </div>
-            `;
-            favorites.push({celda: template});
-          });
-          // console.log(notification);
-          $('#fav').DataTable({
-            data: favorites,
+          $('#marca').DataTable({
+            data: marcas,
             "aaShorting": [],
             "searching": true,
             "scrollX": true,
             "autoWidth": false,
+            "responsive": true,
+            "processing": true,
             columns: [
-              { data: 'celda' }
+              { data: 'nombre' },
+              { 
+                "render": function(data, type, datos, meta) {
+                  return `<img width="100" height="100" src="../Util/Img/marca/${datos.imagen}">`;
+                } 
+              },
+              { data: 'fecha_creacion' },
+              { 
+                "render": function(data, type, datos, meta) {
+                  return `<button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" class="edit btn btn-info" title="Editar marca" type="button" data-bs-toggle="modal" data-bs-target="#modal_editar_marca"><i class="fas fa-pencil-alt"></i></button>
+                          <button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" class="remove btn btn-danger" title="Eliminar marca"><i class="fas fa-trash-alt"></i></button>`;
+                } 
+              },
             ],
             "destroy": true, 
             "language": espanol
           })
+
         } catch(error) {
           console.error(error);
           console.log(response);
@@ -463,6 +553,289 @@ $(document).ready(function(){
         });
       }
     }
+
+    // Crear Marca
+    async function crear_marca(datos){
+      let data = await fetch('../Controllers/MarcaController.php', {
+        method:'POST',
+        body: datos
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          // console.log(respuesta);
+          if(respuesta.mensaje == 'success') {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Se ha creado la marca',
+              showConfirmButton: false,
+              timer: 500
+            }).then(function() {
+              read_all_marcas();
+              $('#form-marca').trigger('reset');
+            });
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'No se puede crear la marca, comuniquese con el administrador del sistema',
+          });
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $.validator.setDefaults({
+      submitHandler: function () {
+        let funcion = "crear_marca";
+        let datos = new FormData($('#form-marca')[0]);
+        datos.append("funcion", funcion);
+        crear_marca(datos);
+      }
+    });
+    // Validaciones del formulario datos
+    $('#form-marca').validate({
+      rules: {
+        nombre:{
+          required: true
+        }, 
+        imagen:{
+          required: true,
+          extension: "png|jpg|jpeg"
+        }
+      },
+      messages: {
+        nombre: {
+          required: "*Este campo es obligatorio",
+        },
+        imagen: {
+          required: "*Este campo es obligatorio",
+          extension: "*Debe elegir el formato png, jpg, jpeg"
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+        $(element).removeClass('is-valid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+        $(element).addClass('is-valid')
+      }
+    });
+
+    //Editar Marca
+    async function editar_marca(datos){
+      let data = await fetch('../Controllers/MarcaController.php', {
+        method:'POST',
+        body: datos
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          // console.log(respuesta);
+          if(respuesta.mensaje == 'success') {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Se ha editado la marca',
+              showConfirmButton: false,
+              timer: 1000
+            }).then(function() {
+              $('#widget_nombre_marca').text(respuesta.nombre_marca);
+              if(respuesta.img != '') {
+                $('#widget_imagen_marca').attr('src', '../Util/Img/marca/' + respuesta.img);
+              }
+              read_all_marcas();
+              $('#form-marca_mod').trigger('reset');
+              $('#modal_editar_marca').modal('hide');
+            });
+          } else if(respuesta.mensaje == 'danger'){
+            Swal.fire({
+              icon: 'warning',
+              title: 'No altero ningun cambio!',
+              text: 'Modifique algun cambio para realizar la edicion',
+            });
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error') {
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intente vulnerar el sistema, presiene F5',
+            });
+          }
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.edit', (e)=> {
+      $('#form-marca_mod').trigger('reset');
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      let nombre = $(elemento).attr('nombre');
+      let img = $(elemento).attr('img');
+      // console.log(nombre, img);
+      $('#widget_nombre_marca').text(nombre);
+      $('#widget_imagen_marca').attr('src', '../Util/Img/marca/' + img);
+      $('#nombre_mod').val(nombre);
+      $('#id_marca_mod').val(id);
+    })
+    $.validator.setDefaults({
+      submitHandler: function () {
+        let funcion = "editar_marca";
+        let datos = new FormData($('#form-marca_mod')[0]);
+        //console.log(datos);
+        datos.append('funcion', funcion); 
+        editar_marca(datos);
+      }
+    });
+    $('#form-marca_mod').validate({
+      rules: {
+        nombre_mod:{
+          required: true
+        }, 
+        imagen_mod:{
+          extension: "png|jpg|jpeg"
+        }
+      },
+      messages: {
+        nombre: {
+          required: "*Este campo es obligatorio",
+        },
+        imagen: {
+          extension: "*Debe elegir el formato png, jpg, jpeg",
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+        $(element).removeClass('is-valid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+        $(element).addClass('is-valid')
+      }
+    });
+
+    // Eliminar Marca
+    async function eliminar_marca(id, nombre){
+      let funcion = "eliminar_marca";
+      let respuesta = '';
+      let data = await fetch('../Controllers/MarcaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          respuesta =  JSON.parse(response);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error'){
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intente vulnerar el sistema, presiene F5',
+            });
+          }
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+
+      return respuesta;
+    }
+    $(document).on('click', '.remove', (e)=> {
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      let nombre = $(elemento).attr('nombre');
+      let img = $(elemento).attr('img');
+      // console.log(nombre, img);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger mr-2'
+        },
+        buttonsStyling: false
+      })
+
+      swalWithBootstrapButtons.fire({
+        title: 'Desea eliminar la marca' + nombre + '?',
+        text: "No podras revertir esto!",
+        imageUrl: '../Util/Img/marca/' + img,
+        imageWidth: 100,
+        imageHeight: 100,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-check"></i>',
+        cancelButtonText: '<i class="fas fa-times"></i>',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          eliminar_marca(id, nombre).then(respuesta=> {
+            if(respuesta.mensaje == 'success'){
+              swalWithBootstrapButtons.fire(
+                'Borrado!',
+                'La marca' + nombre + ' fue borrada',
+                'success'
+              )
+              read_all_marcas();
+            }
+          });
+          swalWithBootstrapButtons.fire(
+            'Borrado!',
+            'La marca' + nombre + ' fue borrada',
+            'success'
+          )
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'No se borro la marca',
+            'error'
+          )
+        }
+      })
+    });
 
     // Loader
     function Loader(mensaje){
