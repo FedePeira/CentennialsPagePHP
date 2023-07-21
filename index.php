@@ -390,7 +390,7 @@ $(document).ready(function() {
           if(usuario.tipo_usuario == 1){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="Views/marcas.php" class="nav-link">
+              <a id="active_nav_marcas" href="Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -402,7 +402,7 @@ $(document).ready(function() {
           if(usuario.tipo_usuario == 2){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="Views/marcas.php" class="nav-link">
+              <a id="active_nav_marcas" href="Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -414,7 +414,7 @@ $(document).ready(function() {
           if(usuario.tipo_usuario == 3){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="Views/marcas.php" class="nav-link">
+              <a id="active_nav_marcas" href="Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas

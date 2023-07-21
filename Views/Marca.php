@@ -50,6 +50,45 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <div class="card card-widget widget-user">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-info">
+                <h3 id="widget_nombre_marca" class="widget-user-username"></h3>
+                <h5 id="widget_nombre_marca" class="widget-user-desc"></h5>
+              </div>
+              <div class="widget-user-image">
+                <img id="widget_imagen_marca" class="img-circle elevation-2" src="../dist/img/user1-128x128.jpg" alt="imagen marca">
+              </div>
+              <div class="card-footer">
+                <div class="row">
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">3,200</h5>
+                      <span class="description-text">SALES</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">13,000</h5>
+                      <span class="description-text">FOLLOWERS</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4">
+                    <div class="description-block">
+                      <h5 class="description-header">35</h5>
+                      <span class="description-text">PRODUCTS</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+            </div>
             <form id="form-marca_mod" enctype="multipart/form-data">
               <input type="hidden" id="id_marca_mod" name="id_marca_mod">
               <div class="form-group">
@@ -123,6 +162,84 @@
         </div>
       </div>
     </div>
+    <!-- Modal Editar Solicitud -->
+    <div class="modal fade" id="modal_editar_sol" role="dialog" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar solicitud marca</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="card card-widget widget-user">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-info">
+                <h3 id="widget_nombre_sol" class="widget-user-username"></h3>
+                <h5 id="widget_nombre_sol" class="widget-user-desc"></h5>
+              </div>
+              <div class="widget-user-image">
+                <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/user1-128x128.jpg" alt="imagen marca">
+              </div>
+              <div class="card-footer">
+                <div class="row">
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">3,200</h5>
+                      <span class="description-text">SALES</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">13,000</h5>
+                      <span class="description-text">FOLLOWERS</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4">
+                    <div class="description-block">
+                      <h5 class="description-header">35</h5>
+                      <span class="description-text">PRODUCTS</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+            </div>
+            <form id="form-marca_mod_sol" enctype="multipart/form-data">
+              <input type="hidden" id="id_marca_mod_sol" name="id_marca_mod_sol">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="nombre_mod_sol">Nombre</label>
+                  <input type="text" name="nombre_mod_sol" class="form-control" id="nombre_mod_sol" placeholder="Ingrese nombre">
+                </div>
+                <div class="form-group">
+                  <label for="desc_mod_sol">Descripcion</label>
+                  <input type="text" name="desc_mod_sol" class="form-control" id="desc_mod_sol" placeholder="Ingrese descripcion">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputFile">Imagen</label>
+                  <div class="input-group">
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" id="imagen_mod_sol" name="imagen_mod_sol">
+                      <label class="custom-file-label" for="exampleInputFile">Seleccione una imagen</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Marcas -->
     <title>Marcas | CodeWar</title>
@@ -132,8 +249,7 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 id="btn_adm">Marcas <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal_crear_marca">Crear marca</button></h1>
-            <h1 id="btn_ven">Marcas <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal_crear_solicitud">Crear solicitud</button></h1>
-            <h1>Marcas <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal_crear_marca">Crear marca</button></h1>
+            <h1 id="btn_ven">Solicitudes <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal_crear_solicitud">Crear solicitud</button></h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -158,22 +274,36 @@
         <div class="card-body">
           <div class="tab-content">
             <div class="tab-pane active" id="tab_marcas">    
-            <table id="marca" class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Marca</th>
-                  <th>Descripcion</th>
-                  <th>Imagen</th>
-                  <th>Fecha de creacion</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>   
-              </tbody>
-            </table>
+              <table id="marca" class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Marca</th>
+                    <th>Descripcion</th>
+                    <th>Imagen</th>
+                    <th>Fecha de creacion</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>   
+                </tbody>
+              </table>
             </div>
             <div class="tab-pane" id="tab_sol">
-                   
+              <table id="mis_solicitudes_marcas" class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Marca</th>
+                    <th>Descripcion</th>
+                    <th>Imagen</th>
+                    <th>Estado de envio</th>
+                    <th>Estado aprobado</th>
+                    <th>Fecha de creacion</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>   
+                </tbody>
+              </table>
             </div>
 
             <div class="tab-pane" id="tab_por_aprobar">
@@ -549,6 +679,7 @@ $(document).ready(function(){
                 CloseLoader();
                 $('#btn_adm').show();
               } else if(sesion.tipo_usuario==3) {
+                read_tus_solicitudes();
                 CloseLoader();
                 $('#btn_ven').show();
               }
@@ -633,6 +764,102 @@ $(document).ready(function(){
       }
     }
 
+    // Mostrar Solicitudes
+    async function read_tus_solicitudes(){
+      funcion = "read_tus_solicitudes";
+      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          let solicitudes =  JSON.parse(response);
+          // console.log(solicitudes);
+          $('#mis_solicitudes_marcas').DataTable({
+            data: solicitudes,
+            "aaShorting": [],
+            "searching": true,
+            "scrollX": false,
+            "autoWidth": false,
+            "responsive": true,
+            "processing": true,
+            columns: [
+              { data: 'nombre' },
+              { data: 'descripcion' },
+              { 
+                "render": function(data, type, datos, meta) {
+                  return `<img width="100" height="100" src="../Util/Img/marca/${datos.imagen}">`;
+                } 
+              },  
+              { 
+                "render": function(data, type, datos, meta) {
+                  if(datos.estado_envio=='0'){
+                    return `<button class="btn btn-primary">Enviar</button>`;
+                  } 
+                  else if(datos.estado_envio=='1') {
+                    return `<span class="badge bg-primary">Enviado</span>`;
+                  } 
+                  else if(datos.estado_envio=='2') {
+                    return `<span class="badge bg-success">Aceptado</span>`;
+                  } 
+                  else if(datos.estado_envio=='3') {
+                    return `<span class="badge bg-danger">Rechazado</span>`;
+                  }
+                } 
+              },
+              { 
+                "render": function(data, type, datos, meta) {
+                  if(datos.estado_aprobado=='' || datos.estado_aprobado==null){
+                    return `<span class="badge bg-info">En espera</span>`;
+                  } 
+                  else if(datos.estado_envio=='1') {
+                    return `<span>${datos.estado_aprobado}</span>`;
+                  } 
+                } 
+               },
+              { data: 'fecha_creacion' },
+              { 
+                "render": function(data, type, datos, meta) {
+                  if(datos.estado_envio=='0'){
+                    return `<button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" desc="${datos.descripcion}"  class="edit_solicitud btn btn-info" title="Editar solicitud" type="button" data-bs-toggle="modal" data-bs-target="#modal_editar_sol"><i class="fas fa-pencil-alt"></i></button>
+                            <button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" class="remove_solicitud btn btn-danger" title="Eliminar solicitud"><i class="fas fa-trash-alt"></i></button>`;
+                  } 
+                  else if(datos.estado_envio=='1') {
+                    return `<button class="alerta_solicitud_enviada btn btn-info" title="Editar solicitud" type="button"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="alerta_solicitud_enviada btn btn-danger" title="Eliminar solicitud"><i class="fas fa-trash-alt"></i></button>`;
+                  } 
+                  else if(datos.estado_envio=='2') {
+                    return `<button class="alerta_solicitud_aprobada btn btn-info" title="Editar solicitud" type="button"><i class="fas fa-pencil-alt"></i></button>
+                            <button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" class="remove_solicitud btn btn-danger" title="Eliminar solicitud"><i class="fas fa-trash-alt"></i></button>`;
+                  } 
+                  else if(datos.estado_envio=='3') {
+                    return `<button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" desc="${datos.descripcion}"  class="edit_solicitud btn btn-info" title="Editar solicitud" type="button" data-bs-toggle="modal" data-bs-target="#modal_editar_sol"><i class="fas fa-pencil-alt"></i></button>
+                            <button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" class="remove_solicitud btn btn-danger" title="Eliminar solicitud"><i class="fas fa-trash-alt"></i></button>`;
+                  }
+                } 
+              },
+            ],
+            "destroy": true, 
+            "language": espanol
+          })
+
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
     // Crear Marca
     async function crear_marca(datos){
       let data = await fetch('../Controllers/MarcaController.php', {
@@ -663,7 +890,7 @@ $(document).ready(function(){
           Swal.fire({
             icon: 'error',
             title: 'Error!',
-            text: 'No se puede crear la marca, comuniquese con el administrador del sistema',
+            text: 'La marca ya existe',
           });
         }
         
@@ -936,16 +1163,71 @@ $(document).ready(function(){
     $(document).on('click', '.alerta_usuario', (e)=> {
       toastr.error('No tienes permiso para realizar esta accion', 'Error!');
     });
+    $(document).on('click', '.alerta_solicitud_enviada', (e)=> {
+      toastr.warning('La solicitud ya fue enviada, no se puede editar ni eliminar','Cuidado!');
+    })
+    $(document).on('click', '.alerta_solicitud_aprobada', (e)=> {
+      toastr.warning('La solicitud ya fue aprobada, no se puede editar la solicitud','Cuidado!');
+    })
+
+    /*Creacion de solicitudes marca*/ 
+    async function crear_solicitud_marca(datos){
+      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+        method:'POST',
+        body: datos
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          // console.log(respuesta);
+          if(respuesta.mensaje == 'success') {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Se ha creado la solicitud marca',
+              showConfirmButton: false,
+              timer: 500
+            }).then(function() {
+              read_tus_solicitudes();
+              $('#form-marca_sol').trigger('reset');
+            });
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == "error_marca"){
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'La marca ya existe',
+            });
+          } else if(response == "error_marca"){
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'Ya existe una solicitud para esta marca',
+            });
+          }
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
     $.validator.setDefaults({
       submitHandler: function () {
-        alert('validado');
-        /*
-        let funcion = "editar_marca";
-        let datos = new FormData($('#form-marca_mod')[0]);
+        // alert('validado');
+        let funcion = "crear_solicitud_marca";
+        let datos = new FormData($('#form-marca_sol')[0]);
         //console.log(datos);
         datos.append('funcion', funcion); 
-        editar_marca(datos);
-        */
+        crear_solicitud_marca(datos);
       }
     });
     $('#form-marca_sol').validate({
@@ -987,6 +1269,126 @@ $(document).ready(function(){
         $(element).addClass('is-valid')
       }
     });
+    /*Editar solicitudes Marca*/ 
+    async function editar_solicitud(datos){
+      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+        method:'POST',
+        body: datos
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          // console.log(respuesta);
+          
+          if(respuesta.mensaje == 'success') {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Se ha editado la solicitud marca',
+              showConfirmButton: false,
+              timer: 1000
+            }).then(function() {
+              $('#widget_nombre_sol').text(respuesta.nombre_sol);
+              $('#widget_desc_sol').text(respuesta.desc_sol);
+              if(respuesta.img_sol != '') {
+                $('#widget_imagen_sol').attr('src', '../Util/Img/marca/' + respuesta.img_sol);
+              }
+              read_tus_solicitudes();
+              $('#form-marca_mod_sol').trigger('reset');
+              $('#modal_editar_sol').modal('hide');
+            });
+          } else if(respuesta.mensaje == 'danger'){
+            Swal.fire({
+              icon: 'warning',
+              title: 'No altero ningun cambio!',
+              text: 'Modifique algun cambio para realizar la edicion',
+            });
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error') {
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intente vulnerar el sistema, presiene F5',
+            });
+          }
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.edit_solicitud', (e)=> {
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      let nombre = $(elemento).attr('nombre');
+      let img = $(elemento).attr('img');
+      let descripcion = $(elemento).attr('desc');
+      // console.log(nombre, img);
+      $('#widget_nombre_sol').text(nombre);
+      $('#widget_desc_sol').text(descripcion);
+      $('#widget_imagen_sol').attr('src', '../Util/Img/marca/' + img);
+      $('#nombre_mod_sol').val(nombre);
+      $('#desc_mod_sol').val(descripcion);
+      $('#id_marca_mod_sol').val(id);
+    })
+    $.validator.setDefaults({
+      submitHandler: function () {
+        let funcion = "editar_solicitud";
+        let datos = new FormData($('#form-marca_mod_sol')[0]);
+        //console.log(datos);
+        datos.append('funcion', funcion); 
+        editar_solicitud(datos);
+      }
+    });
+    $('#form-marca_mod_sol').validate({
+      rules: {
+        nombre_mod_sol:{
+          required: true
+        }, 
+        desc_mod_sol:{
+          required: true
+        }, 
+        imagen_mod_sol:{
+          extension: "png|jpg|jpeg"
+        }
+      },
+      messages: {
+        nombre_mod_sol: {
+          required: "*Este campo es obligatorio",
+        },
+        desc_mod_sol: {
+          required: "*Este campo es obligatorio",
+        },
+        imagen_mod_sol: {
+          extension: "*Debe elegir el formato png, jpg, jpeg",
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+        $(element).removeClass('is-valid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+        $(element).addClass('is-valid')
+      }
+    });
+    $(document).on('click', '.remove_solicitud', (e)=> {
+      alert('eliminar solicitud');
+    })
 
     // Loader
     function Loader(mensaje){
