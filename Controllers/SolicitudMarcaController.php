@@ -3,10 +3,12 @@
     include_once '../Models/Marca.php';
     include_once '../Models/SolicitudMarca.php';
     include_once '../Models/Historial.php';
+    include_once '../Models/Usuario.php';
 
     $marca = new Marca();
     $solicitud_marca = new SolicitudMarca();
     $historial = new Historial();
+    $usuario = new Usuario();
     session_start();
 
     
@@ -45,6 +47,12 @@
         $solicitud_marca->read_tus_solicitudes($id_usuario);
         $json=array();
         foreach($solicitud_marca->objetos as $objeto){
+            if(!empty($objeto->aprobado_por)) { 
+                $usuario->obtener_datos($objeto->aprobado_por);
+                $aprobado_por=$usuario->objetos[0]->nombres.' '.$usuario->objetos[0]->apellidos;
+            } else {
+                $aprobado_por = '';
+            }
             $json[]=array(
                 'id'=>openssl_encrypt($objeto->id, CODE, KEY),
                 'nombre'=>$objeto->nombre,
@@ -54,12 +62,32 @@
                 'estado'=>$objeto->estado,
                 'estado_envio'=>$objeto->estado_solicitud,
                 'estado_aprobado'=>$objeto->aprobado_por,
+                'observacion'=>$objeto->observacion,
                 'tipo_usuario'=>$_SESSION['tipo_usuario'],
             );
         }
         $jsonstring= json_encode($json);
         echo $jsonstring;
     } 
+
+    if($_POST['funcion'] == 'read_solicitudes_por_aprobar'){
+        $id_usuario = $_SESSION['id'];
+        $solicitud_marca->solicitudes_por_aprobar();
+        $json=array();
+        foreach($solicitud_marca->objetos as $objeto){
+            $json[]=array(
+                'id'=>openssl_encrypt($objeto->id, CODE, KEY),
+                'nombre'=>$objeto->nombre,
+                'descripcion'=>$objeto->descripcion,
+                'imagen'=>$objeto->imagen,
+                'fecha_creacion'=>$objeto->fecha_creacion,
+                'solicitante'=>$objeto->nombres.' '.$objeto->apellidos,
+                'tipo_usuario'=>$_SESSION['tipo_usuario'],
+            );
+        }
+        $jsonstring= json_encode($json);
+        echo $jsonstring;
+    }
 
     if($_POST['funcion'] == 'editar_solicitud'){
         $id_usuario = $_SESSION['id'];
@@ -110,5 +138,107 @@
             echo 'error';
         }
     } 
-    
+
+    if($_POST['funcion'] == 'eliminar_solicitud'){
+        $id_usuario = $_SESSION['id'];
+        $nombre = $_POST['nombre'];
+        $formateado = str_replace(" ", "+",$_POST['id']);
+        $id_solicitud = openssl_decrypt($formateado, CODE, KEY);
+        if(is_numeric($id_solicitud)){
+            $solicitud->eliminar_solicitud($id_solicitud);
+            $descripcion='Ha eliminado una solicitud marca, '.$nombre;
+            $historial->crear_historial($descripcion, 3, 7, $id_usuario);
+            $mensaje = 'success';
+            $json = array(
+                'mensaje'=>$mensaje
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    }   
+
+    if($_POST['funcion'] == 'enviar_solicitud'){
+        $id_usuario = $_SESSION['id'];
+        $nombre = $_POST['nombre'];
+        $formateado = str_replace(" ", "+",$_POST['id']);
+        $id_solicitud = openssl_decrypt($formateado, CODE, KEY);
+        if(is_numeric($id_solicitud)){
+            $solicitud_marca->enviar_solicitud($id_solicitud);
+            /* Envio de Mensajes  */
+            
+            /*
+            $descripcion='Ha eliminado una solicitud marca, '.$nombre;
+            $historial->crear_historial($descripcion, 3, 7, $id_usuario);
+            */
+            $mensaje = 'success';
+            $json = array(
+                'mensaje'=>$mensaje
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    }
+
+    if($_POST['funcion'] == 'aprobar_solicitud'){
+        $id_usuario = $_SESSION['id'];
+        $nombre = $_POST['nombre'];
+        $formateado = str_replace(" ", "+",$_POST['id']);
+        $id_solicitud = openssl_decrypt($formateado, CODE, KEY);
+        if(is_numeric($id_solicitud)){
+            $marca->buscar($nombre);
+            if(empty($marca->objetos)) {
+                // se aprueba la solicitud
+                $solicitud_marca->aprobar_solicitud($id_solicitud, $id_usuario);
+                // se crea la marca
+                $solicitud_marca->obtener_solicitud($id_solicitud);
+                $desc=$solicitud_marca->objetos[0]->descripcion;
+                $imagen=$solicitud_marca->objetos[0]->imagen;
+                $marca->crear($nombre, $desc, $imagen);
+                $descripcion='Ha aprobado una solicitud marca, '.$nombre;
+                $historial->crear_historial($descripcion, 1, 7, $id_usuario);
+                $mensaje = 'success';
+            } else {
+                // la marca ya existe y no se puede crear
+                // rechazar la solicitud marca
+                $observacion = "No se aprobo la solicitud ya que existe una marca con el mismo nombre: ".$nombre;
+                $solicitud_marca->rechazar_solicitud($id_solicitud, $id_usuario, $observacion);
+                $descripcion = 'Ha rechazado una solicitud marca, '.$nombre;
+                $historial->crear_historial($descripcion, 1, 7, $id_usuario);
+                $mensaje = 'danger';
+
+            }
+            $json = array(
+                'mensaje'=>$mensaje
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    }  
+
+    if($_POST['funcion'] == 'rechazar_solicitud'){
+        $id_usuario = $_SESSION['id'];
+        $nombre = $_POST['nombre_rechazar_sol'];
+        $formateado = str_replace(" ", "+",$_POST['id_marca_rechazar_sol']);
+        $id_solicitud = openssl_decrypt($formateado, CODE, KEY);
+        $observaciones = $_POST['observaciones'];
+        if(is_numeric($id_solicitud)){
+            $solicitud_marca->rechazar_solicitud($id_solicitud, $id_usuario, $observaciones);
+            $descripcion='Ha rechazado una solicitud marca, '.$nombre;
+            $historial->crear_historial($descripcion, 1, 7, $id_usuario);
+            $mensaje = 'success';
+            $json = array(
+                'mensaje'=>$mensaje
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    }   
 ?>

@@ -240,6 +240,53 @@
         </div>
       </div>
     </div>
+    <!-- Modal Rechazar Solicitud -->
+    <div class="modal fade" id="modal_rechazar_sol" role="dialog" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Rechazar solicitud marca</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="card card-widget widget-user">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-info">
+                <h3 id="widget_nombre_sol_rechazar" class="widget-user-username"></h3>
+                <h5 id="widget_nombre_sol_rechazar" class="widget-user-desc"></h5>
+              </div>
+              <div class="widget-user-image">
+                <img id="widget_imagen_sol_rechazar" class="img-circle elevation-2" src="../dist/img/user1-128x128.jpg" alt="imagen marca">
+              </div>
+              <div class="card-footer">
+                <div class="row">
+                  <div class="col-sm-12 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header">Solicitante</h5>
+                      <span id="" class="description-text"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <form id="form-marca_rechazar_sol" enctype="multipart/form">
+              <input type="hidden" id="id_marca_rechazar_sol" name="id_marca_rechazar_sol">
+              <input type="hidden" id="nombre_rechazar_sol" name="nombre_rechazar_sol">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="observaciones">Observaciones</label>
+                  <textarea style="height: 150px" type="text" name="observaciones" class="form-control" id="observaciones" placeholder="Ingrese observaciones"></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Marcas -->
     <title>Marcas | CodeWar</title>
@@ -295,7 +342,7 @@
                     <th>Marca</th>
                     <th>Descripcion</th>
                     <th>Imagen</th>
-                    <th>Estado de envio</th>
+                    <th style="width:15%">Estado de envio</th>
                     <th>Estado aprobado</th>
                     <th>Fecha de creacion</th>
                     <th>Acciones</th>
@@ -307,7 +354,20 @@
             </div>
 
             <div class="tab-pane" id="tab_por_aprobar">
-
+              <table id="solicitudes_por_aprobar" class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Marca</th>
+                    <th>Descripcion</th>
+                    <th>Imagen</th>
+                    <th>Solicitante</th>
+                    <th>Fecha de creacion</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>   
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -676,6 +736,7 @@ $(document).ready(function(){
               read_favoritos();
               read_all_marcas();
               if(sesion.tipo_usuario==1 || sesion.tipo_usuario==2){
+                read_solicitudes_por_aprobar();
                 CloseLoader();
                 $('#btn_adm').show();
               } else if(sesion.tipo_usuario==3) {
@@ -720,7 +781,7 @@ $(document).ready(function(){
             data: marcas,
             "aaShorting": [],
             "searching": true,
-            "scrollX": true,
+            "scrollX": false,
             "autoWidth": false,
             "responsive": true,
             "processing": true,
@@ -797,7 +858,7 @@ $(document).ready(function(){
               { 
                 "render": function(data, type, datos, meta) {
                   if(datos.estado_envio=='0'){
-                    return `<button class="btn btn-primary">Enviar</button>`;
+                    return `<button id="${datos.id}" nombre="${datos.nombre}" class="send_sol btn btn-primary">Enviar</button>`;
                   } 
                   else if(datos.estado_envio=='1') {
                     return `<span class="badge bg-primary">Enviado</span>`;
@@ -806,7 +867,9 @@ $(document).ready(function(){
                     return `<span class="badge bg-success">Aceptado</span>`;
                   } 
                   else if(datos.estado_envio=='3') {
-                    return `<span class="badge bg-danger">Rechazado</span>`;
+                    return `<span class="badge bg-danger">Rechazado</span>
+                            </br>
+                            <span>${datos.observacion}</span>`;
                   }
                 } 
               },
@@ -839,6 +902,63 @@ $(document).ready(function(){
                     return `<button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" desc="${datos.descripcion}"  class="edit_solicitud btn btn-info" title="Editar solicitud" type="button" data-bs-toggle="modal" data-bs-target="#modal_editar_sol"><i class="fas fa-pencil-alt"></i></button>
                             <button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" class="remove_solicitud btn btn-danger" title="Eliminar solicitud"><i class="fas fa-trash-alt"></i></button>`;
                   }
+                } 
+              },
+            ],
+            "destroy": true, 
+            "language": espanol
+          })
+
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
+    // Mostrar Solicitudes
+    async function read_solicitudes_por_aprobar(){
+      funcion = "read_solicitudes_por_aprobar";
+      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          let solicitudes =  JSON.parse(response);
+          // console.log(solicitudes);
+          $('#solicitudes_por_aprobar').DataTable({
+            data: solicitudes,
+            "aaShorting": [],
+            "searching": true,
+            "scrollX": false,
+            "autoWidth": false,
+            "responsive": true,
+            "processing": true,
+            columns: [
+              { data: 'nombre' },
+              { data: 'descripcion' },
+              { 
+                "render": function(data, type, datos, meta) {
+                  return `<img width="100" height="100" src="../Util/Img/marca/${datos.imagen}">`;
+                } 
+              },  
+              { data: "solicitante" },
+              { data: 'fecha_creacion' },
+              { 
+                "render": function(data, type, datos, meta) {
+                  return `<button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" desc="${datos.descripcion}" class="aprobar_solicitud btn btn-success" title="Aprobar la solicitud"><i class="fas fa-check"></i></button>
+                          <button id="${datos.id}" nombre="${datos.nombre}" img="${datos.imagen}" desc="${datos.descripcion}" solicitante="${datos.solicitante}" class="rechazar_solicitud btn btn-success" title="Rechazar la solicitud" data-bs-toggle="modal" data-bs-target="#modal_rechazar_sol"><i class="fas fa-times"></i></button>`;
                 } 
               },
             ],
@@ -1386,9 +1506,339 @@ $(document).ready(function(){
         $(element).addClass('is-valid')
       }
     });
+
+    /*Eliminar solicitudes Marca*/ 
+    async function eliminar_solicitud(id, nombre){
+      let funcion = "eliminar_solicitud";
+      let respuesta = '';
+      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          respuesta =  JSON.parse(response);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error'){
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intente vulnerar el sistema, presiene F5',
+            });
+          }
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+
+      return respuesta;
+    }
     $(document).on('click', '.remove_solicitud', (e)=> {
-      alert('eliminar solicitud');
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      let nombre = $(elemento).attr('nombre');
+      let img = $(elemento).attr('img');
+      // console.log(nombre, img);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger mr-2'
+        },
+        buttonsStyling: false
+      })
+
+      swalWithBootstrapButtons.fire({
+        title: 'Desea eliminar la solicitud marca' + nombre + '?',
+        text: "No podras revertir esto!",
+        imageUrl: '../Util/Img/marca/' + img,
+        imageWidth: 100,
+        imageHeight: 100,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-check"></i>',
+        cancelButtonText: '<i class="fas fa-times"></i>',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          eliminar_solicitud(id, nombre).then(respuesta=> {
+            if(respuesta.mensaje == 'success'){
+              swalWithBootstrapButtons.fire(
+                'Borrado!',
+                'La solicitud marca' + nombre + ' fue borrada',
+                'success'
+              )
+              read_tus_solicitudes();
+            }
+          });
+          swalWithBootstrapButtons.fire(
+            'Borrado!',
+            'La solicitud marca' + nombre + ' fue borrada',
+            'success'
+          )
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'No se borro solicitud la marca',
+            'error'
+          )
+        }
+      })
     })
+
+    /*Envio solicitudes Marca*/ 
+    async function enviar_solicitud(id, nombre){
+      let funcion = "enviar_solicitud";
+      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          if(respuesta.mensaje=="success"){
+            toastr.success('La solicitud marca ' + nombre + ' fue enviado correctamente', 'Solicitud enviada!');
+            read_tus_solicitudes();
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error'){
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intente vulnerar el sistema, presiene F5',
+            });
+          }
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.send_sol', (e)=> {
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      let nombre = $(elemento).attr('nombre');
+      // console.log(nombre, img);
+      enviar_solicitud(id, nombre);
+    })
+
+    /*Aprobar Solicitud*/
+    async function aprobar_solicitud(id, nombre){
+      let funcion = "aprobar_solicitud";
+      let respuesta = '';
+      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          respuesta =  JSON.parse(response);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error'){
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intente vulnerar el sistema, presiene F5',
+            });
+          }
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+
+      return respuesta;
+    }
+    $(document).on('click', '.aprobar_solicitud', (e)=> {
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      let nombre = $(elemento).attr('nombre');
+      let img = $(elemento).attr('img');
+      let descripcion = $(elemento).attr('desc');
+      // console.log(nombre, img);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger mr-2'
+        },
+        buttonsStyling: false
+      })
+
+      swalWithBootstrapButtons.fire({
+        title: 'Desea aprobar la solicitud marca' + nombre + '?',
+        text: "No podras revertir esto!",
+        imageUrl: '../Util/Img/marca/' + img,
+        imageWidth: 100,
+        imageHeight: 100,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-check"></i>',
+        cancelButtonText: '<i class="fas fa-times"></i>',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          aprobar_solicitud(id, nombre).then(respuesta=> {
+            if(respuesta.mensaje == 'success'){
+              swalWithBootstrapButtons.fire(
+                'Aprobado!',
+                'La solicitud marca' + nombre + ' fue aprobada',
+                'success'
+              )
+              read_solicitudes_por_aprobar();
+              read_all_marcas();
+            }
+            else if(respuesta.mensaje == "danger") {
+              swalWithBootstrapButtons.fire(
+                'No se pudo aprobar',
+                'No se aprobo solicitud la marca, ya existe una marca con el mismo nombre',
+                'error'
+              )
+              read_solicitudes_por_aprobar();
+            }
+          });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'No se aprobo solicitud la marca',
+            'error'
+          )
+        }
+      })
+    })
+
+    /*Rechazar Solicitud*/
+    async function rechazar_solicitud(datos){
+      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+        method:'POST',
+        body: datos
+      });
+      if(data.ok){
+        let response = await data.text();
+        //console.log(response);
+        try {
+          let respuesta =  JSON.parse(response);
+          // console.log(respuesta);
+          
+          if(respuesta.mensaje == 'success') {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Se ha rechazado la solicitud marca',
+              showConfirmButton: false,
+              timer: 1000
+            }).then(function() {
+              read_solicitudes_por_aprobar();
+              $('#form-marca_rechazar_sol').trigger('reset');
+              $('#modal_rechazar_sol').modal('hide');
+            });
+          } else if(respuesta.mensaje == 'danger'){
+            Swal.fire({
+              icon: 'warning',
+              title: 'No altero ningun cambio!',
+              text: 'Modifique algun cambio para realizar la edicion',
+            });
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error') {
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No intente vulnerar el sistema, presiene F5',
+            });
+          }
+        }
+        
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.rechazar_solicitud', (e)=> {
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      let nombre = $(elemento).attr('nombre');
+      let img = $(elemento).attr('img');
+      let descripcion = $(elemento).attr('desc');
+      let solicitante = $(elemento).attr('solicitante');
+      // console.log(nombre, img);
+      $('#widget_nombre_sol_rechazar').text(nombre);
+      $('#widget_desc_sol_rechazar').text(descripcion);
+      $('#widget_imagen_sol_rechazar').attr('src', '../Util/Img/marca/' + img);
+      $('#solicitante').text(solicitante);
+      $('#id_marca_rechazar_sol').val(id);
+      $('#nombre_rechazar_sol').val(nombre);
+    })
+    $.validator.setDefaults({
+      submitHandler: function () {
+        // alert('validado');
+        let funcion = "rechazar_solicitud";
+        let datos = new FormData($('#form-marca_rechazar_sol')[0]);
+        //console.log(datos);
+        datos.append('funcion', funcion); 
+        rechazar_solicitud(datos);
+      }
+    });
+    $('#form-marca_rechazar_sol').validate({
+      rules: {
+        observaciones:{
+          required: true
+        }, 
+      },
+      messages: {
+        observaciones: {
+          required: "*Este campo es obligatorio",
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+        $(element).removeClass('is-valid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+        $(element).addClass('is-valid')
+      }
+    });
 
     // Loader
     function Loader(mensaje){
