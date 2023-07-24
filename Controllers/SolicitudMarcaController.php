@@ -4,11 +4,16 @@
     include_once '../Models/SolicitudMarca.php';
     include_once '../Models/Historial.php';
     include_once '../Models/Usuario.php';
+    include_once '../Models/Mensaje.php';
+    include_once '../Models/Destino.php';
 
     $marca = new Marca();
     $solicitud_marca = new SolicitudMarca();
     $historial = new Historial();
     $usuario = new Usuario();
+    $mensaje = new Mensaje();
+    $destino = new Destino();
+
     session_start();
 
     
@@ -113,6 +118,8 @@
                     $datos_cambiados.='Su imagen fue cambiada.';
                     $nombre_imagen = uniqid().' - '.$img;
                     $ruta = '../Util/Img/marca/'.$nombre_imagen;
+                    $extension = pathinfo($img, PATHINFO_EXTENSION);
+                    $nombre_imagen = $nombre_imagen.'.'.$extension;
                     move_uploaded_file($_FILES['imagen_mod_sol']['tmp_name'], $ruta);
                     $avatar_actual=$solicitud_marca->objetos[0]->imagen;
                     if($avatar_actual!='marca_default.png') {
@@ -167,11 +174,69 @@
         if(is_numeric($id_solicitud)){
             $solicitud_marca->enviar_solicitud($id_solicitud);
             /* Envio de Mensajes  */
-            
-            /*
-            $descripcion='Ha eliminado una solicitud marca, '.$nombre;
-            $historial->crear_historial($descripcion, 3, 7, $id_usuario);
-            */
+            $usuario->buscar_administradores_root();
+            if(!empty($usuario->objetos)) {
+                $mensaje->crear($id_usuario);
+                $mensaje->ultimo_mensaje();
+                $id_mensaje = $mensaje->objetos[0]->ultimo_mensaje;
+                $solicitud_marca->obtener_solicitud($id_solicitud);
+                $desc = $solicitud_marca->objetos[0]->descripcion;
+                $img = $solicitud_marca->objetos[0]->imagen;
+                $nombre_usuario = $_SESSION['nombre'];
+
+                foreach($usuario->objetos as $objeto) {
+                    if($objeto->id_tipo=='1') {
+                        // mensaje root
+                        $asunto="Usuario root tiene usted una solicitud marca para revisar";
+                        $contenido = '
+                        <div class="card card-widget widget-user">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header bg-info">
+                                <h3 class="widget-user-username">'.$nombre.'</h3>
+                                <h5 class="widget-user-desc">'.$desc.'</h5>
+                            </div>
+                            <div class="widget-user-image">
+                                <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/'.$img.'" alt="imagen marca">
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-sm-4 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header">3,200</h5>
+                                            <span class="description-text">SALES</span>
+                                        </div>
+                                        </div>
+                                        <div class="col-sm-6 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header">Solicitud marca creado por:</h5>
+                                            <span class="description-text">FOLLOWERS</span>
+                                        </div>
+                                        </div>
+                                        <div class="col-sm-6 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header">35</h5>
+                                            <span class="description-text">PRODUCTS</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        ';
+                        $destino->crear($asunto, $contenido, $objeto->id, $id_mensaje);
+                    }
+                    else if($objeto->id_tipo=='2'){
+                        // mensaje para administradores
+                        $asunto="Usuario administrador tiene usted una solicitud marca para revisar";
+                        $contenido = "Hola usuario administrador ".$objeto->nombres." por favor revise mi solicitud marca si es que todo esta correcto apruebala, 
+                        si no me indica los errores para corregirla";
+                        $destino->crear($asunto, $contenido, $objeto->id, $id_mensaje);
+                    }
+                }
+            } else {
+                echo 'error_usuarios'; // que no hay nadie a quien enviarle mensajes
+            }
+            $descripcion='Ha enviado una solicitud marca, '.$nombre;
+            $historial->crear_historial($descripcion, 1, 7, $id_usuario);
             $mensaje = 'success';
             $json = array(
                 'mensaje'=>$mensaje

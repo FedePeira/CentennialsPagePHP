@@ -13,14 +13,26 @@
   <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css" >
   <link rel="stylesheet" href="../Util/Css/toastr.min.css">
+  <link rel="icon" type="image/png" href="../Util/Img/Logos/LogoCentennials.png">
   <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.13.5/datatables.min.css">
   <!--<link rel="stylesheet" href="../Util/Css/datatables.min.css">-->
 </head> 
-<body class="hold-transition sidebar-mini">
+<style>
+  .page-item.active .page-link{
+    background-color: #17A2B8 !important;
+  }
+  .page-link{
+    color: black !important;
+  }
+  .nav-link.active{
+    background-color: #17A2B8 !important;
+  }
+</style>
+<body class="sidebar-mini layout-footer-fixed layout-navbar-fixed">
 <!-- Site wrapper -->
 <div class="wrapper">
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <nav class="main-header navbar navbar-expand navbar-light bg-info">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -46,7 +58,7 @@
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <aside class="main-sidebar sidebar-light-info elevation-4">
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
       <img src="../Util/Img/Logos/LogoCentennials.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">

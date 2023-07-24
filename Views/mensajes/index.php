@@ -1,71 +1,120 @@
 <?php
-  include_once 'Layouts/general/header.php';
+  include_once 'layouts/header.php';
 ?>
-    <title>Favoritos | CodeWar</title>
+    <title>Mensajes | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Favoritos</h1>
+            <h1>Mensajes</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Favoritos</li>
+              <li class="breadcrumb-item active">Mensajes</li>
             </ol>
           </div>
         </div>
       </div><!-- /.container-fluid -->
     </section>
     <section class="content">
-
-      <!-- Default box -->
-      <div class="card">
-        <div class="card-body">
-          <table id="fav" class="table table-hover">
-            <thead>
-              <tr>
-                <th>Favoritos</th>
-              </tr>
-            </thead>
-            <tbody>
-              
-            </tbody>
-          </table>
-        </div>
-        <!-- /.card-body -->
-        <div class="card-footer">
-          Footer
-        </div>
-        <!-- /.card-footer-->
-      </div>
-      <!-- /.card -->
-
-    </section>
-
+        <div class="row">
+            <div class="col-md-3">
+                <button class="btn btn-outline-info btn-block mb-3"><i class="fas fa-plus mr-2"></i>Redactar</button>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Carpetas</h3>
     
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="nav nav-pills flex-column">
+                            <li class="nav-item">
+                            <a href="#" class="nav-link active">
+                                <i class="fas fa-inbox"></i> Recibidos
+                                <span class="badge bg-primary float-right">12</span>
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="far fa-envelope"></i> Enviados
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="far fa-star"></i> Favoritos
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="far fa-trash-alt"></i> Papelera
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+              <div class="card card-info">
+                <div class="card-header">
+                  <h3 class="card-title">Recibidos</h3>
+    
+                  <div class="card-tools">
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control" placeholder="Search Mail">
+                      <div class="input-group-append">
+                        <div class="btn btn-primary">
+                          <i class="fas fa-search"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="mailbox-controls">
+                        <button type="button" title="Seleccionador grupal" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
+                        </button>
+                        <button type="button" title="Eliminar grupo seleccionado" class="btn btn-default btn-sm">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                        <button type="button" title="Actualizar mensajes" class="btn btn-default btn-sm">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <table id="mensajes_recibidos" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>Emisor</th>
+                                <th>Asunto</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+            </div>
+        </div>
+    </section>
 <?php
-  include_once 'Layouts/general/footer.php';
+  include_once 'layouts/footer.php';
 ?>
 <script>
 $(document).ready(function(){
     Loader();
     verificar_sesion();
-    // setTimeout(verificar_sesion, 2000);
-    toastr.options = {
-      'debug': false,
-      'positionClass': 'toast-bottom-full-width',
-      'onclick': null,
-      'fadeIn': 300,
-      'fadeOut': 1000,
-      'timeOut': 5000,
-      'extendedTimeOut': 1000,
-    }
-
     async function read_notificaciones(){
       funcion = "read_notificaciones";
-      let data = await fetch('../Controllers/NotificacionController.php', {
+      let data = await fetch('../../Controllers/NotificacionController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -103,10 +152,10 @@ $(document).ready(function(){
           notificaciones.forEach(notificacion => {
             template += `
             <div class="dropdown-divider"></div>
-              <a href="../${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
+              <a href="../../${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <img src="../../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       ${notificacion.titulo}
@@ -122,7 +171,7 @@ $(document).ready(function(){
             `;
           });
           template += `
-              <a href="../Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
+              <a href="../../Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
               </div>`;
           $('#notificacion').html(template);
         } catch(error) {
@@ -141,7 +190,7 @@ $(document).ready(function(){
 
     async function read_favoritos(){
       funcion = "read_favoritos";
-      let data = await fetch('../Controllers/FavoritoController.php', {
+      let data = await fetch('../../Controllers/FavoritoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -179,10 +228,10 @@ $(document).ready(function(){
           favoritos.forEach(favorito => {
             template += `
             <div class="dropdown-divider"></div>
-              <a href="../${favorito.url}" class="dropdown-item">
+              <a href="../../${favorito.url}" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="../Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <img src="../../Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       ${favorito.titulo}
@@ -197,7 +246,7 @@ $(document).ready(function(){
             `;
           });
           template += `
-              <a href="../Views/favoritos.php" class="dropdown-item dropdown-footer">ver todos tus favoritos</a>
+              <a href="../../Views/favoritos.php" class="dropdown-item dropdown-footer">ver todos tus favoritos</a>
             </div>`;
           $('#nav_cont_fav').html(template1);
           $('#favorito').html(template);
@@ -220,12 +269,12 @@ $(document).ready(function(){
       if(usuario===undefined || usuario == '' || usuario == null){
         template = `
         <li class="nav-item"> 
-          <a class="nav-link" href="../Views/register.php" role="button">
+          <a class="nav-link" href="../../Views/register.php" role="button">
             <i class="fas fa-user-plus"></i> Registrarse
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Views/login.php" role="button">
+          <a class="nav-link" href="../../Views/login.php" role="button">
             <i class="far fa-user"></i> Iniciar Sesion
           </a>
         </li>
@@ -299,13 +348,13 @@ $(document).ready(function(){
           </li>
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="../Util/Img/Users/${usuario.avatar}" width="30" height="30" class="img-fluid img-circle">
+                <img src="../../Util/Img/Users/${usuario.avatar}" width="30" height="30" class="img-fluid img-circle">
                 <spa>${usuario.user}</span>
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li><a class="dropdown-item" href="../Views/mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a></li>
+                <li><a class="dropdown-item" href="../../Views/mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a></li>
                 <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-basket"></i> Mis pedidos</a></li>
-                <li><a class="dropdown-item" href="../Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesion</a></li>
+                <li><a class="dropdown-item" href="../../Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesion</a></li>
               </ul>
           </li>
         `;
@@ -323,7 +372,7 @@ $(document).ready(function(){
         template = `
         <li class="nav-header">Perfil</li>
           <li id="nav_notificaciones" class="nav-item">
-            <a id="active_nav_notificaciones" href="../Views/notificaciones.php" class="nav-link">
+            <a id="active_nav_notificaciones" href="../../Views/notificaciones.php" class="nav-link">
               <i class="nav-icon far fa-bell"></i>
               <p id="nav_cont_noti">
                 Notificaciones
@@ -331,7 +380,7 @@ $(document).ready(function(){
             </a>
           </li>
           <li id="nav_favoritos" class="nav-item">
-            <a id="active_fav_favoritos" href="../Views/favoritos.php" class="nav-link">
+            <a id="active_fav_favoritos" href="../../Views/favoritos.php" class="nav-link">
               <i class="nav-icon far fa-heart"></i>
               <p id="nav_cont_fav">
                 Favoritos
@@ -339,7 +388,7 @@ $(document).ready(function(){
             </a>
           </li>
           <li id="nav_mensajes" class="nav-item">
-            <a id="active_fav_mensajes" href="../Views/mensajes/index.php" class="nav-link">
+            <a id="active_fav_mensajes" href="../../Views/mensajes/index.php" class="nav-link">
               <i class="nav-icon far fa-envelope"></i>
               <p id="nav_cont_mens">
                 Mensajes
@@ -349,7 +398,7 @@ $(document).ready(function(){
           if(usuario.tipo_usuario == 1){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="../Views/marca.php" class="nav-link">
+              <a id="active_nav_marcas" href="../../Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -361,7 +410,7 @@ $(document).ready(function(){
           if(usuario.tipo_usuario == 2){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="../Views/marca.php" class="nav-link">
+              <a id="active_nav_marcas" href="../../Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -373,7 +422,7 @@ $(document).ready(function(){
           if(usuario.tipo_usuario == 3){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="../Views/marca.php" class="nav-link">
+              <a id="active_nav_marcas" href="../../Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -389,7 +438,7 @@ $(document).ready(function(){
 
     async function verificar_sesion() {
       funcion = "verificar_sesion";
-      let data = await fetch('../Controllers/UsuarioController.php', {
+      let data = await fetch('../../Controllers/UsuarioController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -402,131 +451,19 @@ $(document).ready(function(){
             let sesion = JSON.parse(response);
             llenar_menu_superior(sesion);
             llenar_menu_lateral(sesion);
-            $('#active_nav_favoritos').addClass('active');
+            $('#active_nav_mensajes').addClass('active');
             $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();
-            read_all_favoritos();
             CloseLoader();
           } else {
-            location.href = 'login.php';
+            location.href = '../login.php';
           }
         } catch(error) {
           console.error(error);
           console.log(response);
         }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: data.statusText,
-          text: 'Hubo conflicto de codigo: ' + data.status,
-        });
-      }
-    }
-
-    async function read_all_favoritos(){
-      funcion = "read_all_favoritos";
-      let data = await fetch('../Controllers/FavoritoController.php', {
-        method:'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion
-      });
-      if(data.ok){
-        let response = await data.text();
-        //console.log(response);
-        try {
-          let favoritos =  JSON.parse(response);
-          // console.log(favoritos);
-          let template = '';
-          let favorites = [];
-          // let ejemplo = [{ celda: 'Hola primera celda' }, { celda: 'Adios' }];
-          // ejemplo.push({ celda:'hola adios' });
-          favoritos.forEach(favorito => {
-            template = '';
-            template += `
-              <div class="row">
-                <div class="col-sm-1 text-center">
-                  <button type="button" class="btn eliminar_fav" attrid="${favorito.id}">
-                    <i class="far fa-trash-alt text-danger"></i>
-                  </button>
-                </div>
-                <div class="col-sm-11">
-                  <a href="../${favorito.url}" class="dropdown-item">
-                    <!-- Message Start -->
-                    <div class="media">
-                      <img src="../Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                      <div class="media-body">
-                        <h3 class="dropdown-item-title">
-                          ${favorito.titulo}
-                        </h3>
-                        <p class="text-sm text-muted">${favorito.precio}</p>
-                        <span class="float-right text-muted text-sm">${favorito.fecha_creacion}</span>
-                      </div>
-                    </div>
-                    <!-- Message End -->
-                  </a>
-                </div>
-              </div>
-            `;
-            favorites.push({celda: template});
-          });
-          // console.log(notification);
-          $('#fav').DataTable({
-            data: favorites,
-            "aaShorting": [],
-            "searching": true,
-            "scrollX": true,
-            "autoWidth": false,
-            columns: [
-              { data: 'celda' }
-            ],
-            "destroy": true, 
-            "language": espanol
-          })
-        } catch(error) {
-          console.error(error);
-          console.log(response);
-        }
-        
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: data.statusText,
-          text: 'Hubo conflicto de codigo: ' + data.status,
-        });
-      }
-    }
-
-    async function eliminar_favorito(id_favorito){
-      funcion = "eliminar_favorito";
-      let data = await fetch('../Controllers/FavoritoController.php', {
-        method:'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id_favorito=' + id_favorito
-      });
-      if(data.ok){
-        let response = await data.text();
-        // console.log(response);
-        try {
-          let respuesta =  JSON.parse(response);
-          // console.log(respuesta.mensaje);
-          if(respuesta.mensaje == "favorito eliminado") {
-            toastr.success('El item se elimino de tus favoritos');
-          }
-          else if(respuesta.mensaje == "error al eliminar") {
-            toastr.success('No intente vulnerar el sistema');
-          } 
-
-          read_all_favoritos();
-          read_favoritos();
-
-        } catch(error) {
-          console.error(error);
-          console.log(response);
-          toastr.success('Comuniquese con el area de sistemas');
-        }
-        
       } else {
         Swal.fire({
           icon: 'error',

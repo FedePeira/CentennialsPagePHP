@@ -671,6 +671,14 @@ $(document).ready(function(){
                 Favoritos
               </p>
             </a>
+          </li>
+          <li id="nav_mensajes" class="nav-item">
+            <a id="active_fav_mensajes" href="../Views/mensajes/index.php" class="nav-link">
+              <i class="nav-icon far fa-envelope"></i>
+              <p id="nav_cont_mens">
+                Mensajes
+              </p>
+            </a>
           </li>`;
           if(usuario.tipo_usuario == 1){
             template+= `<li class="nav-header">Producto</li>
@@ -1622,6 +1630,13 @@ $(document).ready(function(){
               icon: 'error',
               title: 'Cuidado!',
               text: 'No intente vulnerar el sistema, presiene F5',
+            });
+          }
+          if(response == 'error_usuarios'){
+            Swal.fire({
+              icon: 'error',
+              title: 'Cuidado!',
+              text: 'No se pudo enviar el mensaje porque no hay destinatarios',
             });
           }
         }

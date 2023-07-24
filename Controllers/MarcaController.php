@@ -68,6 +68,8 @@
                     $datos_cambiados.='Su imagen fue cambiada.';
                     $nombre_imagen = uniqid().' - '.$img;
                     $ruta = '../Util/Img/marca/'.$nombre_imagen;
+                    $extension = pathinfo($img, PATHINFO_EXTENSION);
+                    $nombre_imagen = $nombre_imagen.'.'.$extension;
                     move_uploaded_file($_FILES['imagen_mod']['tmp_name'], $ruta);
                     $avatar_actual=$marca->objetos[0]->imagen;
                     if($avatar_actual!='marca_default.png') {
