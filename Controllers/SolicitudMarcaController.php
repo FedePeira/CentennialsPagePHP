@@ -188,6 +188,8 @@
                     if($objeto->id_tipo=='1') {
                         // mensaje root
                         $asunto="Usuario root tiene usted una solicitud marca para revisar";
+                        $contenido2="Hola usuario root $objeto->nombres $objeto->apellidos revise mi solicitud de marca, si es que los datos son correctos
+                        por favor apruebelo, si no indiqueme los errores para corregirla y reenviarsela";
                         $contenido = '
                         <div class="card card-widget widget-user">
                             <!-- Add the bg color to the header using any of the bg-* classes -->
@@ -200,22 +202,16 @@
                             </div>
                             <div class="card-footer">
                                 <div class="row">
-                                    <div class="col-sm-4 border-right">
-                                        <div class="description-block">
-                                            <h5 class="description-header">3,200</h5>
-                                            <span class="description-text">SALES</span>
-                                        </div>
-                                        </div>
-                                        <div class="col-sm-6 border-right">
+                                    <div class="col-sm-6 border-right">
                                         <div class="description-block">
                                             <h5 class="description-header">Solicitud marca creado por:</h5>
-                                            <span class="description-text">FOLLOWERS</span>
+                                            <span class="description-text">'.$nombre_usuario.'</span>
                                         </div>
-                                        </div>
-                                        <div class="col-sm-6 border-right">
+                                    </div>
+                                    <div class="col-sm-6 border-right">
                                         <div class="description-block">
-                                            <h5 class="description-header">35</h5>
-                                            <span class="description-text">PRODUCTS</span>
+                                            <h5 class="description-header">Mensajes:</h5>
+                                            <span class="description-text">'.$contenido2.'</span>
                                         </div>
                                     </div>
                                 </div>
@@ -227,8 +223,36 @@
                     else if($objeto->id_tipo=='2'){
                         // mensaje para administradores
                         $asunto="Usuario administrador tiene usted una solicitud marca para revisar";
-                        $contenido = "Hola usuario administrador ".$objeto->nombres." por favor revise mi solicitud marca si es que todo esta correcto apruebala, 
-                        si no me indica los errores para corregirla";
+                        $contenido2="Hola usuario administrador $objeto->nombres $objeto->apellidos revise mi solicitud de marca, si es que los datos son correctos
+                        por favor apruebelo, si no indiqueme los errores para corregirla y reenviarsela";
+                        $contenido = '
+                        <div class="card card-widget widget-user">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header bg-info">
+                                <h3 class="widget-user-username">'.$nombre.'</h3>
+                                <h5 class="widget-user-desc">'.$desc.'</h5>
+                            </div>
+                            <div class="widget-user-image">
+                                <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/'.$img.'" alt="imagen marca">
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-sm-6 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header">Solicitud marca creado por:</h5>
+                                            <span class="description-text">'.$nombre_usuario.'</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header">Mensajes:</h5>
+                                            <span class="description-text">'.$contenido2.'</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        ';
                         $destino->crear($asunto, $contenido, $objeto->id, $id_mensaje);
                     }
                 }

@@ -62,7 +62,7 @@
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
       <img src="../Util/Img/Logos/LogoCentennials.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">CodeWar E-commerce</span>
+      <span class="brand-text font-weight-light">CodeWar</span>
     </a>
 
     <!-- Sidebar -->

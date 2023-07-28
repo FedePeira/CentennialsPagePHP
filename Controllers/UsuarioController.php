@@ -45,7 +45,7 @@
                 'avatar'=>$_SESSION['avatar']
             );
             $jsonstring = json_encode($json[0]);
-            echo $jsonstring;
+            echo $jsonstring; 
         } else {
             echo '';
         }

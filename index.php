@@ -48,33 +48,6 @@
             <div id="loader_3" class="overlay">
               <i class="fas fa-2x fa-sync-alt fa-spin"></i>
             </div>
-            <!--
-            <div class="col-sm-2">
-              <div class="card">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-sm-12">
-                      <img src="Util/Img/Users/user_default.png" class="img-fluid" alt="">
-                    </div>
-                    <div class="col-sm-12">
-                      <span class="text-muted float-left">Marca</span></br>
-                      <a class="titulo_producto" href="#">Titulo del productos</a></br>
-                      <span class="badge bg-success">Envio gratis</span></br>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="far fa-star text-warning"></i>
-                      <i class="far fa-star text-warning"></i>
-                      </br>
-                      <span class="text-muted" style="text-decoration: line-through">S/ 1000</span>
-                      <span class="text-muted">-10%</span></br>
-                      <h4 class="text-danger">S/ 900</h4>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            -->
           </div>
         </div>
         <!-- /.card-body -->
@@ -445,11 +418,12 @@ $(document).ready(function() {
       });
       if(data.ok){
         let response = await data.text();
+        console.log(response);
         try {
-
           if(response != ''){
           // location.href = '../index.php';
             let sesion = JSON.parse(response);
+            console.log(sesion);
             llenar_menu_superior(sesion);
             llenar_menu_lateral(sesion);
             $('#avatar_menu').attr('src', 'Util/Img/Users/' + sesion.avatar);
@@ -487,7 +461,7 @@ $(document).ready(function() {
         let response = await data.text();
         try {
           let productos =  JSON.parse(response);
-          console.log(productos);
+          // console.log(productos);
           let template = ``;
           productos.forEach(producto => {
             template += `

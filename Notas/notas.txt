@@ -17,3 +17,5 @@ Faltantes
 - No funciona la URL para notificaciones, funciona desde la campanita solo, Revisar (SOLUCIONADO)
 9. Time en Historial de Mi Perfil
 - Actualizar el tiempo del historial como aparece en las preguntas del producto
+10. Problemas Iniciar Sesion
+- No tengo la mas palidad idea de porque el iniciar sesion de la pagina principal no funca, el index.php main

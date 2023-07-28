@@ -13,6 +13,7 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="Util/Css/adminlte.min.css">
   <link rel="stylesheet" href="Util/Css/sweetalert2.min.css">
+  <link rel="stylesheet" href="Util/Css/select2.min.css">
   <link rel="icon" type="image/png" href="Util/Img/Logos/LogoCentennials.png">
 </head> 
 <style>

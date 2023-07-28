@@ -79,14 +79,14 @@
                     <div class="mailbox-controls">
                         <button type="button" title="Seleccionador grupal" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
                         </button>
-                        <button type="button" title="Eliminar grupo seleccionado" class="btn btn-default btn-sm">
+                        <button type="button" title="Eliminar grupo seleccionado" class="btn btn-default btn-sm eliminar_mensajes">
                             <i class="far fa-trash-alt"></i>
                         </button>
                         <button type="button" title="Actualizar mensajes" class="btn btn-default btn-sm">
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
-                    <table id="mensajes_recibidos" class="table table-hover">
+                    <table id="mensajes_recibidos" class="table table-hover mailbox-messages">
                         <thead>
                             <tr>
                                 <th></th>
@@ -456,6 +456,7 @@ $(document).ready(function(){
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();
+            read_mensajes_recibidos();
             CloseLoader();
           } else {
             location.href = '../login.php';
@@ -472,12 +473,178 @@ $(document).ready(function(){
         });
       }
     }
-    $(document).on('click', '.eliminar_fav', (e)=> {
-      let elemento = $(this)[0].activeElement;
-      let id = $(elemento).attr('attrid');
-      eliminar_favorito(id);
-      // console.log(id);
-    })
+
+    async function read_mensajes_recibidos() {
+      funcion = "read_mensajes_recibidos";
+      let data = await fetch('../../Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let mensajes = JSON.parse(response);
+          $('#mensajes_recibidos').DataTable({
+            data: mensajes,
+            "aaShorting": [],
+            "searching": true,
+            "scrollX": false,
+            "autoWidth": false,
+            "responsive": true,
+            "processing": true,
+            columns: [
+              { 
+                "render": function(data, type, datos, meta) {
+                  return `
+                  <div class="icheck-primary">
+                    <input class="select" type="checkbox" value="${datos.id}">
+                    <label for="check1"></label>
+                  </div>`;
+                } 
+              },
+              {
+                "render": function(data, type, datos, meta) {
+                  if(datos.favorito == '1'){
+                    return `<i class="fas fa-star text-warning"></i>`;
+                  } else {
+                    return `<i class="far fa-star"></i>`;
+                  }
+                } 
+              },
+              { 
+                "render": function(data, type, datos, meta) {
+                  let variable;
+                  if(datos.abierto == '0'){
+                    variable = `<a style="color: #000" href="#"><strong>${datos.emisor}</strong></a>`;
+                  } else {
+                    variable = `<a style="color: #000" href="#">${datos.emisor}</a>`;
+                  }
+                  return variable;
+                } 
+              },
+              { 
+                "render": function(data, type, datos, meta) { 
+                  let variable;
+                  if(datos.abierto == '0'){
+                    variable = `<a style="color: #000" href="#"><strong>${datos.asunto}</strong></a>`;
+                  } else {
+                    variable = `<a style="color: #000" href="#">${datos.asunto}</a>`;
+                  }
+                  return variable;
+                } 
+              },
+              {
+                "data": "fecha_creacion"
+              },
+            ],
+            "destroy": true, 
+            "language": espanol
+          })
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
+    //Enable check and uncheck all functionality
+    $('.checkbox-toggle').click(function () {
+      var clicks = $(this).data('clicks');
+      let inactivo = $('.checkbox-toggle').hasClass('inactivo');
+      let activo = $('.checkbox-toggle').hasClass('activo');
+      if (clicks) {
+        //Uncheck all checkboxes
+        if (inactivo == true) {
+          $('.checkbox-toggle').removeClass('inactivo').addClass('activo');
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', true);
+          $('.checkbox-toggle .far.fa-square').removeClass('fa-square').addClass('fa-check-square');
+        } else {
+          $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
+          $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
+        }
+      } else {
+        //Check all checkboxes
+        if (inactivo == false) {
+          $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
+          $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
+        } else {
+          $('.checkbox-toggle').removeClass('inactivo').addClass('activo');
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', true);
+          $('.checkbox-toggle .far.fa-square').removeClass('fa-square').addClass('fa-check-square');
+        }
+      }
+      $(this).data('clicks', !clicks);
+    });
+
+    $('#mensajes_recibidos').on('draw.dt', function() {
+      $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
+      $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
+      $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
+    });
+
+    async function eliminar_mensajes(eliminados) {
+      funcion = "eliminar_mensajes";
+      let data = await fetch('Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          if(response != ''){
+          // location.href = '../index.php';
+            let sesion = JSON.parse(response);
+            llenar_menu_superior(sesion);
+            llenar_menu_lateral(sesion);
+            $('#active_nav_mensajes').addClass('active');
+            $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
+            $('usuario_menu').text(sesion.user);
+            read_notificaciones();
+            read_favoritos();
+            read_mensajes_recibidos();
+            CloseLoader();
+          } else {
+            location.href = '../login.php';
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $('.eliminar_mensajes').on('draw.dt', function() {
+      let seleccionados = $('.select');
+      let eliminados = [];
+      $.each(seleccionados, function(index, input){
+        if($(input).prop('checked').val()) {
+          eliminados.push($(input).val());
+        }
+      });
+      if(eliminados.length != 0) {
+        eliminar_mensajes(eliminados);
+      } else {
+        toastr.warning('Seleccione los mensajes que desea eliminar', 'No se elimino');
+      }
+      $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
+      $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
+      $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
+    });
 
     // Loader
     function Loader(mensaje){

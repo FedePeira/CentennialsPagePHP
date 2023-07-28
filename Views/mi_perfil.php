@@ -778,6 +778,52 @@ $(document).ready(function() {
       $('#menu_lateral').html(template);
     }
 
+    async function verificar_sesion() {
+      funcion = "verificar_sesion";
+      let data = await fetch('../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        // console.log(response);
+        try {
+          if(response != ''){
+          // location.href = '../index.php';
+            let sesion = JSON.parse(response);
+            // console.log(sesion);
+            llenar_menu_superior(sesion);
+            llenar_menu_lateral(sesion);
+            $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
+            $('usuario_menu').text(sesion.user);
+            read_notificaciones();
+            read_favoritos();
+            mostrar_card_usuario();
+            mostrar_card_direcciones();
+            mostrar_historial();
+            llenar_departamentos();
+            CloseLoader();
+          } else {
+            // llenar_menu_superior();
+            // llenar_menu_lateral();
+            location.href = 'login.php';
+          }
+          // setTimeout(verificar_sesion, 2000);
+
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
     async function mostrar_card_usuario(){
       funcion = "obtener_datos";
       let data = await fetch('../Controllers/UsuarioController.php', {
@@ -1022,50 +1068,6 @@ $(document).ready(function() {
         });
       }
     } 
-
-    async function verificar_sesion() {
-      funcion = "verificar_sesion";
-      let data = await fetch('../Controllers/UsuarioController.php', {
-        method:'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion
-      });
-      if(data.ok){
-        let response = await data.text();
-        try {
-          if(response != ''){
-          // location.href = '../index.php';
-            let sesion = JSON.parse(response);
-            llenar_menu_superior(sesion);
-            llenar_menu_lateral(sesion);
-            $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
-            $('usuario_menu').text(sesion.user);
-            read_notificaciones();
-            read_favoritos();
-            mostrar_card_usuario();
-            mostrar_card_direcciones();
-            mostrar_historial();
-            llenar_departamentos();
-            CloseLoader();
-          } else {
-            // llenar_menu_superior();
-            // llenar_menu_lateral();
-            location.href = 'login.php';
-          }
-          // setTimeout(verificar_sesion, 2000);
-
-        } catch(error) {
-          console.error(error);
-          console.log(response);
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: data.statusText,
-          text: 'Hubo conflicto de codigo: ' + data.status,
-        });
-      }
-    }
 
     /*
     function obtener_datos() {

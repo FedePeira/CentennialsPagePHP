@@ -1309,7 +1309,7 @@ $(document).ready(function(){
         //console.log(response);
         try {
           let respuesta =  JSON.parse(response);
-          // console.log(respuesta);
+          console.log(respuesta);
           if(respuesta.mensaje == 'success') {
             Swal.fire({
               position: 'center',
