@@ -29,3 +29,63 @@
         $jsonstring =  json_encode($json);
         echo $jsonstring;
     }   
+
+    if($_POST['funcion'] == 'eliminar_mensajes'){
+        $id_usuario = $_SESSION['id'];
+        $eliminados = json_decode($_POST['eliminados']);
+        $bandera = '1';
+        foreach($eliminados as $objeto) {
+            $formateado = str_replace(" ","+", $objeto);
+            $id_mensaje = openssl_decrypt($formateado, CODE, KEY);
+            if(is_numeric($id_mensaje)) {
+                $destino->eliminar_mensajes($id_mensaje);
+                $descripcion = 'Ha eliminado un mensaje';
+                $historial->crear_historial($descripcion, 3, 8, $id_usuario);
+            } else {
+                $bandera = '0';
+            }
+        }
+        if($bandera == '1') {
+            // Correcto
+            $json = array(
+                'mensaje'=>'success',
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            // Vulnero el sistema
+            echo 'error';
+        }
+    }   
+    
+    if($_POST['funcion'] == 'agregar_favorito'){
+        $id_usuario = $_SESSION['id'];
+        $formateado = str_replace(" ","+", $_POST['id']);
+        $id_mensaje = openssl_decrypt($formateado, CODE, KEY);
+        if(is_numeric($id_mensaje)) {
+            $destino->agregar_favorito($id_mensaje);
+            $json = array(
+                'mensaje'=>'success',
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    } 
+    
+    if($_POST['funcion'] == 'remover_favorito'){
+        $id_usuario = $_SESSION['id'];
+        $formateado = str_replace(" ","+", $_POST['id']);
+        $id_mensaje = openssl_decrypt($formateado, CODE, KEY);
+        if(is_numeric($id_mensaje)) {
+            $destino->remover_favorito($id_mensaje);
+            $json = array(
+                'mensaje'=>'success',
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    } 

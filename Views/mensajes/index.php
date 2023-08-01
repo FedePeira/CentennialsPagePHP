@@ -82,7 +82,7 @@
                         <button type="button" title="Eliminar grupo seleccionado" class="btn btn-default btn-sm eliminar_mensajes">
                             <i class="far fa-trash-alt"></i>
                         </button>
-                        <button type="button" title="Actualizar mensajes" class="btn btn-default btn-sm">
+                        <button type="button" title="Actualizar mensajes" class="btn btn-default btn-sm actualizar_mensajes">
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
@@ -112,6 +112,14 @@
 $(document).ready(function(){
     Loader();
     verificar_sesion();
+    toastr.options = {
+      'debug': false,
+      'positionClass': 'toast-top-right',
+      'onclick': null,
+      'fadeIn': 300,
+      'fadeOut': 1000,
+      'extendedTimeOut': 1000,
+    }
     async function read_notificaciones(){
       funcion = "read_notificaciones";
       let data = await fetch('../../Controllers/NotificacionController.php', {
@@ -498,7 +506,7 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) {
                   return `
                   <div class="icheck-primary">
-                    <input class="select" type="checkbox" value="${datos.id}">
+                    <input class="select " type="checkbox" value="${datos.id}">
                     <label for="check1"></label>
                   </div>`;
                 } 
@@ -506,9 +514,9 @@ $(document).ready(function(){
               {
                 "render": function(data, type, datos, meta) {
                   if(datos.favorito == '1'){
-                    return `<i class="fas fa-star text-warning"></i>`;
+                    return `<i data-id="${datos.id}" class="fav fas fa-star text-warning"></i>`;
                   } else {
-                    return `<i class="far fa-star"></i>`;
+                    return `<i data-id="${datos.id}" class="nofav far fa-star"></i>`;
                   }
                 } 
               },
@@ -593,32 +601,26 @@ $(document).ready(function(){
 
     async function eliminar_mensajes(eliminados) {
       funcion = "eliminar_mensajes";
-      let data = await fetch('Controllers/DestinoController.php', {
+      let data = await fetch('../../Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion
+        body: 'funcion=' + funcion + '&&eliminados=' + JSON.stringify(eliminados)
       });
       if(data.ok){
         let response = await data.text();
         try {
-          if(response != ''){
-          // location.href = '../index.php';
-            let sesion = JSON.parse(response);
-            llenar_menu_superior(sesion);
-            llenar_menu_lateral(sesion);
-            $('#active_nav_mensajes').addClass('active');
-            $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
-            $('usuario_menu').text(sesion.user);
-            read_notificaciones();
-            read_favoritos();
+          let respuesta = JSON.parse(response);
+          if(respuesta.mensaje == 'success') {
+            toastr.success('Seccion de mensaje eliminado', 'Eliminados!');
             read_mensajes_recibidos();
-            CloseLoader();
-          } else {
-            location.href = '../login.php';
           }
         } catch(error) {
           console.error(error);
           console.log(response);
+          if(respuesta.mensaje == 'error') {
+            toastr.success('Algunos mensajes no se borraron ya que alguno de ellos fueron vulnerados', 'Error al eliminar!');
+            read_mensajes_recibidos();
+          }
         }
       } else {
         Swal.fire({
@@ -628,11 +630,11 @@ $(document).ready(function(){
         });
       }
     }
-    $('.eliminar_mensajes').on('draw.dt', function() {
+    $(document).on('click', '.eliminar_mensajes', function() {
       let seleccionados = $('.select');
       let eliminados = [];
       $.each(seleccionados, function(index, input){
-        if($(input).prop('checked').val()) {
+        if($(input).prop('checked')==true) {
           eliminados.push($(input).val());
         }
       });
@@ -641,9 +643,84 @@ $(document).ready(function(){
       } else {
         toastr.warning('Seleccione los mensajes que desea eliminar', 'No se elimino');
       }
-      $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
-      $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
-      $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
+    });
+
+    async function agregar_favorito(id) {
+      funcion = "agregar_favorito";
+      let data = await fetch('../../Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          //console.log(sesion);
+          if(respuesta.mensaje == 'success') {
+            toastr.success('El mensaje se agrego a favoritos', 'Agregado!');
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error') {
+            toastr.success('No intente vulnerar el sistema', 'Error!');
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.nofav', function(){
+      $this = $(this);
+      let id = $this.data('id');
+      $this.removeClass('nofav far fa-star').addClass('fav fas fa-star text-warning');
+      agregar_favorito(id);
+    });
+
+    async function remover_favorito(id) {
+      funcion = "remover_favorito";
+      let data = await fetch('../../Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          if(respuesta.mensaje == 'success') {
+            toastr.success('El mensaje se removio de favoritos', 'Removido!');
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error') {
+            toastr.error('No intente vulnerar el sistema', 'Error!');
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.fav', function(){
+      $this = $(this);
+      let id = $this.data('id');
+      $this.removeClass('fav fas fa-star text-warning').addClass('nofav far fa-star');
+      remover_favorito(id);
+    });
+
+    $(document).on('click', '.actualizar_mensajes', function() {
+      toastr.info('Mensajes actualizados', 'Actualizado');
+      read_mensajes_recibidos();
     });
 
     // Loader

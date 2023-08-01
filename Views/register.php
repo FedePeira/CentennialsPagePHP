@@ -136,14 +136,13 @@ $(document).ready(function () {
   // setTimeout(verificar_sesion, 2000);
   verificar_sesion();
   toastr.options = {
-      'debug': false,
-      'positionClass': 'toast-bottom-full-width',
-      'onclick': null,
-      'fadeIn': 300,
-      'fadeOut': 1000,
-      'timeOut': 5000,
-      'extendedTimeOut': 1000,
-    }
+    'debug': false,
+    'positionClass': 'toast-top-right',
+    'onclick': null,
+    'fadeIn': 300,
+    'fadeOut': 1000,
+    'extendedTimeOut': 1000,
+  }
 
   async function verificar_sesion() {
     funcion = "verificar_sesion";

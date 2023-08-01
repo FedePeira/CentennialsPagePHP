@@ -6,6 +6,7 @@
                 $db = new Conexion();
                 $this->acceso = $db->pdo;
             }
+
             function read_mensajes_recibidos($id_usuario){
                 $sql = "SELECT 
                         d.id as id,
@@ -45,4 +46,36 @@
                     $query->execute($variables);
             }
 
+            function eliminar_mensajes($id_mensaje){
+                $sql = "UPDATE destino SET estado=:estado
+                        WHERE id=:id_mensaje";
+                    $query = $this->acceso->prepare($sql);
+                    $variables=array(
+                        ':estado' => 'I',
+                        ':id_mensaje' => $id_mensaje,
+                    );
+                    $query->execute($variables);
+            }
+
+            function remover_favorito($id_mensaje){
+                $sql = "UPDATE destino SET favorito=:favorito
+                        WHERE id=:id_mensaje";
+                    $query = $this->acceso->prepare($sql);
+                    $variables = array(
+                        ':favorito' => 0,
+                        ':id_mensaje' => $id_mensaje,
+                    );
+                    $query->execute($variables);
+            }
+
+            function agregar_favorito($id_mensaje){
+                $sql = "UPDATE destino SET favorito=:favorito
+                        WHERE id=:id_mensaje";
+                    $query = $this->acceso->prepare($sql);
+                    $variables=array(
+                        ':favorito' => 1,
+                        ':id_mensaje' => $id_mensaje,
+                    );
+                    $query->execute($variables);
+            }
     }
