@@ -417,12 +417,12 @@ $(document).ready(function() {
       });
       if(data.ok){
         let response = await data.text();
-        console.log(response);
+        // console.log(response);
         try {
           if(response != ''){
           // location.href = '../index.php';
             let sesion = JSON.parse(response);
-            console.log(sesion);
+            // console.log(sesion);
             llenar_menu_superior(sesion);
             llenar_menu_lateral(sesion);
             $('#avatar_menu').attr('src', 'Util/Img/Users/' + sesion.avatar);

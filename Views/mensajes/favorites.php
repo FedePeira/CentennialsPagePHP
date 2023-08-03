@@ -1,18 +1,18 @@
 <?php
   include_once 'layouts/header.php';
 ?>
-    <title>Mensajes | CodeWar</title>
+    <title>Favoritos | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Mensajes</h1>
+            <h1>Favoritos</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Mensajes</li>
+              <li class="breadcrumb-item active">Favoritos</li>
             </ol>
           </div>
         </div>
@@ -35,7 +35,7 @@
                     <div class="card-body p-0">
                         <ul class="nav nav-pills flex-column">
                             <li class="nav-item">
-                            <a href="#" class="nav-link active">
+                            <a href="../mensajes" class="nav-link">
                                 <i class="fas fa-inbox"></i> Recibidos
                                 <span class="badge bg-primary float-right">12</span>
                             </a>
@@ -46,7 +46,7 @@
                             </a>
                             </li>
                             <li class="nav-item">
-                            <a href="favorites.php" class="nav-link">
+                            <a href="#" class="nav-link active">
                                 <i class="far fa-star"></i> Favoritos
                             </a>
                             </li>
@@ -62,7 +62,7 @@
             <div class="col-md-9">
               <div class="card card-info">
                 <div class="card-header">
-                  <h3 class="card-title">Recibidos</h3>
+                  <h3 class="card-title">Favoritos</h3>
     
                   <div class="card-tools">
                     <div class="input-group input-group-sm">
@@ -86,7 +86,7 @@
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
-                    <table id="mensajes_recibidos" class="table table-hover mailbox-messages">
+                    <table id="mensajes_favoritos" class="table table-hover mailbox-messages">
                         <thead>
                             <tr class="table-primary">
                                 <th></th>
@@ -464,7 +464,7 @@ $(document).ready(function(){
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();
-            read_mensajes_recibidos();
+            read_mensajes_favoritos();
             CloseLoader();
           } else {
             location.href = '../login.php';
@@ -482,8 +482,8 @@ $(document).ready(function(){
       }
     }
 
-    async function read_mensajes_recibidos() {
-      funcion = "read_mensajes_recibidos";
+    async function read_mensajes_favoritos() {
+      funcion = "read_mensajes_favoritos";
       let data = await fetch('../../Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -493,7 +493,7 @@ $(document).ready(function(){
         let response = await data.text();
         try {
           let mensajes = JSON.parse(response);
-          $('#mensajes_recibidos').DataTable({
+          $('#mensajes_favoritos').DataTable({
             data: mensajes,
             "aaShorting": [],
             "searching": true,
@@ -524,9 +524,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) {
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=r&&id=${datos.id}"><strong>${datos.emisor}</strong></a>`;
+                    variable = `<a style="color: #000" href="read.php?option=f&&id=${datos.id}"><strong>${datos.emisor}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=r&&id=${datos.id}">${datos.emisor}</a>`;
+                    variable = `<a style="color: #000" href="read.php?option=f&&id=${datos.id}">${datos.emisor}</a>`;
                   }
                   return variable;
                 } 
@@ -535,9 +535,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) { 
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=r&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
+                    variable = `<a style="color: #000" href="read.php?option=f&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=r&&id=${datos.id}">${datos.asunto}</a>`;
+                    variable = `<a style="color: #000" href="read.php?option=f&&id=${datos.id}">${datos.asunto}</a>`;
                   }
                   return variable;
                 } 
@@ -612,14 +612,14 @@ $(document).ready(function(){
           let respuesta = JSON.parse(response);
           if(respuesta.mensaje == 'success') {
             toastr.success('Seccion de mensaje eliminado', 'Eliminados!');
-            read_mensajes_recibidos();
+            read_mensajes_favoritos();
           }
         } catch(error) {
           console.error(error);
           console.log(response);
           if(respuesta.mensaje == 'error') {
             toastr.error('Algunos mensajes no se borraron ya que alguno de ellos fueron vulnerados', 'Error al eliminar!');
-            read_mensajes_recibidos();
+            read_mensajes_favoritos();
           }
         }
       } else {
@@ -720,7 +720,7 @@ $(document).ready(function(){
 
     $(document).on('click', '.actualizar_mensajes', function() {
       toastr.info('Mensajes actualizados', 'Actualizado');
-      read_mensajes_recibidos();
+      read_mensajes_favoritos();
     });
 
     // Loader
