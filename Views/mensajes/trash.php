@@ -1,22 +1,18 @@
 <?php
-  if(!empty($_GET['id'])&&!empty($_GET['option'])) {
-    session_start();
-    $_SESSION['message-verification'] = $_GET['id'];
-    $_SESSION['message-option'] = $_GET['option'];
-include_once 'layouts/header.php';
+  include_once 'layouts/header.php';
 ?>
-    <title>Read | CodeWar</title>
+    <title>Papelera | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h5 id="titulo_mensaje"></h5>
+            <h1>Papelera</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Read</li>
+              <li class="breadcrumb-item active">Papelera</li>
             </ol>
           </div>
         </div>
@@ -39,42 +35,78 @@ include_once 'layouts/header.php';
                     <div class="card-body p-0">
                         <ul class="nav nav-pills flex-column">
                             <li class="nav-item">
-                              <a id="recibidos" href="../mensajes/" class="nav-link">
-                                  <i class="fas fa-inbox"></i> Recibidos
-                                  <span class="badge bg-primary float-right">12</span>
-                              </a>
+                            <a href="../mensajes" class="nav-link ">
+                                <i class="fas fa-inbox"></i> Recibidos
+                                <span class="badge bg-primary float-right">12</span>
+                            </a>
                             </li>
                             <li class="nav-item">
-                              <a id="enviados" href="#" class="nav-link">
-                                  <i class="far fa-envelope"></i> Enviados
-                              </a>
+                            <a href="#" class="nav-link">
+                                <i class="far fa-envelope"></i> Enviados
+                            </a>
                             </li>
                             <li class="nav-item">
-                              <a id="favoritos" href="favorites.php" class="nav-link">
-                                  <i class="far fa-star"></i> Favoritos
-                              </a>
+                            <a href="favorites.php" class="nav-link">
+                                <i class="far fa-star"></i> Favoritos
+                            </a>
                             </li>
                             <li class="nav-item">
-                              <a id="papelera" href="trash.php" class="nav-link">
-                                  <i class="far fa-trash-alt"></i> Papelera
-                              </a>
+                            <a href="#" class="nav-link active">
+                                <i class="far fa-trash-alt"></i> Papelera
+                            </a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="col-md-9">
-              <div id="contenido_mensaje" class="card card-info">
-                
+              <div class="card card-info">
+                <div class="card-header">
+                  <h3 class="card-title">Papelera</h3>
+    
+                  <div class="card-tools">
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control" placeholder="Search Mail">
+                      <div class="input-group-append">
+                        <div class="btn btn-primary">
+                          <i class="fas fa-search"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="mailbox-controls">
+                        <button type="button" title="Seleccionador grupal" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
+                        </button>
+                        <button type="button" title="Eliminar grupo seleccionado" class="btn btn-default btn-sm eliminar_mensajes">
+                            <i class="far fa-trash-alt"></i> Eliminar definitivamente
+                        </button>
+                        <button type="button" title="Actualizar mensajes" class="btn btn-default btn-sm actualizar_mensajes">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <table id="mensajes_papelera" class="table table-hover mailbox-messages">
+                        <thead>
+                            <tr class="table-primary">
+                                <th></th>
+                                <th></th>
+                                <th>Emisor</th>
+                                <th>Asunto</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
               </div>
             </div>
         </div>
     </section>
 <?php
   include_once 'layouts/footer.php';
-} else {
-  header('Location: ../../index.php');
-}
 ?>
 <script>
 $(document).ready(function(){
@@ -432,7 +464,7 @@ $(document).ready(function(){
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();
-            abrir_mensaje();
+            read_mensajes_papelera();
             CloseLoader();
           } else {
             location.href = '../login.php';
@@ -450,8 +482,8 @@ $(document).ready(function(){
       }
     }
 
-    async function abrir_mensaje() {
-      funcion = "abrir_mensaje";
+    async function read_mensajes_papelera() {
+      funcion = "read_mensajes_papelera";
       let data = await fetch('../../Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -460,90 +492,63 @@ $(document).ready(function(){
       if(data.ok){
         let response = await data.text();
         try {
-          let mensaje = JSON.parse(response);
-          $('#titulo_mensaje').text(mensaje.asunto);
-          switch(mensaje.option) {
-            case 'r':
-              $('#recibidos').addClass('active');
-              break;
-            case 'e':
-              $('#enviados').addClass('active');
-              break;
-            case 'f':
-              $('#favoritos').addClass('active');
-              break;
-            case 'p':
-              $('#papelera').addClass('active');
-              break;
-          }
-          let template = `
-                  <div class="card-header">
-                  </div>
-
-                  <div class="card-body p-0">
-                    <div class="mailbox-read-info">
-                      <h5>${mensaje.asunto}</h5>
-                      <h6>De: ${mensaje.emisor}
-                        <span class="mailbox-read-time float-right">${mensaje.fecha_creacion}</span></h6>
-                    </div>
-                    <!-- /.mailbox-read-info -->
-                    <div class="mailbox-controls with-border text-center">
-                      <div class="btn-group">`;
-                      if(mensaje.option=='r'||mensaje.option=='e'||mensaje.option=='f') {
-                        // eliminacion logica
-                        template += `
-                        <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default btn-sm" data-container="body" title="Eliminar">
-                          <i class="far fa-trash-alt"></i>
-                        </button>`;
-                      } else {
-                        // eliminacion fisica
-                        template += `
-                        <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default btn-sm" data-container="body" title="Eliminar">
-                          <i class="far fa-trash-alt"></i> Eliminar definitivamente
-                        </button>`;
-                      }
-          template += `
-                        <button type="button" class="btn btn-default btn-sm" data-container="body" title="Responder">
-                          <i class="fas fa-reply"></i>
-                        </button>
-                      </div>
-                      <button type="button" class="btn btn-default btn-sm" title="Imprimir">
-                        <i class="fas fa-print"></i>
-                      </button>
-                      <div class="h4 float-right mr-2"> `;
-                        if(mensaje.option=='r'||mensaje.option=='e'||mensaje.option=='f') {
-                          if(mensaje.favorito == "1") {
-                            template+= `<i data-id="${mensaje.id}" class="fav fas fa-star text-warning"></i>`;
-                          } else {
-                            template+= `<i data-id="${mensaje.id}" class="nofav fas fa-star"></i>`;
-                          }
-                        }
-          template+= `</div>
-                    </div>
-                    <div class="mailbox-read-message">
-                      ${mensaje.contenido}
-                    </div>
-                  </div>
-                  <div class="card-footer">
-                    <div class="float-right">
-                      <button type="button" class="btn btn-default"><i class="fas fa-reply"></i></button>
-                    </div>`;
-                    if(mensaje.option=='r'||mensaje.option=='e'||mensaje.option=='f') {
-                      if(mensaje.favorito == "1") {
-                        template+=`
-                        <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default">
-                          <i class="far fa-trash-alt"></i>
-                        </button>`;
-                      } else {
-                        template+= `
-                        <button id="${mensaje.id}" type="button" class="eliminar_mensaje_definitivamente btn btn-default">
-                          <i class="far fa-trash-alt"></i> Eliminar definitivamente
-                        </button>`;
-                      }
-                    }
-                  ` <button type="button" class="btn btn-default"><i class="fas fa-print"></i></button>
+          let mensajes = JSON.parse(response);
+          $('#mensajes_papelera').DataTable({
+            data: mensajes,
+            "aaShorting": [],
+            "searching": true,
+            "scrollX": false,
+            "autoWidth": false,
+            "responsive": true,
+            "processing": true,
+            columns: [
+              { 
+                "render": function(data, type, datos, meta) {
+                  return `
+                  <div class="icheck-primary">
+                    <input class="select " type="checkbox" value="${datos.id}">
+                    <label for="check1"></label>
                   </div>`;
-          $('#contenido_mensaje').html(template);
+                } 
+              },
+              {
+                "render": function(data, type, datos, meta) {
+                  if(datos.favorito == '1'){
+                    return `<i class="fas fa-star text-warning"></i>`;
+                  } else {
+                    return `<i class="far fa-star"></i>`;
+                  }
+                } 
+              },
+              { 
+                "render": function(data, type, datos, meta) {
+                  let variable;
+                  if(datos.abierto == '0'){
+                    variable = `<a style="color: #000" href="read.php?option=p&&id=${datos.id}"><strong>${datos.emisor}</strong></a>`;
+                  } else {
+                    variable = `<a style="color: #000" href="read.php?option=p&&id=${datos.id}">${datos.emisor}</a>`;
+                  }
+                  return variable;
+                } 
+              },
+              { 
+                "render": function(data, type, datos, meta) { 
+                  let variable;
+                  if(datos.abierto == '0'){
+                    variable = `<a style="color: #000" href="read.php?option=p&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
+                  } else {
+                    variable = `<a style="color: #000" href="read.php?option=p&&id=${datos.id}">${datos.asunto}</a>`;
+                  }
+                  return variable;
+                } 
+              },
+              {
+                "data": "fecha_creacion"
+              },
+            ],
+            "destroy": true, 
+            "language": espanol
+          })
         } catch(error) {
           console.error(error);
           console.log(response);
@@ -557,162 +562,64 @@ $(document).ready(function(){
       }
     }
 
-    async function eliminar_mensaje(id) {
-      funcion = "eliminar_mensaje";
-      let data = await fetch('../../Controllers/DestinoController.php', {
-        method:'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id=' + id
-      });
-      if(data.ok){
-        let response = await data.text();
-        try {
-          let respuesta = JSON.parse(response);
-          if(respuesta.mensaje=='success') {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Se elimino el mensaje',
-              showConfirmButton: false,
-              timer: 1000
-            }).then(function() {
-              switch(respuesta.option) {
-                case 'r':
-                  location.href = '../mensajes';
-                  break;
-                case 'e':
-                  location.href = '';
-                  break;
-                case 'f':
-                  location.href = 'favorites.php';
-                  break;
-              }
-            });
-          }
-        } catch(error) {
-          console.error(error);
-          console.log(response);
-          if(respuesta.mensaje == 'error') {
-            toastr.error('No intente vulnerar el sistema', 'Error al eliminar!');
-          } else {
-            toastr.error('Hubo un error al eliminar', 'Error al eliminar!');
-          }
+    //Enable check and uncheck all functionality
+    $('.checkbox-toggle').click(function () {
+      var clicks = $(this).data('clicks');
+      let inactivo = $('.checkbox-toggle').hasClass('inactivo');
+      let activo = $('.checkbox-toggle').hasClass('activo');
+      if (clicks) {
+        //Uncheck all checkboxes
+        if (inactivo == true) {
+          $('.checkbox-toggle').removeClass('inactivo').addClass('activo');
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', true);
+          $('.checkbox-toggle .far.fa-square').removeClass('fa-square').addClass('fa-check-square');
+        } else {
+          $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
+          $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
         }
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: data.statusText,
-          text: 'Hubo conflicto de codigo: ' + data.status,
-        });
+        //Check all checkboxes
+        if (inactivo == false) {
+          $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
+          $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
+        } else {
+          $('.checkbox-toggle').removeClass('inactivo').addClass('activo');
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', true);
+          $('.checkbox-toggle .far.fa-square').removeClass('fa-square').addClass('fa-check-square');
+        }
       }
-    }
-    $(document).on('click', '.eliminar_mensaje', function(){
-      let elemento = $(this)[0].activeElement;
-      let id = $(elemento).attr('id');
-      eliminar_mensaje(id);
+      $(this).data('clicks', !clicks);
     });
 
-    async function eliminar_mensaje_definitivamente(id) {
-      funcion = "eliminar_mensaje_definitivamente";
-      let data = await fetch('../../Controllers/DestinoController.php', {
-        method:'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id=' + id
-      });
-      if(data.ok){
-        let response = await data.text();
-        try {
-          let respuesta = JSON.parse(response);
-          if(respuesta.mensaje=='success') {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Se elimino el mensaje',
-              showConfirmButton: false,
-              timer: 1000
-            }).then(function() {
-              location.href = 'trash.php';
-            });
-          }
-        } catch(error) {
-          console.error(error);
-          console.log(response);
-          if(respuesta.mensaje == 'error') {
-            toastr.error('No intente vulnerar el sistema', 'Error al eliminar!');
-          } else {
-            toastr.error('Hubo un error al eliminar', 'Error al eliminar!');
-          }
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: data.statusText,
-          text: 'Hubo conflicto de codigo: ' + data.status,
-        });
-      }
-    }
-    $(document).on('click', '.eliminar_mensaje_definitivamente', function(){
-      let elemento = $(this)[0].activeElement;
-      let id = $(elemento).attr('id');
-      eliminar_mensaje_definitivamente(id);
+    $('#mensajes_recibidos').on('draw.dt', function() {
+      $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
+      $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
+      $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
     });
 
-    async function agregar_favorito(id) {
-      funcion = "agregar_favorito";
+    async function eliminar_mensajes_definitivamente(eliminados) {
+      funcion = "eliminar_mensajes_definitivamente";
       let data = await fetch('../../Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id=' + id
-      });
-      if(data.ok){
-        let response = await data.text();
-        try {
-          let respuesta = JSON.parse(response);
-          //console.log(sesion);
-          if(respuesta.mensaje == 'success') {
-            toastr.success('El mensaje se agrego a favoritos', 'Agregado!');
-          }
-        } catch(error) {
-          console.error(error);
-          console.log(response);
-          if(response == 'error') {
-            toastr.success('No intente vulnerar el sistema', 'Error!');
-          }
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: data.statusText,
-          text: 'Hubo conflicto de codigo: ' + data.status,
-        });
-      }
-    }
-    $(document).on('click', '.nofav', function(){
-      $this = $(this);
-      let id = $this.data('id');
-      $this.removeClass('nofav far fa-star').addClass('fav fas fa-star text-warning');
-      agregar_favorito(id);
-    });
-
-    async function remover_favorito(id) {
-      funcion = "remover_favorito";
-      let data = await fetch('../../Controllers/DestinoController.php', {
-        method:'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'funcion=' + funcion + '&&id=' + id
+        body: 'funcion=' + funcion + '&&eliminados=' + JSON.stringify(eliminados)
       });
       if(data.ok){
         let response = await data.text();
         try {
           let respuesta = JSON.parse(response);
           if(respuesta.mensaje == 'success') {
-            toastr.success('El mensaje se removio de favoritos', 'Removido!');
+            toastr.success('Seccion de mensaje eliminado', 'Eliminados!');
+            read_mensajes_papelera();
           }
         } catch(error) {
           console.error(error);
           console.log(response);
-          if(response == 'error') {
-            toastr.error('No intente vulnerar el sistema', 'Error!');
+          if(respuesta.mensaje == 'error') {
+            toastr.error('Algunos mensajes no se borraron ya que alguno de ellos fueron vulnerados', 'Error al eliminar!');
+            read_mensajes_papelera();
           }
         }
       } else {
@@ -723,11 +630,24 @@ $(document).ready(function(){
         });
       }
     }
-    $(document).on('click', '.fav', function(){
-      $this = $(this);
-      let id = $this.data('id');
-      $this.removeClass('fav fas fa-star text-warning').addClass('nofav far fa-star');
-      remover_favorito(id);
+    $(document).on('click', '.eliminar_mensajes', function() {
+      let seleccionados = $('.select');
+      let eliminados = [];
+      $.each(seleccionados, function(index, input){
+        if($(input).prop('checked')==true) {
+          eliminados.push($(input).val());
+        }
+      });
+      if(eliminados.length != 0) {
+        eliminar_mensajes_definitivamente(eliminados);
+      } else {
+        toastr.warning('Seleccione los mensajes que desea eliminar', 'No se elimino');
+      }
+    });
+
+    $(document).on('click', '.actualizar_mensajes', function() {
+      toastr.info('Mensajes actualizados', 'Actualizado');
+      read_mensajes_papelera();
     });
 
     // Loader

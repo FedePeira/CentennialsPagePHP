@@ -46,12 +46,12 @@
                             </a>
                             </li>
                             <li class="nav-item">
-                            <a href="#" class="nav-link active">
+                            <a href="favorites.php" class="nav-link active">
                                 <i class="far fa-star"></i> Favoritos
                             </a>
                             </li>
                             <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="trash.php" class="nav-link">
                                 <i class="far fa-trash-alt"></i> Papelera
                             </a>
                             </li>
