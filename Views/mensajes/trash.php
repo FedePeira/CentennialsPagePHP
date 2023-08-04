@@ -1,6 +1,40 @@
 <?php
   include_once 'layouts/header.php';
 ?>
+    <!-- Modal Crear Mensaje -->
+    <div class="modal fade model-right" id="modal_crear_mensaje" role="dialog" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Crear marca</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-marca" enctype="multipart/form-data">
+              <div class="form-group">
+                <!-- Actual pass de Persona -->
+                <div class="form-group">
+                  <label for="para">Para:</label>
+                  <select name="para" id="para" class="form-control select2-info" style="width:100%"></select>
+                </div>
+                <div class="form-group">
+                  <label for="asunto">Asunto: </label>
+                  <input type="text" name="asunto" class="form-control" id="asunto" placeholder="Ingrese asunto">
+                </div>
+                <div class="form-group">
+                  <label for="contenido">Contenido: </label>
+                  <textarea type="text" style="height: 200px" name="contenido" id="contenido" class="form-control" placeholder="Ingrese contenido"></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="cerrar_modal_crear_mensaje" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Enviar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <title>Papelera | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -18,10 +52,32 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
+    <style>
+      .model .model-right .modal-dialog{
+        top: 320px;
+        max-width: 500px;
+        max-height: 500px;
+        min-height: calc(100vh - 0);
+      }
+
+      .model .model-right .show .modal-dialog{
+        transform: translate(0, 0);
+      }
+
+      .model .model-right .modal-content{
+        height: calc(100vh - 0);
+        overflow-y: auto;
+      }
+
+      .model .model-right .modal-dialog{
+        transform: translate(100%, 0);
+        margin: 0 0 0 auto;
+      }
+    </style>
     <section class="content">
         <div class="row">
             <div class="col-md-3">
-                <button class="btn btn-outline-info btn-block mb-3"><i class="fas fa-plus mr-2"></i>Redactar</button>
+              <button data-bs-toggle="modal" data-bs-target="#modal_crear_mensaje" class="btn btn-outline-info btn-block mb-3"><i class="fas fa-plus mr-2"></i>Redactar</button>
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Carpetas</h3>
@@ -41,7 +97,7 @@
                             </a>
                             </li>
                             <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="sent.php" class="nav-link">
                                 <i class="far fa-envelope"></i> Enviados
                             </a>
                             </li>
@@ -79,6 +135,9 @@
                     <div class="mailbox-controls">
                         <button type="button" title="Seleccionador grupal" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
                         </button>
+                        <button type="button" title="Restaurar grupo seleccionado" class="btn btn-default btn-sm restaurar_mensajes">
+                            <i class="fas fa-trash-restore"></i> Restaurar mensajes
+                        </button>
                         <button type="button" title="Eliminar grupo seleccionado" class="btn btn-default btn-sm eliminar_mensajes">
                             <i class="far fa-trash-alt"></i> Eliminar definitivamente
                         </button>
@@ -91,7 +150,7 @@
                             <tr class="table-primary">
                                 <th></th>
                                 <th></th>
-                                <th>Emisor</th>
+                                <th>E/D</th>
                                 <th>Asunto</th>
                                 <th>Fecha</th>
                             </tr>
@@ -120,6 +179,56 @@ $(document).ready(function(){
       'fadeOut': 1000,
       'extendedTimeOut': 1000,
     }
+
+    $('#modal_crear_mensaje').modal({
+      backdrop: "static",
+      keyboard: false
+    });
+
+    $('#para').select2({
+      placeholder: 'Seleccione un destinatario',
+      language: {
+        noResults: function(){
+          return "No hay resultado";
+        },
+        searching: function() {
+          return "Buscando....";
+        }
+      }
+    });
+
+    async function llenar_destinatarios() {
+      funcion = "llenar_destinatarios";
+      let data = await fetch('../../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let destinatarios = JSON.parse(response);
+          let template = '';
+          destinatarios.forEach(destinatario => {
+            template += `
+              <option value="${destinatario.id}">${destinatario.nombre_completo}</option>
+            `;
+          });
+          $('#para').html(template);
+          $('#para').val('').trigger('change');
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
     async function read_notificaciones(){
       funcion = "read_notificaciones";
       let data = await fetch('../../Controllers/NotificacionController.php', {
@@ -464,6 +573,7 @@ $(document).ready(function(){
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();
+            llenar_destinatarios();
             read_mensajes_papelera();
             CloseLoader();
           } else {
@@ -524,9 +634,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) {
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=p&&id=${datos.id}"><strong>${datos.emisor}</strong></a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.p}&&id=${datos.id}"><strong>${datos.E_D}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=p&&id=${datos.id}">${datos.emisor}</a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.p}&&id=${datos.id}">${datos.E_D}</a>`;
                   }
                   return variable;
                 } 
@@ -535,9 +645,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) { 
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=p&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.p}&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=p&&id=${datos.id}">${datos.asunto}</a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.p}&&id=${datos.id}">${datos.asunto}</a>`;
                   }
                   return variable;
                 } 
@@ -593,7 +703,7 @@ $(document).ready(function(){
       $(this).data('clicks', !clicks);
     });
 
-    $('#mensajes_recibidos').on('draw.dt', function() {
+    $('#mensajes_papelera').on('draw.dt', function() {
       $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
       $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
       $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
@@ -645,10 +755,141 @@ $(document).ready(function(){
       }
     });
 
+    async function restaurar_mensajes(eliminados) {
+      funcion = "restaurar_mensajes";
+      let data = await fetch('../../Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&eliminados=' + JSON.stringify(eliminados)
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          if(respuesta.mensaje == 'success') {
+            toastr.success('Seccion de mensaje restaurada', 'Eliminados!');
+            read_mensajes_papelera();
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(respuesta.mensaje == 'error') {
+            toastr.error('Algunos mensajes no se restauraron ya que alguno de ellos fueron vulnerados', 'Error al restaurar!');
+            read_mensajes_papelera();
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.restaurar_mensajes', function() {
+      let seleccionados = $('.select');
+      let eliminados = [];
+      $.each(seleccionados, function(index, input){
+        if($(input).prop('checked')==true) {
+          eliminados.push($(input).val());
+        }
+      });
+      if(eliminados.length != 0) {
+        restaurar_mensajes(eliminados);
+      } else {
+        toastr.warning('Seleccione los mensajes que desea eliminar', 'No se elimino');
+      }
+    });
+
     $(document).on('click', '.actualizar_mensajes', function() {
       toastr.info('Mensajes actualizados', 'Actualizado');
       read_mensajes_papelera();
     });
+
+    async function crear_mensaje(datos) {
+      let data = await fetch('../../Controllers/MensajeController.php', {
+        method:'POST',
+        body: datos
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          //console.log(sesion);
+          if(respuesta.mensaje == 'success') {
+            toastr.success('Mensaje enviado', 'Enviado!');
+            $('#form-mensaje').trigger('reset');
+            $('#para').val('').trigger('change');
+            $('#modal_crear_mensaje').modal('hide');
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error') {
+            toastr.success('No intente vulnerar el sistema', 'Error!');
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $.validator.setDefaults({
+      submitHandler: function () {
+        // alert('validado');
+        let funcion = "crear_mensaje";
+        let datos = new FormData($('#form-mensaje')[0]);
+        //console.log(datos);
+        datos.append('funcion', funcion); 
+        crear_mensaje(datos);
+      }
+    });
+    $('#form-marca_rechazar_sol').validate({
+      rules: {
+        para:{
+          required: true
+        }, 
+        asunto:{
+          required: true
+        }, 
+        contenido:{
+          required: true
+        }, 
+      },
+      messages: {
+        para: {
+          required: "*Este campo es obligatorio",
+        },
+        asunto: {
+          required: "*Este campo es obligatorio",
+        },
+        contenido: {
+          required: "*Este campo es obligatorio",
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+        $(element).removeClass('is-valid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+        $(element).addClass('is-valid')
+      }
+    });
+
+    $(document).on('click', '#cerrar_modal_cerrar_mensaje', function() {
+      $('#para').val('').trigger('change');
+      $('#modal_crear_mensaje').modal('hide');
+    });
+
 
     // Loader
     function Loader(mensaje){

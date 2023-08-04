@@ -35,18 +35,18 @@
         </div>
       </div>
     </div>
-    <title>Favoritos | CodeWar</title>
+    <title>Enviados | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Favoritos</h1>
+            <h1>Enviados</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Favoritos</li>
+              <li class="breadcrumb-item active">Enviados</li>
             </ol>
           </div>
         </div>
@@ -97,12 +97,12 @@
                             </a>
                             </li>
                             <li class="nav-item">
-                            <a href="sent.php" class="nav-link">
+                            <a href="#" class="nav-link active">
                                 <i class="far fa-envelope"></i> Enviados
                             </a>
                             </li>
                             <li class="nav-item">
-                            <a href="favorites.php" class="nav-link active">
+                            <a href="favorites.php" class="nav-link">
                                 <i class="far fa-star"></i> Favoritos
                             </a>
                             </li>
@@ -118,7 +118,7 @@
             <div class="col-md-9">
               <div class="card card-info">
                 <div class="card-header">
-                  <h3 class="card-title">Favoritos</h3>
+                  <h3 class="card-title">Enviados</h3>
     
                   <div class="card-tools">
                     <div class="input-group input-group-sm">
@@ -142,7 +142,7 @@
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
-                    <table id="mensajes_favoritos" class="table table-hover mailbox-messages">
+                    <table id="mensajes_enviados" class="table table-hover mailbox-messages">
                         <thead>
                             <tr class="table-primary">
                                 <th></th>
@@ -569,9 +569,9 @@ $(document).ready(function(){
             $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
-            llenar_destinatarios();
             read_favoritos();
-            read_mensajes_favoritos();
+            llenar_destinatarios();
+            read_mensajes_enviados();
             CloseLoader();
           } else {
             location.href = '../login.php';
@@ -589,8 +589,8 @@ $(document).ready(function(){
       }
     }
 
-    async function read_mensajes_favoritos() {
-      funcion = "read_mensajes_favoritos";
+    async function read_mensajes_enviados() {
+      funcion = "read_mensajes_recibidos";
       let data = await fetch('../../Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -600,7 +600,7 @@ $(document).ready(function(){
         let response = await data.text();
         try {
           let mensajes = JSON.parse(response);
-          $('#mensajes_favoritos').DataTable({
+          $('#mensajes_enviados').DataTable({
             data: mensajes,
             "aaShorting": [],
             "searching": true,
@@ -631,9 +631,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) {
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=${datos.f}&&id=${datos.id}"><strong>${datos.E_D}</strong></a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.e}&&id=${datos.id}"><strong>${datos.destino}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=${datos.f}&&id=${datos.id}">${datos.E_D}</a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.e}&&id=${datos.id}">${datos.destino}</a>`;
                   }
                   return variable;
                 } 
@@ -642,9 +642,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) { 
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=${datos.f}&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.e}&&id=${datos.id}"><strong>${datos.destino}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=${datos.f}&&id=${datos.id}">${datos.asunto}</a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.e}&&id=${datos.id}">${datos.destino}</a>`;
                   }
                   return variable;
                 } 
@@ -700,7 +700,7 @@ $(document).ready(function(){
       $(this).data('clicks', !clicks);
     });
 
-    $('#mensajes_favoritos').on('draw.dt', function() {
+    $('#mensajes_enviados').on('draw.dt', function() {
       $('.checkbox-toggle').removeClass('activo').addClass('inactivo');
       $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false);
       $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square');
@@ -719,14 +719,14 @@ $(document).ready(function(){
           let respuesta = JSON.parse(response);
           if(respuesta.mensaje == 'success') {
             toastr.success('Seccion de mensaje eliminado', 'Eliminados!');
-            read_mensajes_favoritos();
+            read_mensajes_enviados();
           }
         } catch(error) {
           console.error(error);
           console.log(response);
           if(respuesta.mensaje == 'error') {
             toastr.error('Algunos mensajes no se borraron ya que alguno de ellos fueron vulnerados', 'Error al eliminar!');
-            read_mensajes_favoritos();
+            read_mensajes_enviados();
           }
         }
       } else {
@@ -827,7 +827,7 @@ $(document).ready(function(){
 
     $(document).on('click', '.actualizar_mensajes', function() {
       toastr.info('Mensajes actualizados', 'Actualizado');
-      read_mensajes_favoritos();
+      read_mensajes_recibidos();
     });
 
     async function crear_mensaje(datos) {
@@ -913,7 +913,6 @@ $(document).ready(function(){
       $('#para').val('').trigger('change');
       $('#modal_crear_mensaje').modal('hide');
     });
-
 
     // Loader
     function Loader(mensaje){

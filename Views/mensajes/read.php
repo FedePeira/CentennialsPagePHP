@@ -45,7 +45,7 @@ include_once 'layouts/header.php';
                               </a>
                             </li>
                             <li class="nav-item">
-                              <a id="enviados" href="#" class="nav-link">
+                              <a id="enviados" href="sent.php" class="nav-link">
                                   <i class="far fa-envelope"></i> Enviados
                               </a>
                             </li>
@@ -463,16 +463,16 @@ $(document).ready(function(){
           let mensaje = JSON.parse(response);
           $('#titulo_mensaje').text(mensaje.asunto);
           switch(mensaje.option) {
-            case 'r':
+            case '1':
               $('#recibidos').addClass('active');
               break;
-            case 'e':
+            case '2':
               $('#enviados').addClass('active');
               break;
-            case 'f':
+            case '3':
               $('#favoritos').addClass('active');
               break;
-            case 'p':
+            case '4':
               $('#papelera').addClass('active');
               break;
           }
@@ -511,7 +511,7 @@ $(document).ready(function(){
                         <i class="fas fa-print"></i>
                       </button>
                       <div class="h4 float-right mr-2"> `;
-                        if(mensaje.option=='r'||mensaje.option=='e'||mensaje.option=='f') {
+                        if(mensaje.option=='1'||mensaje.option=='2'||mensaje.option=='3') {
                           if(mensaje.favorito == "1") {
                             template+= `<i data-id="${mensaje.id}" class="fav fas fa-star text-warning"></i>`;
                           } else {

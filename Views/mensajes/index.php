@@ -97,7 +97,7 @@
                             </a>
                             </li>
                             <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="sent.php" class="nav-link">
                                 <i class="far fa-envelope"></i> Enviados
                             </a>
                             </li>
@@ -631,9 +631,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) {
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=r&&id=${datos.id}"><strong>${datos.emisor}</strong></a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.r}&&id=${datos.id}"><strong>${datos.emisor}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=r&&id=${datos.id}">${datos.emisor}</a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.r}&&id=${datos.id}">${datos.emisor}</a>`;
                   }
                   return variable;
                 } 
@@ -642,9 +642,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) { 
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=r&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.r}&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=r&&id=${datos.id}">${datos.asunto}</a>`;
+                    variable = `<a style="color: #000" href="read.php?option=${datos.r}&&id=${datos.id}">${datos.asunto}</a>`;
                   }
                   return variable;
                 } 
