@@ -5,6 +5,40 @@
     $_SESSION['message-option'] = $_GET['option'];
 include_once 'layouts/header.php';
 ?>
+    <!-- Modal Crear Mensaje -->
+    <div class="modal fade model-right" id="modal_crear_mensaje" role="dialog" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Crear marca</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-marca" enctype="multipart/form-data">
+              <div class="form-group">
+                <!-- Actual pass de Persona -->
+                <div class="form-group">
+                  <label for="para">Para:</label>
+                  <select name="para" id="para" class="form-control select2-info" style="width:100%"></select>
+                </div>
+                <div class="form-group">
+                  <label for="asunto">Asunto: </label>
+                  <input type="text" name="asunto" class="form-control" id="asunto" placeholder="Ingrese asunto">
+                </div>
+                <div class="form-group">
+                  <label for="contenido">Contenido: </label>
+                  <textarea type="text" style="height: 200px" name="contenido" id="contenido" class="form-control" placeholder="Ingrese contenido"></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="cerrar_modal_crear_mensaje" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Enviar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <title>Read | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -22,6 +56,28 @@ include_once 'layouts/header.php';
         </div>
       </div><!-- /.container-fluid -->
     </section>
+    <style>
+      .model .model-right .modal-dialog{
+        top: 320px;
+        max-width: 500px;
+        max-height: 500px;
+        min-height: calc(100vh - 0);
+      }
+
+      .model .model-right .show .modal-dialog{
+        transform: translate(0, 0);
+      }
+
+      .model .model-right .modal-content{
+        height: calc(100vh - 0);
+        overflow-y: auto;
+      }
+
+      .model .model-right .modal-dialog{
+        transform: translate(100%, 0);
+        margin: 0 0 0 auto;
+      }
+    </style>
     <section class="content">
         <div class="row">
             <div class="col-md-3">
@@ -88,6 +144,56 @@ $(document).ready(function(){
       'fadeOut': 1000,
       'extendedTimeOut': 1000,
     }
+
+    $('#modal_crear_mensaje').modal({
+      backdrop: "static",
+      keyboard: false
+    });
+
+    $('#para').select2({
+      placeholder: 'Seleccione un destinatario',
+      language: {
+        noResults: function(){
+          return "No hay resultado";
+        },
+        searching: function() {
+          return "Buscando....";
+        }
+      }
+    });
+
+    async function llenar_destinatarios() {
+      funcion = "llenar_destinatarios";
+      let data = await fetch('../../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let destinatarios = JSON.parse(response);
+          let template = '';
+          destinatarios.forEach(destinatario => {
+            template += `
+              <option value="${destinatario.id}">${destinatario.nombre_completo}</option>
+            `;
+          });
+          $('#para').html(template);
+          $('#para').val('').trigger('change');
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+
     async function read_notificaciones(){
       funcion = "read_notificaciones";
       let data = await fetch('../../Controllers/NotificacionController.php', {
@@ -432,6 +538,7 @@ $(document).ready(function(){
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();
+            llenar_destinatarios();
             abrir_mensaje();
             CloseLoader();
           } else {
@@ -483,13 +590,13 @@ $(document).ready(function(){
                   <div class="card-body p-0">
                     <div class="mailbox-read-info">
                       <h5>${mensaje.asunto}</h5>
-                      <h6>De: ${mensaje.emisor}
+                      <h6>${mensaje.E_D}
                         <span class="mailbox-read-time float-right">${mensaje.fecha_creacion}</span></h6>
                     </div>
                     <!-- /.mailbox-read-info -->
                     <div class="mailbox-controls with-border text-center">
                       <div class="btn-group">`;
-                      if(mensaje.option=='r'||mensaje.option=='e'||mensaje.option=='f') {
+                      if(mensaje.option=='1'||mensaje.option=='2'||mensaje.option=='3') {
                         // eliminacion logica
                         template += `
                         <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default btn-sm" data-container="body" title="Eliminar">
@@ -528,7 +635,7 @@ $(document).ready(function(){
                     <div class="float-right">
                       <button type="button" class="btn btn-default"><i class="fas fa-reply"></i></button>
                     </div>`;
-                    if(mensaje.option=='r'||mensaje.option=='e'||mensaje.option=='f') {
+                    if(mensaje.option=='1'||mensaje.option=='2'||mensaje.option=='3') {
                       if(mensaje.favorito == "1") {
                         template+=`
                         <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default">
@@ -547,6 +654,9 @@ $(document).ready(function(){
         } catch(error) {
           console.error(error);
           console.log(response);
+          if(response == 'error' || response == 'danger'){
+            location.href = '../../index.php';
+          }
         }
       } else {
         Swal.fire({
@@ -728,6 +838,90 @@ $(document).ready(function(){
       let id = $this.data('id');
       $this.removeClass('fav fas fa-star text-warning').addClass('nofav far fa-star');
       remover_favorito(id);
+    });
+
+    async function crear_mensaje(datos) {
+      let data = await fetch('../../Controllers/MensajeController.php', {
+        method:'POST',
+        body: datos
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          //console.log(sesion);
+          if(respuesta.mensaje == 'success') {
+            toastr.success('Mensaje enviado', 'Enviado!');
+            $('#form-mensaje').trigger('reset');
+            $('#para').val('').trigger('change');
+            $('#modal_crear_mensaje').modal('hide');
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error') {
+            toastr.success('No intente vulnerar el sistema', 'Error!');
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $.validator.setDefaults({
+      submitHandler: function () {
+        // alert('validado');
+        let funcion = "crear_mensaje";
+        let datos = new FormData($('#form-mensaje')[0]);
+        //console.log(datos);
+        datos.append('funcion', funcion); 
+        crear_mensaje(datos);
+      }
+    });
+    $('#form-marca_rechazar_sol').validate({
+      rules: {
+        para:{
+          required: true
+        }, 
+        asunto:{
+          required: true
+        }, 
+        contenido:{
+          required: true
+        }, 
+      },
+      messages: {
+        para: {
+          required: "*Este campo es obligatorio",
+        },
+        asunto: {
+          required: "*Este campo es obligatorio",
+        },
+        contenido: {
+          required: "*Este campo es obligatorio",
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+        $(element).removeClass('is-valid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+        $(element).addClass('is-valid')
+      }
+    });
+
+    $(document).on('click', '#cerrar_modal_cerrar_mensaje', function() {
+      $('#para').val('').trigger('change');
+      $('#modal_crear_mensaje').modal('hide');
     });
 
     // Loader

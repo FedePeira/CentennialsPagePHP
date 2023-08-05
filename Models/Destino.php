@@ -64,14 +64,18 @@
                     $query->execute($variables);
             }
 
-            function abrir_mensaje($id_mensaje){
+            function abrir_mensaje($id_mensaje, $id_usuario){
                 $sql = "SELECT 
                         d.id as id,
+                        (SELECT CONCAT(u.nombres,' ',u.apellidos) FROM usuario u WHERE u.id=d.id_usuario) as destino,
                         d.asunto as asunto,
                         d.contenido as contenido,
                         d.abierto as abierto,
+                        d.abierto_emisor as abierto_emisor,
                         d.favorito as favorito,
+                        d.favorito_emisor as favorito_emisor,
                         d.estado as estado,
+                        d.estado_emisor as estado_emisor,
                         d.fecha_creacion as fecha_creacion,
                         d.fecha_edicion as fecha_edicion,
                         u.nombres as nombres,
@@ -79,16 +83,19 @@
                         FROM destino d
                         JOIN mensaje m ON d.id_mensaje=m.id
                         JOIN usuario u ON m.id_usuario=u.id
-                        WHERE d.id = :id_mensaje";
+                        WHERE d.id=:id_mensaje AND ((d.id_usuario=:id_usuario AND d.estado='A' AND d.estado_perm='A') OR (m.id_usuario=:id_usuario AND d.estado_emisor='A' AND d.estado_emisor_perm='A'))
+                        ORDER BY d.fecha_creacion DESC";
                 $query = $this->acceso->prepare($sql);
                 $variables=array(
                     ':id_mensaje' => $id_mensaje,
+                    ':id_usuario'=>$id_usuario
                 );
                 $query->execute($variables);
                 $this->objetos = $query->fetchAll();
                 return $this->objetos;
             }
 
+            // Mensaje Leido
             function mensaje_leido($id_mensaje){
                 $sql = "UPDATE destino SET abierto=:abierto
                         WHERE id=:id_mensaje";
@@ -100,9 +107,36 @@
                     $query->execute($variables);
             }
 
+            function mensaje_leido_emisor($id_mensaje){
+                $sql = "UPDATE destino SET abierto_emisor=:abierto_emisor
+                        WHERE id=:id_mensaje";
+                    $query = $this->acceso->prepare($sql);
+                    $variables=array(
+                        ':abierto_emisor' => 1,
+                        ':id_mensaje' => $id_mensaje,
+                    );
+                    $query->execute($variables);
+            }
+
+            // Verificar Usuario Mensaje
             function verificar_usuario_mensaje($id_usuario, $id_mensaje){
                 $sql = "SELECT *
                         FROM destino d
+                        WHERE d.id=:id_mensaje AND d.id_usuario=:id_usuario";
+                $query = $this->acceso->prepare($sql);
+                $variables=array(
+                    ':id_mensaje' => $id_mensaje,
+                    ':id_usuario' => $id_usuario
+                );
+                $query->execute($variables);
+                $this->objetos = $query->fetchAll();
+                return $this->objetos;
+            }
+
+            function verificar_usuario_mensaje_emisor($id_usuario, $id_mensaje){
+                $sql = "SELECT *
+                        FROM destino d
+                        JOIN mensaje m ON d.id_mensaje = m.id
                         WHERE d.id=:id_mensaje AND d.id_usuario=:id_usuario";
                 $query = $this->acceso->prepare($sql);
                 $variables=array(
@@ -139,10 +173,23 @@
 
             // Eliminar Mensajes
             function eliminar_mensaje_definitivamente($id_mensaje){
-                $sql = "DELETE FROM destino WHERE id=:id_mensaje";
+                $sql = "UPDATE destino SET estado_perm=:estado_perm
+                        WHERE id=:id_mensaje";
                     $query = $this->acceso->prepare($sql);
                     $variables=array(
                         ':id_mensaje' => $id_mensaje,
+                        ':estado_perm'=>'I'
+                    );
+                    $query->execute($variables);
+            }
+
+            function eliminar_mensaje_definitivamente_emisor($id_mensaje){
+                $sql = "UPDATE destino SET estado_emisor_perm=:estado_emisor_perm
+                        WHERE id=:id_mensaje";
+                    $query = $this->acceso->prepare($sql);
+                    $variables=array(
+                        ':id_mensaje' => $id_mensaje,
+                        ':estado_emisor_perm'=>'I'
                     );
                     $query->execute($variables);
             }
