@@ -52,6 +52,7 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
+    <!-- Estilos -->
     <style>
       .model .model-right .modal-dialog{
         top: 320px;
@@ -74,6 +75,7 @@
         margin: 0 0 0 auto;
       }
     </style>
+    <!-- Contenido del Index Mensajes -->
     <section class="content">
         <div class="row">
             <div class="col-md-3">
@@ -177,6 +179,7 @@ $(document).ready(function(){
       'extendedTimeOut': 1000,
     }
 
+    // Modal Default Destinatarios
     $('#modal_crear_mensaje').modal({
       backdrop: "static",
       keyboard: false
@@ -226,6 +229,8 @@ $(document).ready(function(){
       }
     }
 
+
+    // Funciones Regulares 
     async function read_notificaciones(){
       funcion = "read_notificaciones";
       let data = await fetch('../../Controllers/NotificacionController.php', {
@@ -550,6 +555,7 @@ $(document).ready(function(){
       $('#menu_lateral').html(template);
     }
 
+    // Funcion de comienzo del Script
     async function verificar_sesion() {
       funcion = "verificar_sesion";
       let data = await fetch('../../Controllers/UsuarioController.php', {
@@ -589,6 +595,7 @@ $(document).ready(function(){
       }
     }
 
+    // Funcion muestra todos los mensajes que hay
     async function read_mensajes_recibidos() {
       funcion = "read_mensajes_recibidos";
       let data = await fetch('../../Controllers/DestinoController.php', {

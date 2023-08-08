@@ -35,6 +35,32 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="modal_ver_mensaje_trash" role="dialog" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="asuntoi_modal"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <!-- Actual pass de Persona -->
+                <div class="form-group">
+                  <label for="E_D_modal"></label>
+                </div>
+                <div class="form-group">
+                  <label for="contenido_modal">Contenido:</label>
+                  <span id="contenido_modal"></span>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="cerrar_modal_crear_mensaje" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <title>Papelera | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -634,9 +660,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) {
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=${datos.p}&&id=${datos.id}"><strong>${datos.E_D}</strong></a>`;
+                    variable = `<a id="${datos.id}" asunto="${datos.asunto}" E_D="${datos.E_D}" favorito="${datos.favorito}" class="enviar_info_modal" href="" data-bs-toggle="modal" data-bs-target="#modal_ver_mensaje_trash" style="color: #000""><strong>${datos.E_D}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=${datos.p}&&id=${datos.id}">${datos.E_D}</a>`;
+                    variable = `<a id="${datos.id}" asunto="${datos.asunto}" E_D="${datos.E_D}" favorito="${datos.favorito}" class="enviar_info_modal" data-bs-toggle="modal" data-bs-target="#modal_ver_mensaje_trash" style="color: #000">${datos.E_D}</a>`;
                   }
                   return variable;
                 } 
@@ -645,9 +671,9 @@ $(document).ready(function(){
                 "render": function(data, type, datos, meta) { 
                   let variable;
                   if(datos.abierto == '0'){
-                    variable = `<a style="color: #000" href="read.php?option=${datos.p}&&id=${datos.id}"><strong>${datos.asunto}</strong></a>`;
+                    variable = `<a id="${datos.id}" asunto="${datos.asunto}" E_D="${datos.E_D}" favorito="${datos.favorito}" class="enviar_info_modal" data-bs-toggle="modal" data-bs-target="#modal_ver_mensaje_trash" style="color: #000"><strong>${datos.asunto}</strong></a>`;
                   } else {
-                    variable = `<a style="color: #000" href="read.php?option=${datos.p}&&id=${datos.id}">${datos.asunto}</a>`;
+                    variable = `<a id="${datos.id}" asunto="${datos.asunto}" E_D="${datos.E_D}" favorito="${datos.favorito}" class="enviar_info_modal" data-bs-toggle="modal" data-bs-target="#modal_ver_mensaje_trash" style="color: #000">${datos.asunto}</a>`;
                   }
                   return variable;
                 } 
@@ -890,6 +916,15 @@ $(document).ready(function(){
       $('#modal_crear_mensaje').modal('hide');
     });
 
+    $(document).on('click', '.enviar_info_modal', (e)=>{
+        let elemento = $(this)[0].activeElement;
+        let id = $(elemento).attr('id');
+        let asunto = $(elemento).attr('asunto');
+        let favorito = $(elemento).attr('favorito ');
+        let E_D = $(elemento).attr('E_D');
+        $('#asunto_modal').text(asunto);
+        $('#E_D_modal').text(E_D);
+    })
 
     // Loader
     function Loader(mensaje){

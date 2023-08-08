@@ -330,4 +330,18 @@
                 $this->objetos = $query->fetchAll();
                 return $this->objetos;
             }
+
+            function traer_informacion_mensaje($id_mensaje){
+                $sql = "SELECT m.id_usuario
+                        FROM destino d
+                        JOIN mensaje m ON d.id_mensaje = m.id
+                        WHERE d.id=:id_mensaje";
+                $query = $this->acceso->prepare($sql);
+                $variables=array(
+                    ':id_mensaje' => $id_mensaje,
+                );
+                $query->execute($variables);
+                $this->objetos = $query->fetchAll();
+                return $this->objetos;
+            }
     }

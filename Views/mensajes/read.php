@@ -14,9 +14,9 @@ include_once 'layouts/header.php';
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form id="form-marca" enctype="multipart/form-data">
-              <div class="form-group">
+            <form id="form-mensaje" enctype="multipart/form-data">
                 <!-- Actual pass de Persona -->
+                <input type="hidden" id="usuario_destino" name="usuario_destino">
                 <div class="form-group">
                   <label for="para">Para:</label>
                   <select name="para" id="para" class="form-control select2-info" style="width:100%"></select>
@@ -29,11 +29,10 @@ include_once 'layouts/header.php';
                   <label for="contenido">Contenido: </label>
                   <textarea type="text" style="height: 200px" name="contenido" id="contenido" class="form-control" placeholder="Ingrese contenido"></textarea>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" id="cerrar_modal_crear_mensaje" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-primary">Enviar</button>
-              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="cerrar_modal_crear_mensaje" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Enviar</button>
             </form>
           </div>
         </div>
@@ -81,7 +80,7 @@ include_once 'layouts/header.php';
     <section class="content">
         <div class="row">
             <div class="col-md-3">
-                <button class="btn btn-outline-info btn-block mb-3"><i class="fas fa-plus mr-2"></i>Redactar</button>
+                <button data-bs-toggle="modal" data-bs-target="#modal_crear_mensaje" class="btn btn-outline-info btn-block mb-3"><i class="fas fa-plus mr-2"></i>Redactar</button>
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Carpetas</h3>
@@ -595,36 +594,29 @@ $(document).ready(function(){
                     </div>
                     <!-- /.mailbox-read-info -->
                     <div class="mailbox-controls with-border text-center">
-                      <div class="btn-group">`;
-                      if(mensaje.option=='1'||mensaje.option=='2'||mensaje.option=='3') {
-                        // eliminacion logica
-                        template += `
+                      <div class="btn-group">
                         <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default btn-sm" data-container="body" title="Eliminar">
                           <i class="far fa-trash-alt"></i>
                         </button>`;
-                      } else {
-                        // eliminacion fisica
-                        template += `
-                        <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default btn-sm" data-container="body" title="Eliminar">
-                          <i class="far fa-trash-alt"></i> Eliminar definitivamente
-                        </button>`;
-                      }
+                        if(mensaje.option == '1' || mensaje.option == '3') {
+                          if(mensaje.estado_E_D == '0') {
+                            template += `
+                              <button id="${mensaje.id}" data-bs-toggle="modal" data-bs-target="#modal_crear_mensaje" type="button" class="btn btn-default btn-sm responder_mensaje" data-container="body" title="Responder">
+                                <i class="fas fa-reply"></i>
+                              </button>`;
+                          }
+                        }
           template += `
-                        <button type="button" class="btn btn-default btn-sm" data-container="body" title="Responder">
-                          <i class="fas fa-reply"></i>
-                        </button>
                       </div>
                       <button type="button" class="btn btn-default btn-sm" title="Imprimir">
                         <i class="fas fa-print"></i>
                       </button>
                       <div class="h4 float-right mr-2"> `;
-                        if(mensaje.option=='1'||mensaje.option=='2'||mensaje.option=='3') {
                           if(mensaje.favorito == "1") {
                             template+= `<i data-id="${mensaje.id}" class="fav fas fa-star text-warning"></i>`;
                           } else {
                             template+= `<i data-id="${mensaje.id}" class="nofav fas fa-star"></i>`;
                           }
-                        }
           template+= `</div>
                     </div>
                     <div class="mailbox-read-message">
@@ -632,23 +624,23 @@ $(document).ready(function(){
                     </div>
                   </div>
                   <div class="card-footer">
-                    <div class="float-right">
-                      <button type="button" class="btn btn-default"><i class="fas fa-reply"></i></button>
-                    </div>`;
-                    if(mensaje.option=='1'||mensaje.option=='2'||mensaje.option=='3') {
-                      if(mensaje.favorito == "1") {
-                        template+=`
-                        <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default">
-                          <i class="far fa-trash-alt"></i>
-                        </button>`;
-                      } else {
-                        template+= `
-                        <button id="${mensaje.id}" type="button" class="eliminar_mensaje_definitivamente btn btn-default">
-                          <i class="far fa-trash-alt"></i> Eliminar definitivamente
-                        </button>`;
-                      }
-                    }
-                  ` <button type="button" class="btn btn-default"><i class="fas fa-print"></i></button>
+                    <div class="float-right">`;
+                    if(mensaje.option == '1' || mensaje.option == '3') {
+                          if(mensaje.estado_E_D == '0') {
+                            template += `
+                              <button id="${mensaje.id}" data-bs-toggle="modal" data-bs-target="#modal_crear_mensaje" type="button" class="btn btn-default btn-sm responder_mensaje" data-container="body" title="Responder">
+                                <i class="fas fa-reply"></i>
+                              </button>`;
+                          }
+                        }
+          template += ` 
+                        </div>
+                      <button id="${mensaje.id}" type="button" class="eliminar_mensaje btn btn-default">
+                        <i class="far fa-trash-alt"></i>
+                      </button>
+                      <button type="button" class="btn btn-default">
+                        <i class="fas fa-print"></i>
+                      </button>
                   </div>`;
           $('#contenido_mensaje').html(template);
         } catch(error) {
@@ -687,13 +679,13 @@ $(document).ready(function(){
               timer: 1000
             }).then(function() {
               switch(respuesta.option) {
-                case 'r':
+                case '1':
                   location.href = '../mensajes';
                   break;
-                case 'e':
-                  location.href = '';
+                case '2':
+                  location.href = 'sent.php';
                   break;
-                case 'f':
+                case '3':
                   location.href = 'favorites.php';
                   break;
               }
@@ -852,6 +844,7 @@ $(document).ready(function(){
           //console.log(sesion);
           if(respuesta.mensaje == 'success') {
             toastr.success('Mensaje enviado', 'Enviado!');
+            $('#para').prop("disabled", false);
             $('#form-mensaje').trigger('reset');
             $('#para').val('').trigger('change');
             $('#modal_crear_mensaje').modal('hide');
@@ -920,9 +913,46 @@ $(document).ready(function(){
     });
 
     $(document).on('click', '#cerrar_modal_cerrar_mensaje', function() {
+      $('#para').prop("disabled", false);
       $('#para').val('').trigger('change');
       $('#modal_crear_mensaje').modal('hide');
     });
+
+    async function traer_informacion_mensaje(id) {
+      funcion = "traer_informacion_mensaje";
+      let data = await fetch('../../Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          $('#para').val(respuesta.id_usuario).trigger('change');
+          $('#usuario_destino').val(respuesta.id_usuario); 
+          $('#para').prop("disabled", true);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(response == 'error') {
+            toastr.success('No intente vulnerar el sistema', 'Error!');
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.responder_mensaje', function(){
+      let elemento = $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      traer_informacion_mensaje(id);
+    });
+
 
     // Loader
     function Loader(mensaje){
