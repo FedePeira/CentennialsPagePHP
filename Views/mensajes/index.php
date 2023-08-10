@@ -6,7 +6,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Crear marca</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Mensaje nuevo</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -93,9 +93,8 @@
                     <div class="card-body p-0">
                         <ul class="nav nav-pills flex-column">
                             <li class="nav-item">
-                            <a href="#" class="nav-link active">
-                                <i class="fas fa-inbox"></i> Recibidos
-                                <span class="badge bg-primary float-right">12</span>
+                            <a id="recibidos" href="#" class="nav-link active">
+                                
                             </a>
                             </li>
                             <li class="nav-item">
@@ -228,7 +227,6 @@ $(document).ready(function(){
         });
       }
     }
-
 
     // Funciones Regulares 
     async function read_notificaciones(){
@@ -578,6 +576,7 @@ $(document).ready(function(){
             read_favoritos();
             llenar_destinatarios();
             read_mensajes_recibidos();
+            obtener_contadores();
             CloseLoader();
           } else {
             location.href = '../login.php';
@@ -727,6 +726,7 @@ $(document).ready(function(){
           if(respuesta.mensaje == 'success') {
             toastr.success('Seccion de mensaje eliminado', 'Eliminados!');
             read_mensajes_recibidos();
+            obtener_contadores();
           }
         } catch(error) {
           console.error(error);
@@ -734,6 +734,7 @@ $(document).ready(function(){
           if(respuesta.mensaje == 'error') {
             toastr.error('Algunos mensajes no se borraron ya que alguno de ellos fueron vulnerados', 'Error al eliminar!');
             read_mensajes_recibidos();
+            obtener_contadores();
           }
         }
       } else {
@@ -835,6 +836,7 @@ $(document).ready(function(){
     $(document).on('click', '.actualizar_mensajes', function() {
       toastr.info('Mensajes actualizados', 'Actualizado');
       read_mensajes_recibidos();
+      obtener_contadores();
     });
 
     async function crear_mensaje(datos) {
@@ -878,7 +880,7 @@ $(document).ready(function(){
         crear_mensaje(datos);
       }
     });
-    $('#form-marca_rechazar_sol').validate({
+    $('#form-mensaje').validate({
       rules: {
         para:{
           required: true
@@ -920,6 +922,46 @@ $(document).ready(function(){
       $('#para').val('').trigger('change');
       $('#modal_crear_mensaje').modal('hide');
     });
+
+    async function obtener_contadores() {
+      funcion = "obtener_contadores";
+      let data = await fetch('../../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let contadores = JSON.parse(response);
+          let template = ``;
+          let template_1 = ``;
+          if(contadores.contador_mensajes>0) {
+            template = `
+              <i class="fas fa-inbox"></i> Recibidos
+              <span class="badge bg-warning float-right">${contadores.contador_mensajes}</span>
+            `;
+            template_1 = `Mensajes <span class="badge badge-warning right">${contadores.contador_mensajes}</span>`;
+          } else {
+            template = `
+            <i class="fas fa-inbox"></i> Recibidos
+            `;
+            template_1 = `Mensajes`;
+          }
+          $('#recibidos').html(template);
+          $('#nav_cont_mens').html(template_1);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
 
     // Loader
     function Loader(mensaje){

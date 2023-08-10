@@ -244,7 +244,16 @@
         $id_mensaje = openssl_decrypt($formateado, CODE, KEY);
         $bandera = '1';
         if(is_numeric($id_mensaje)) {
-            $destino->eliminar_mensaje_definitivamente($id_mensaje);
+            $destino->verificar_usuario_mensaje($id_usuario, $id_mensaje);
+            if(!empty($destino->objetos)){
+                // Mensaje recibido 
+                $destino->eliminar_mensaje_definitivamente($id_mensaje);
+                // echo 'mensaje recibido';
+            } else {
+                // Mensaje enviado
+                $destino->eliminar_mensaje_definitivamente_emisor($id_mensaje);
+                // echo 'mensaje enviado';
+            }
             $descripcion = 'Ha eliminado un mensaje definitivamente';
             $historial->crear_historial($descripcion, 3, 8, $id_usuario);
             $json = array(
@@ -439,3 +448,57 @@
             echo 'error';
         }
     }  
+
+    if($_POST['funcion'] == 'obtener_contenido_mensaje'){
+        $id_usuario = $_SESSION['id'];
+        $formateado = str_replace(" ","+", $_POST['id']);
+        $id_mensaje = openssl_decrypt($formateado, CODE, KEY);
+        if(is_numeric($id_mensaje)) {
+            $destino->obtener_contenido_mensaje($id_mensaje);
+            $json = array(
+                'contenido'=>$destino->objetos[0]->contenido,
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    }  
+
+    if($_POST['funcion'] == 'restaurar_mensaje'){
+        $id_usuario = $_SESSION['id'];
+        $formateado = str_replace(" ","+", $_POST['id']);
+        $id_mensaje = openssl_decrypt($formateado, CODE, KEY);
+        if(is_numeric($id_mensaje)) {
+            $destino->verificar_usuario_mensaje($id_usuario, $id_mensaje);
+            if(!empty($destino->objetos)){
+                // Mensaje recibido 
+                $destino->restaurar_mensaje($id_mensaje);
+                // echo 'mensaje recibido';
+            } else {
+                // Mensaje enviado
+                $destino->restaurar_mensaje_emisor($id_mensaje);
+                // echo 'mensaje enviado';
+            }
+            // $destino->eliminar_mensaje($id_mensaje);
+            $descripcion = 'Ha restaurado un mensaje';
+            $historial->crear_historial($descripcion, 1, 8, $id_usuario);
+            $json = array(
+                'mensaje'=>'success'
+            );
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        } else {
+            echo 'error';
+        }
+    } 
+
+    if($_POST['funcion'] == 'obtener_contadores'){
+        $id_usuario = $_SESSION['id'];
+        $destino->obtener_contadores_mensajes($id_usuario);
+        $json=array(
+            'contador_mensaje'=>$destino->objetos[0]->contador_mensaje
+        );
+        $jsonstring=json_encode($json);
+        echo $jsonstring;
+    } 

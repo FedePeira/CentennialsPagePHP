@@ -39,24 +39,23 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="asuntoi_modal"></h5>
+            <h5 class="modal-title" id="asunto_modal"></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-              <div class="form-group">
-                <!-- Actual pass de Persona -->
-                <div class="form-group">
-                  <label for="E_D_modal"></label>
-                </div>
-                <div class="form-group">
-                  <label for="contenido_modal">Contenido:</label>
-                  <span id="contenido_modal"></span>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" id="cerrar_modal_crear_mensaje" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              </div>
-            </form>
+            <div class="form-group">
+              <label id="E_D_modal"></label>
+            </div>
+            <div id="botones_trash" class="form-group">
+
+            </div>
+            <div class="form-group">
+              <label for="contenido_modal">Contenido:</label>
+              <span id="contenido_modal"></span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="cerrar_modal_crear_mensaje" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
           </div>
         </div>
       </div>
@@ -117,9 +116,8 @@
                     <div class="card-body p-0">
                         <ul class="nav nav-pills flex-column">
                             <li class="nav-item">
-                            <a href="../mensajes" class="nav-link ">
-                                <i class="fas fa-inbox"></i> Recibidos
-                                <span class="badge bg-primary float-right">12</span>
+                            <a id="recibidos" href="../mensajes" class="nav-link ">
+                                
                             </a>
                             </li>
                             <li class="nav-item">
@@ -601,6 +599,7 @@ $(document).ready(function(){
             read_favoritos();
             llenar_destinatarios();
             read_mensajes_papelera();
+            obtener_contadores();
             CloseLoader();
           } else {
             location.href = '../login.php';
@@ -749,6 +748,7 @@ $(document).ready(function(){
           if(respuesta.mensaje == 'success') {
             toastr.success('Seccion de mensaje eliminado', 'Eliminados!');
             read_mensajes_papelera();
+            obtener_contadores();
           }
         } catch(error) {
           console.error(error);
@@ -756,6 +756,7 @@ $(document).ready(function(){
           if(respuesta.mensaje == 'error') {
             toastr.error('Algunos mensajes no se borraron ya que alguno de ellos fueron vulnerados', 'Error al eliminar!');
             read_mensajes_papelera();
+            obtener_contadores();
           }
         }
       } else {
@@ -795,6 +796,7 @@ $(document).ready(function(){
           if(respuesta.mensaje == 'success') {
             toastr.success('Seccion de mensaje restaurada', 'Eliminados!');
             read_mensajes_papelera();
+            obtener_contadores();
           }
         } catch(error) {
           console.error(error);
@@ -802,6 +804,7 @@ $(document).ready(function(){
           if(respuesta.mensaje == 'error') {
             toastr.error('Algunos mensajes no se restauraron ya que alguno de ellos fueron vulnerados', 'Error al restaurar!');
             read_mensajes_papelera();
+            obtener_contadores();
           }
         }
       } else {
@@ -830,6 +833,7 @@ $(document).ready(function(){
     $(document).on('click', '.actualizar_mensajes', function() {
       toastr.info('Mensajes actualizados', 'Actualizado');
       read_mensajes_papelera();
+      obtener_contadores();
     });
 
     async function crear_mensaje(datos) {
@@ -916,15 +920,203 @@ $(document).ready(function(){
       $('#modal_crear_mensaje').modal('hide');
     });
 
+    async function obtener_contenido_mensaje(id) {
+      funcion = "obtener_contenido_mensaje";
+      let data = await fetch('../../Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          $('#contenido_modal').html(respuesta.contenido);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(respuesta.mensaje == 'error') {
+            toastr.error('Error', 'Error!');
+            // read_mensajes_papelera();
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
     $(document).on('click', '.enviar_info_modal', (e)=>{
-        let elemento = $(this)[0].activeElement;
+        let elemento =  e.target;
         let id = $(elemento).attr('id');
         let asunto = $(elemento).attr('asunto');
         let favorito = $(elemento).attr('favorito ');
         let E_D = $(elemento).attr('E_D');
+        obtener_contenido_mensaje(id);
         $('#asunto_modal').text(asunto);
+        console.log(E_D);
         $('#E_D_modal').text(E_D);
+        let template = `
+                    <div class="mailbox-controls with-border text-center">
+                      <div class="btn-group">
+                        <button id="${id}" type="button" class="eliminar_mensaje_definitivamente btn btn-default btn-sm" data-container="body" title="Eliminar definitivamente">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                        <button id="${id}" type="button" class="restaurar_mensaje eliminar_mensaje btn btn-default btn-sm" data-container="body" title="Restaurar mensaje">
+                          <i class="fas fa-trash-restore"></i>
+                        </button>
+                      </div>
+                      <button type="button" class="btn btn-default btn-sm" title="Imprimir">
+                        <i class="fas fa-print"></i>
+                      </button>
+                      <div class="h4 float-right mr-2"> `;
+                          if(favorito == "1") {
+                            template+= `<i class="fav fas fa-star text-warning"></i>`;
+                          } else {
+                            template+= `<i class="nofav fas fa-star"></i>`;
+                          }
+          template+= `</div>
+                    </div>
+        `;
+        $('#botones_trash').html(template);
     })
+    
+    async function eliminar_mensaje_definitivamente(id) {
+      funcion = "eliminar_mensaje_definitivamente";
+      let data = await fetch('../../Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let respuesta = JSON.parse(response);
+          if(respuesta.mensaje=='success') {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Se elimino el mensaje definativamente',
+              showConfirmButton: false,
+              timer: 1000
+            }).then(function() {
+              read_mensajes_papelera();
+              $('#modal_ver_mensajes_trash').modal('hide');
+            });
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(respuesta.mensaje == 'error') {
+            toastr.error('No intente vulnerar el sistema', 'Error al eliminar!');
+          } else {
+            toastr.error('Hubo un error al eliminar', 'Error al eliminar!');
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.eliminar_mensaje_definitivamente', (e)=>{
+      let elemento =  e.target;
+      let id = $(elemento).attr('id');
+      eliminar_mensaje_definitivamente(id);
+    })
+
+    async function restaurar_mensaje(id) {
+      funcion = "restaurar_mensaje";
+      let data = await fetch('../../Controllers/DestinoController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion + '&&id=' + id
+      });
+      if(data.ok){
+        let response = await data.text();
+        console.log(response);
+        try {
+          let respuesta = JSON.parse(response);
+          console.log(respuesta);
+          if(respuesta.mensaje=='success') {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Se elimino el mensaje',
+              showConfirmButton: false,
+              timer: 1000
+            }).then(function() {
+              read_mensajes_papelera();
+              obtener_contadores();
+              $('#modal_ver_mensajes_trash').modal('hide');
+            });
+          }
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+          if(respuesta.mensaje == 'error') {
+            toastr.error('No intente vulnerar el sistema', 'Error al eliminar!');
+          } else {
+            toastr.error('Hubo un error al eliminar', 'Error al eliminar!');
+          }
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
+    $(document).on('click', '.restaurar_mensaje', (e)=>{
+      let elemento =  $(this)[0].activeElement;
+      let id = $(elemento).attr('id');
+      restaurar_mensaje(id);
+    })
+
+    async function obtener_contadores() {
+      funcion = "obtener_contadores";
+      let data = await fetch('../../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let contadores = JSON.parse(response);
+          let template = ``;
+          let template_1 = ``;
+          if(contadores.contador_mensajes>0) {
+            template = `
+              <i class="fas fa-inbox"></i> Recibidos
+              <span class="badge bg-warning float-right">${contadores.contador_mensajes}</span>
+            `;
+            template_1 = `Mensajes <span class="badge badge-warning right">${contadores.contador_mensajes}</span>`;
+          } else {
+            template = `
+            <i class="fas fa-inbox"></i> Recibidos
+            `;
+            template_1 = `Mensajes`;
+          }
+          $('#recibidos').html(template);
+          $('#nav_cont_mens').html(template_1);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
 
     // Loader
     function Loader(mensaje){

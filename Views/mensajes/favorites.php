@@ -91,25 +91,24 @@
                     <div class="card-body p-0">
                         <ul class="nav nav-pills flex-column">
                             <li class="nav-item">
-                            <a href="../mensajes" class="nav-link">
-                                <i class="fas fa-inbox"></i> Recibidos
-                                <span class="badge bg-primary float-right">12</span>
-                            </a>
+                              <a id="recibidos" href="../mensajes" class="nav-link">
+                                  
+                              </a>
                             </li>
                             <li class="nav-item">
-                            <a href="sent.php" class="nav-link">
-                                <i class="far fa-envelope"></i> Enviados
-                            </a>
+                              <a href="sent.php" class="nav-link">
+                                  <i class="far fa-envelope"></i> Enviados
+                              </a>
                             </li>
                             <li class="nav-item">
-                            <a href="favorites.php" class="nav-link active">
-                                <i class="far fa-star"></i> Favoritos
-                            </a>
+                              <a href="favorites.php" class="nav-link active">
+                                  <i class="far fa-star"></i> Favoritos
+                              </a>
                             </li>
                             <li class="nav-item">
-                            <a href="trash.php" class="nav-link">
-                                <i class="far fa-trash-alt"></i> Papelera
-                            </a>
+                              <a href="trash.php" class="nav-link">
+                                  <i class="far fa-trash-alt"></i> Papelera
+                              </a>
                             </li>
                         </ul>
                     </div>
@@ -572,6 +571,7 @@ $(document).ready(function(){
             llenar_destinatarios();
             read_favoritos();
             read_mensajes_favoritos();
+            obtener_contadores();
             CloseLoader();
           } else {
             location.href = '../login.php';
@@ -720,6 +720,7 @@ $(document).ready(function(){
           if(respuesta.mensaje == 'success') {
             toastr.success('Seccion de mensaje eliminado', 'Eliminados!');
             read_mensajes_favoritos();
+            obtener_contadores();
           }
         } catch(error) {
           console.error(error);
@@ -727,6 +728,7 @@ $(document).ready(function(){
           if(respuesta.mensaje == 'error') {
             toastr.error('Algunos mensajes no se borraron ya que alguno de ellos fueron vulnerados', 'Error al eliminar!');
             read_mensajes_favoritos();
+            obtener_contadores();
           }
         }
       } else {
@@ -828,6 +830,7 @@ $(document).ready(function(){
     $(document).on('click', '.actualizar_mensajes', function() {
       toastr.info('Mensajes actualizados', 'Actualizado');
       read_mensajes_favoritos();
+      obtener_contadores();
     });
 
     async function crear_mensaje(datos) {
@@ -914,6 +917,45 @@ $(document).ready(function(){
       $('#modal_crear_mensaje').modal('hide');
     });
 
+    async function obtener_contadores() {
+      funcion = "obtener_contadores";
+      let data = await fetch('../../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let contadores = JSON.parse(response);
+          let template = ``;
+          let template_1 = ``;
+          if(contadores.contador_mensajes>0) {
+            template = `
+              <i class="fas fa-inbox"></i> Recibidos
+              <span class="badge bg-warning float-right">${contadores.contador_mensajes}</span>
+            `;
+            template_1 = `Mensajes <span class="badge badge-warning right">${contadores.contador_mensajes}</span>`;
+          } else {
+            template = `
+            <i class="fas fa-inbox"></i> Recibidos
+            `;
+            template_1 = `Mensajes`;
+          }
+          $('#recibidos').html(template);
+          $('#nav_cont_mens').html(template_1);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
 
     // Loader
     function Loader(mensaje){
