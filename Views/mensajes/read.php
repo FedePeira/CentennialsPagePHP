@@ -538,7 +538,7 @@ $(document).ready(function(){
             read_notificaciones();
             read_favoritos();
             llenar_destinatarios();
-            abrir_mensaje();
+            abrir_mensaje().then()
             CloseLoader();
           } else {
             location.href = '../login.php';
@@ -567,6 +567,7 @@ $(document).ready(function(){
         let response = await data.text();
         try {
           let mensaje = JSON.parse(response);
+          obtener_contadores();
           $('#titulo_mensaje').text(mensaje.asunto);
           switch(mensaje.option) {
             case '1':
@@ -908,6 +909,45 @@ $(document).ready(function(){
       traer_informacion_mensaje(id);
     });
 
+    async function obtener_contadores() {
+      funcion = "obtener_contadores";
+      let data = await fetch('../../Controllers/UsuarioController.php', {
+        method:'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'funcion=' + funcion
+      });
+      if(data.ok){
+        let response = await data.text();
+        try {
+          let contadores = JSON.parse(response);
+          let template = ``;
+          let template_1 = ``;
+          if(contadores.contador_mensajes>0) {
+            template = `
+              <i class="fas fa-inbox"></i> Recibidos
+              <span class="badge bg-warning float-right">${contadores.contador_mensajes}</span>
+            `;
+            template_1 = `Mensajes <span class="badge badge-warning right">${contadores.contador_mensajes}</span>`;
+          } else {
+            template = `
+            <i class="fas fa-inbox"></i> Recibidos
+            `;
+            template_1 = `Mensajes`;
+          }
+          $('#recibidos').html(template);
+          $('#nav_cont_mens').html(template_1);
+        } catch(error) {
+          console.error(error);
+          console.log(response);
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: data.statusText,
+          text: 'Hubo conflicto de codigo: ' + data.status,
+        });
+      }
+    }
 
     // Loader
     function Loader(mensaje){

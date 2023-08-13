@@ -17,17 +17,22 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="Util/Js/jquery.min.js"></script>
+<script src="/Centennials/Util/Js/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="Util/Js/bootstrap.bundle.min.js"></script>
+<script src="/Centennials/Util/Js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="Util/Js/adminlte.min.js"></script>
+<script src="/Centennials/Util/Js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="Util/Js/demo.js"></script>
+<script src="/Centennials/Util/Js/demo.js"></script>
 <!-- Toastr -->
-<script src="Util/Js/toastr.min.js"></script> 
-
-<script src="Util/Js/bootstrap.min.js"></script>
-<script src="Util/Js/sweetalert2.min.js"></script>
+<script src="/Centennials/Util/Js/toastr.min.js"></script> 
+<script src="/Centennials/Util/Js/bootstrap.min.js"></script>
+<script src="/Centennials/Util/Js/sweetalert2.min.js"></script>
+<script src="/Centennials/Util/Js/select2.min.js"></script>
+<script src="/Centennials/Util/Js/jquery.dataTables.min.js"></script>
+<!-- Necesarios para el modal datos, el form -->
+<script src="/Centennials/Util/Js/jquery.validate.min.js"></script>
+<script src="/Centennials/Util/Js/additional-methods.min.js"></script>
+<script src="/Centennials/Util/Js/datatables.min.js"></script>
 </body>
 </html>

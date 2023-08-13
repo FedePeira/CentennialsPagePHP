@@ -1,3 +1,6 @@
+<?php
+  session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,17 +11,18 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../Util/Css/css/all.min.css">
+  <link rel="stylesheet" href="/Centennials/Util/Css/css/all.min.css">
   <!-- icheck bootstrap -->
   <!-- Theme style -->
-  <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
-  <link rel="stylesheet" href="../Util/Css/toastr.min.css">
+  <link rel="stylesheet" href="/Centennials/Util/Css/adminlte.min.css">
+  <link rel="stylesheet" href="/Centennials/Util/Css/toastr.min.css">
+  <link rel="icon" type="image/png" href="/Centennials/Util/img/logo.png">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <img src="../Util/Img/Logos/LogoCentennials.png" class="profile-user-img img-fluid img-circle">
-    <a href="../index.php"><b>Code</b>WAR</a>
+    <img src="/Centennials/Util/Img/Logos/LogoCentennials.png" class="profile-user-img img-fluid img-circle">
+    <a href="/Centennials/index.php"><b>Code</b>WAR</a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -77,17 +81,17 @@
 <!-- /.login-box -->
 
 <!-- jQuery -->
-<script src="../Util/Js/jquery.min.js"></script>
-<script src="../Util/Js/sweetalert2.min.js"></script>
+<script src="/Centennials/Util/Js/jquery.min.js"></script>
+<script src="/Centennials/Util/Js/sweetalert2.min.js"></script>
 
 <!--<script src="login.js"></script>-->
 
 <!-- Bootstrap 4 -->
-<script src="../Util/Js/bootstrap.bundle.min.js"></script>
+<script src="/Centennials/Util/Js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../Util/Js/adminlte.min.js"></script>
+<script src="/Centennials/Util/Js/adminlte.min.js"></script>
 
-<script src="../Util/Js/toastr.min.js"></script>
+<script src="/Centennials/Util/Js/toastr.min.js"></script>
 
 
 <script>
@@ -99,7 +103,7 @@
 
     async function verificar_sesion() {
       funcion = "verificar_sesion";
-      let data = await fetch('../Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -108,7 +112,7 @@
         let response = await data.text();
         try {
           if(response != ''){
-            location.href = '../index.php';
+            location.href = '/Centennials/index.php';
           } 
           CloseLoader();
         } catch(error) {
@@ -126,7 +130,7 @@
 
     async function login(user, pass) {
       funcion = "login";
-      let data = await fetch('../Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion + '&&user=' + user + '&&pass=' + pass
@@ -137,7 +141,7 @@
             let respuesta =  JSON.parse(response);
              if(respuesta.mensaje == 'logueado'){
                 toastr.success('* Logueado !!!');
-                location.href = '../index.php';
+                location.href = '/Centennials/index.php';
             } else if(respuesta.mensaje == 'error'){
                 toastr.error('* Usuario o contraseña incorrectas!');
             }

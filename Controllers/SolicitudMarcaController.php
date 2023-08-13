@@ -187,38 +187,38 @@
                 foreach($usuario->objetos as $objeto) {
                     if($objeto->id_tipo=='1') {
                         // mensaje root
-                        $asunto="Usuario root tiene usted una solicitud marca para revisar";
-                        $contenido2="Hola usuario root $objeto->nombres $objeto->apellidos revise mi solicitud de marca, si es que los datos son correctos
-                        por favor apruebelo, si no indiqueme los errores para corregirla y reenviarsela";
-                        $contenido = '
-                        <div class="card card-widget widget-user">
-                            <!-- Add the bg color to the header using any of the bg-* classes -->
-                            <div class="widget-user-header bg-info">
-                                <h3 class="widget-user-username">'.$nombre.'</h3>
-                                <h5 class="widget-user-desc">'.$desc.'</h5>
-                            </div>
-                            <div class="widget-user-image">
-                                <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/'.$img.'" alt="imagen marca">
-                            </div>
-                            <div class="card-footer">
-                                <div class="row">
-                                    <div class="col-sm-6 border-right">
-                                        <div class="description-block">
-                                            <h5 class="description-header">Solicitud marca creado por:</h5>
-                                            <span class="description-text">'.$nombre_usuario.'</span>
+                            $asunto="Usuario root tiene usted una solicitud marca para revisar";
+                            $contenido2="Hola usuario root $objeto->nombres $objeto->apellidos revise mi solicitud de marca, si es que los datos son correctos
+                            por favor apruebelo, si no indiqueme los errores para corregirla y reenviarsela";
+                            $contenido = '
+                            <div class="card card-widget widget-user">
+                                <!-- Add the bg color to the header using any of the bg-* classes -->
+                                <div class="widget-user-header bg-info">
+                                    <h3 class="widget-user-username">'.$nombre.'</h3>
+                                    <h5 class="widget-user-desc">'.$desc.'</h5>
+                                </div>
+                                <div class="widget-user-image">
+                                    <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/'.$img.'" alt="imagen marca">
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-sm-6 border-right">
+                                            <div class="description-block">
+                                                <h5 class="description-header">Solicitud marca creado por:</h5>
+                                                <span class="description-text">'.$nombre_usuario.'</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-sm-6 border-right">
-                                        <div class="description-block">
-                                            <h5 class="description-header">Mensajes:</h5>
-                                            <span class="description-text">'.$contenido2.'</span>
+                                        <div class="col-sm-6 border-right">
+                                            <div class="description-block">
+                                                <h5 class="description-header">Mensajes:</h5>
+                                                <span class="description-text">'.$contenido2.'</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        ';
-                        $destino->crear($asunto, $contenido, $objeto->id, $id_mensaje);
+                            ';
+                            $destino->crear($asunto, $contenido, $objeto->id, $id_mensaje);
                     }
                     else if($objeto->id_tipo=='2'){
                         // mensaje para administradores
@@ -281,12 +281,50 @@
             $marca->buscar($nombre);
             if(empty($marca->objetos)) {
                 // se aprueba la solicitud
+                $mensaje->crear($id_usuario);
+                $mensaje->ultimo_mensaje();
+                $id_mensaje = $mensaje->objetos[0]->ultimo_mensaje;
+                $nombre_usuario = $_SESSION['nombre'];
                 $solicitud_marca->aprobar_solicitud($id_solicitud, $id_usuario);
                 // se crea la marca
                 $solicitud_marca->obtener_solicitud($id_solicitud);
                 $desc=$solicitud_marca->objetos[0]->descripcion;
                 $imagen=$solicitud_marca->objetos[0]->imagen;
+                $usuario_solicitud = $solicitud_marca->objetos[0]->id_usuario;
+                $usuario->obtener_datos($usuario_solicitud);
+                $nombres_apellidos=$usuario->objetos[0]->nombres.' '.$usuario->objetos[0]->apellidos;
                 $marca->crear($nombre, $desc, $imagen);
+                $asunto="Aprobe su solicitud: ".$nombre;
+                $contenido2="Hola usuario vendedor".$nombres_apellidos." He aprobado tu solicitud marca, todo estuvo correcto y la imagen esta legible.";
+                $contenido = '
+                <div class="card card-widget widget-user">
+                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                    <div class="widget-user-header bg-success">
+                        <h3 class="widget-user-username">'.$nombre.'</h3>
+                        <h5 class="widget-user-desc">'.$desc.'</h5>
+                    </div>
+                    <div class="widget-user-image">
+                        <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/'.$imagen.'" alt="imagen marca">
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-sm-6 border-right">
+                                <div class="description-block">
+                                    <h5 class="description-header">Solicitud aprobada por:</h5>
+                                    <span class="description-text">'.$nombre_usuario.'</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 border-right">
+                                <div class="description-block">
+                                    <h5 class="description-header">Mensajes:</h5>
+                                    <span class="description-text">'.$contenido2.'</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                ';
+                $destino->crear($asunto, $contenido, $usuario_solicitud, $id_mensaje);
                 $descripcion='Ha aprobado una solicitud marca, '.$nombre;
                 $historial->crear_historial($descripcion, 1, 7, $id_usuario);
                 $mensaje = 'success';
@@ -295,6 +333,46 @@
                 // rechazar la solicitud marca
                 $observacion = "No se aprobo la solicitud ya que existe una marca con el mismo nombre: ".$nombre;
                 $solicitud_marca->rechazar_solicitud($id_solicitud, $id_usuario, $observacion);
+                $mensaje->crear($id_usuario);
+                $mensaje->ultimo_mensaje();
+                $id_mensaje = $mensaje->objetos[0]->ultimo_mensaje;
+                $nombre_usuario = $_SESSION['nombre']; 
+                $solicitud_marca->obtener_solicitud($id_solicitud);
+                $desc=$solicitud_marca->objetos[0]->descripcion;
+                $imagen=$solicitud_marca->objetos[0]->imagen;
+                $usuario_solicitud = $solicitud_marca->objetos[0]->id_usuario;
+                $usuario->obtener_datos($usuario_solicitud);
+                $nombres_apellidos=$usuario->objetos[0]->nombres.' '.$usuario->objetos[0]->apellidos;
+                $asunto="Rechace su solicitud marca: ".$nombre;
+                $contenido2="Hola usuario vendedor".$nombres_apellidos.' '.$observacion;
+                $contenido = '
+                <div class="card card-widget widget-user">
+                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                    <div class="widget-user-header bg-danger">
+                        <h3 class="widget-user-username">'.$nombre.'</h3>
+                        <h5 class="widget-user-desc">'.$desc.'</h5>
+                    </div>
+                    <div class="widget-user-image">
+                        <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/'.$imagen.'" alt="imagen marca">
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-sm-6 border-right">
+                                <div class="description-block">
+                                    <h5 class="description-header">Solicitud rechazada por:</h5>
+                                    <span class="description-text">'.$nombre_usuario.'</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 border-right">
+                                <div class="description-block">
+                                    <h5 class="description-header">Mensajes:</h5>
+                                    <span class="description-text">'.$contenido2.'</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                ';
                 $descripcion = 'Ha rechazado una solicitud marca, '.$nombre;
                 $historial->crear_historial($descripcion, 1, 7, $id_usuario);
                 $mensaje = 'danger';
@@ -318,6 +396,46 @@
         $observaciones = $_POST['observaciones'];
         if(is_numeric($id_solicitud)){
             $solicitud_marca->rechazar_solicitud($id_solicitud, $id_usuario, $observaciones);
+            $mensaje->ultimo_mensaje();
+            $id_mensaje = $mensaje->objetos[0]->ultimo_mensaje;
+            $nombre_usuario = $_SESSION['nombre']; 
+            $solicitud_marca->obtener_solicitud($id_solicitud);
+            $desc=$solicitud_marca->objetos[0]->descripcion;
+            $imagen=$solicitud_marca->objetos[0]->imagen;
+            $usuario_solicitud = $solicitud_marca->objetos[0]->id_usuario;
+            $usuario->obtener_datos($usuario_solicitud);
+            $nombres_apellidos=$usuario->objetos[0]->nombres.' '.$usuario->objetos[0]->apellidos;
+            $asunto="Rechace su solicitud marca: ".$nombre;
+            $contenido2="Hola usuario vendedor".$nombres_apellidos.' '.$observaciones;
+            $contenido = '
+            <div class="card card-widget widget-user">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header bg-danger">
+                    <h3 class="widget-user-username">'.$nombre.'</h3>
+                    <h5 class="widget-user-desc">'.$desc.'</h5>
+                </div>
+                <div class="widget-user-image">
+                    <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/'.$imagen.'" alt="imagen marca">
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-sm-6 border-right">
+                            <div class="description-block">
+                                <h5 class="description-header">Solicitud rechazada por:</h5>
+                                <span class="description-text">'.$nombre_usuario.'</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 border-right">
+                            <div class="description-block">
+                                <h5 class="description-header">Mensajes:</h5>
+                                <span class="description-text">'.$contenido2.'</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            ';
+            $descripcion = 'Ha rechazado una solicitud marca, '.$nombre;
             $descripcion='Ha rechazado una solicitud marca, '.$nombre;
             $historial->crear_historial($descripcion, 1, 7, $id_usuario);
             $mensaje = 'success';

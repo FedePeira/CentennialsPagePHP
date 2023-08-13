@@ -1046,7 +1046,7 @@ $(document).ready(function(){
             Swal.fire({
               position: 'center',
               icon: 'success',
-              title: 'Se elimino el mensaje',
+              title: 'Se restauro el mensaje',
               showConfirmButton: false,
               timer: 1000
             }).then(function() {

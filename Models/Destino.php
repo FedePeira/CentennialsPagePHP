@@ -358,7 +358,7 @@
                 return $this->objetos;
             }
 
-            function obtener_cntadores_mensajes($id_usuario){
+            function obtener_contadores_mensajes($id_usuario){
                 $sql = "SELECT 
                         COUNT(*) as contador_mensaje
                         FROM destino d

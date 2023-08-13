@@ -1,5 +1,6 @@
 <?php
-  include_once 'Layouts/general/header.php';
+  session_start();
+  include_once $_SERVER["DOCUMENT_ROOT"].'/Centennials/Views/Layouts/header.php';
 ?>
     <!-- Modal Crear Marca -->
     <div class="modal fade" id="modal_crear_marca" role="dialog" >
@@ -57,7 +58,7 @@
                 <h5 id="widget_nombre_marca" class="widget-user-desc"></h5>
               </div>
               <div class="widget-user-image">
-                <img id="widget_imagen_marca" class="img-circle elevation-2" src="../dist/img/user1-128x128.jpg" alt="imagen marca">
+                <img id="widget_imagen_marca" class="img-circle elevation-2" src="/Centennials/dist/img/user1-128x128.jpg" alt="imagen marca">
               </div>
               <div class="card-footer">
                 <div class="row">
@@ -178,7 +179,7 @@
                 <h5 id="widget_nombre_sol" class="widget-user-desc"></h5>
               </div>
               <div class="widget-user-image">
-                <img id="widget_imagen_sol" class="img-circle elevation-2" src="../dist/img/user1-128x128.jpg" alt="imagen marca">
+                <img id="widget_imagen_sol" class="img-circle elevation-2" src="/Centennials/dist/img/user1-128x128.jpg" alt="imagen marca">
               </div>
               <div class="card-footer">
                 <div class="row">
@@ -256,7 +257,7 @@
                 <h5 id="widget_nombre_sol_rechazar" class="widget-user-desc"></h5>
               </div>
               <div class="widget-user-image">
-                <img id="widget_imagen_sol_rechazar" class="img-circle elevation-2" src="../dist/img/user1-128x128.jpg" alt="imagen marca">
+                <img id="widget_imagen_sol_rechazar" class="img-circle elevation-2" src="/Centennials/dist/img/user1-128x128.jpg" alt="imagen marca">
               </div>
               <div class="card-footer">
                 <div class="row">
@@ -300,7 +301,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="/Centennials/">Inicio</a></li>
               <li class="breadcrumb-item active">Marcas</li>
             </ol>
           </div>
@@ -376,7 +377,7 @@
 
     
 <?php
-  include_once 'Layouts/general/footer.php';
+  include_once $_SERVER["DOCUMENT_ROOT"].'/Centennials/Views/Layouts/footer.php';
 ?>
 <script>
 $(document).ready(function(){
@@ -398,7 +399,7 @@ $(document).ready(function(){
 
     async function read_notificaciones(){
       funcion = "read_notificaciones";
-      let data = await fetch('../Controllers/NotificacionController.php', {
+      let data = await fetch('/Centennials/Controllers/NotificacionController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -436,10 +437,10 @@ $(document).ready(function(){
           notificaciones.forEach(notificacion => {
             template += `
             <div class="dropdown-divider"></div>
-              <a href="../${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
+              <a href="/Centennials/${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="../Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <img src="/Centennials/Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       ${notificacion.titulo}
@@ -455,7 +456,7 @@ $(document).ready(function(){
             `;
           });
           template += `
-              <a href="../Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
+              <a href="/Centennials/Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
               </div>`;
           $('#notificacion').html(template);
         } catch(error) {
@@ -474,7 +475,7 @@ $(document).ready(function(){
 
     async function read_favoritos(){
       funcion = "read_favoritos";
-      let data = await fetch('../Controllers/FavoritoController.php', {
+      let data = await fetch('/Centennials/Controllers/FavoritoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -512,10 +513,10 @@ $(document).ready(function(){
           favoritos.forEach(favorito => {
             template += `
             <div class="dropdown-divider"></div>
-              <a href="../${favorito.url}" class="dropdown-item">
+              <a href="/Centennials/${favorito.url}" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="../Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <img src="/Centennials/Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       ${favorito.titulo}
@@ -530,7 +531,7 @@ $(document).ready(function(){
             `;
           });
           template += `
-              <a href="../Views/favoritos.php" class="dropdown-item dropdown-footer">ver todos tus favoritos</a>
+              <a href="/Centennials/Views/favoritos.php" class="dropdown-item dropdown-footer">ver todos tus favoritos</a>
             </div>`;
           $('#nav_cont_fav').html(template1);
           $('#favorito').html(template);
@@ -553,12 +554,12 @@ $(document).ready(function(){
       if(usuario===undefined || usuario == '' || usuario == null){
         template = `
         <li class="nav-item"> 
-          <a class="nav-link" href="../Views/register.php" role="button">
+          <a class="nav-link" href="/Centennials/Views/register.php" role="button">
             <i class="fas fa-user-plus"></i> Registrarse
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Views/login.php" role="button">
+          <a class="nav-link" href="/Centennials/Views/login.php" role="button">
             <i class="far fa-user"></i> Iniciar Sesion
           </a>
         </li>
@@ -575,7 +576,7 @@ $(document).ready(function(){
               <a href="#" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="../../dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                  <img src="/Centennials/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       Brad Diesel
@@ -591,7 +592,7 @@ $(document).ready(function(){
               <a href="#" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="../../dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <img src="/Centennials/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       John Pierce
@@ -607,7 +608,7 @@ $(document).ready(function(){
               <a href="#" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="../../dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <img src="/Centennials/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       Nora Silvester
@@ -632,13 +633,13 @@ $(document).ready(function(){
           </li>
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="../Util/Img/Users/${usuario.avatar}" width="30" height="30" class="img-fluid img-circle">
+                <img src="/Centennials/Util/Img/Users/${usuario.avatar}" width="30" height="30" class="img-fluid img-circle">
                 <spa>${usuario.user}</span>
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li><a class="dropdown-item" href="../Views/mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a></li>
+                <li><a class="dropdown-item" href="/Centennials/Views/mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a></li>
                 <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-basket"></i> Mis pedidos</a></li>
-                <li><a class="dropdown-item" href="../Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesion</a></li>
+                <li><a class="dropdown-item" href="/Centennials/Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesion</a></li>
               </ul>
           </li>
         `;
@@ -656,7 +657,7 @@ $(document).ready(function(){
         template = `
         <li class="nav-header">Perfil</li>
           <li id="nav_notificaciones" class="nav-item">
-            <a id="active_nav_notificaciones" href="../Views/notificaciones.php" class="nav-link">
+            <a id="active_nav_notificaciones" href="/Centennials/Views/notificaciones.php" class="nav-link">
               <i class="nav-icon far fa-bell"></i>
               <p id="nav_cont_noti">
                 Notificaciones
@@ -664,7 +665,7 @@ $(document).ready(function(){
             </a>
           </li>
           <li id="nav_favoritos" class="nav-item">
-            <a id="active_fav_favoritos" href="../Views/favoritos.php" class="nav-link">
+            <a id="active_fav_favoritos" href="/Centennials/Views/favoritos.php" class="nav-link">
               <i class="nav-icon far fa-heart"></i>
               <p id="nav_cont_fav">
                 Favoritos
@@ -672,7 +673,7 @@ $(document).ready(function(){
             </a>
           </li>
           <li id="nav_mensajes" class="nav-item">
-            <a id="active_fav_mensajes" href="../Views/mensajes/index.php" class="nav-link">
+            <a id="active_fav_mensajes" href="/Centennials/Views/mensajes/index.php" class="nav-link">
               <i class="nav-icon far fa-envelope"></i>
               <p id="nav_cont_mens">
                 Mensajes
@@ -682,7 +683,7 @@ $(document).ready(function(){
           if(usuario.tipo_usuario == 1){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="../Views/marcas.php" class="nav-link">
+              <a id="active_nav_marcas" href="/Centennials/Views/marcas.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -694,7 +695,7 @@ $(document).ready(function(){
           if(usuario.tipo_usuario == 2){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="../Views/marcas.php" class="nav-link">
+              <a id="active_nav_marcas" href="/Centennials/Views/marcas.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -706,7 +707,7 @@ $(document).ready(function(){
           if(usuario.tipo_usuario == 3){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="../Views/marcas.php" class="nav-link">
+              <a id="active_nav_marcas" href="/Centennials/Views/marcas.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -722,7 +723,7 @@ $(document).ready(function(){
 
     async function verificar_sesion() {
       funcion = "verificar_sesion";
-      let data = await fetch('../Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -731,13 +732,13 @@ $(document).ready(function(){
         let response = await data.text();
         try {
           if(response != ''){
-          // location.href = '../index.php';
+          // location.href = '/Centennials/index.php';
             let sesion = JSON.parse(response);
             if(sesion.tipo_usuario!=4) {
               llenar_menu_superior(sesion);
               llenar_menu_lateral(sesion);
               $('#active_nav_marcas').addClass('active');
-              $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
+              $('#avatar_menu').attr('src', '/Centennials/Util/Img/Users/' + sesion.avatar);
               $('usuario_menu').text(sesion.user);
               read_notificaciones();
               read_favoritos();
@@ -754,7 +755,7 @@ $(document).ready(function(){
                 $('#btn_ven').show();
               }
             } else {
-              location.href = '../index.php';
+              location.href = '/Centennials/index.php';
             }
           } else {
             location.href = 'login.php';
@@ -775,7 +776,7 @@ $(document).ready(function(){
     // Mostrar Marcas
     async function read_all_marcas(){
       funcion = "read_all_marcas";
-      let data = await fetch('../Controllers/MarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/MarcaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -799,7 +800,7 @@ $(document).ready(function(){
               { data: 'descripcion' },
               { 
                 "render": function(data, type, datos, meta) {
-                  return `<img width="100" height="100" src="../Util/Img/marca/${datos.imagen}">`;
+                  return `<img width="100" height="100" src="/Centennials/Util/Img/marca/${datos.imagen}">`;
                 } 
               },
               { data: 'fecha_creacion' },
@@ -837,7 +838,7 @@ $(document).ready(function(){
     // Mostrar Solicitudes
     async function read_tus_solicitudes(){
       funcion = "read_tus_solicitudes";
-      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -861,7 +862,7 @@ $(document).ready(function(){
               { data: 'descripcion' },
               { 
                 "render": function(data, type, datos, meta) {
-                  return `<img width="100" height="100" src="../Util/Img/marca/${datos.imagen}">`;
+                  return `<img width="100" height="100" src="/Centennials/Util/Img/marca/${datos.imagen}">`;
                 } 
               },  
               { 
@@ -935,7 +936,7 @@ $(document).ready(function(){
     // Mostrar Solicitudes
     async function read_solicitudes_por_aprobar(){
       funcion = "read_solicitudes_por_aprobar";
-      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -959,7 +960,7 @@ $(document).ready(function(){
               { data: 'descripcion' },
               { 
                 "render": function(data, type, datos, meta) {
-                  return `<img width="100" height="100" src="../Util/Img/marca/${datos.imagen}">`;
+                  return `<img width="100" height="100" src="/Centennials/Util/Img/marca/${datos.imagen}">`;
                 } 
               },  
               { data: "solicitante" },
@@ -991,7 +992,7 @@ $(document).ready(function(){
 
     // Crear Marca
     async function crear_marca(datos){
-      let data = await fetch('../Controllers/MarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/MarcaController.php', {
         method:'POST',
         body: datos
       });
@@ -1082,7 +1083,7 @@ $(document).ready(function(){
 
     //Editar Marca
     async function editar_marca(datos){
-      let data = await fetch('../Controllers/MarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/MarcaController.php', {
         method:'POST',
         body: datos
       });
@@ -1103,7 +1104,7 @@ $(document).ready(function(){
               $('#widget_nombre_marca').text(respuesta.nombre_marca);
               $('#widget_desc_marca').text(respuesta.desc_marca);
               if(respuesta.img != '') {
-                $('#widget_imagen_marca').attr('src', '../Util/Img/marca/' + respuesta.img);
+                $('#widget_imagen_marca').attr('src', '/Centennials/Util/Img/marca/' + respuesta.img);
               }
               read_all_marcas();
               $('#form-marca_mod').trigger('reset');
@@ -1146,7 +1147,7 @@ $(document).ready(function(){
       // console.log(nombre, img);
       $('#widget_nombre_marca').text(nombre);
       $('#widget_desc_marca').text(descripcion);
-      $('#widget_imagen_marca').attr('src', '../Util/Img/marca/' + img);
+      $('#widget_imagen_marca').attr('src', '/Centennials/Util/Img/marca/' + img);
       $('#nombre_mod').val(nombre);
       $('#desc_mod').val(descripcion);
       $('#id_marca_mod').val(id);
@@ -1202,7 +1203,7 @@ $(document).ready(function(){
     async function eliminar_marca(id, nombre){
       let funcion = "eliminar_marca";
       let respuesta = '';
-      let data = await fetch('../Controllers/MarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/MarcaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
@@ -1251,7 +1252,7 @@ $(document).ready(function(){
       swalWithBootstrapButtons.fire({
         title: 'Desea eliminar la marca' + nombre + '?',
         text: "No podras revertir esto!",
-        imageUrl: '../Util/Img/marca/' + img,
+        imageUrl: '/Centennials/Util/Img/marca/' + img,
         imageWidth: 100,
         imageHeight: 100,
         showCancelButton: true,
@@ -1301,7 +1302,7 @@ $(document).ready(function(){
 
     /*Creacion de solicitudes marca*/ 
     async function crear_solicitud_marca(datos){
-      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
         method:'POST',
         body: datos
       });
@@ -1400,7 +1401,7 @@ $(document).ready(function(){
     });
     /*Editar solicitudes Marca*/ 
     async function editar_solicitud(datos){
-      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
         method:'POST',
         body: datos
       });
@@ -1422,7 +1423,7 @@ $(document).ready(function(){
               $('#widget_nombre_sol').text(respuesta.nombre_sol);
               $('#widget_desc_sol').text(respuesta.desc_sol);
               if(respuesta.img_sol != '') {
-                $('#widget_imagen_sol').attr('src', '../Util/Img/marca/' + respuesta.img_sol);
+                $('#widget_imagen_sol').attr('src', '/Centennials/Util/Img/marca/' + respuesta.img_sol);
               }
               read_tus_solicitudes();
               $('#form-marca_mod_sol').trigger('reset');
@@ -1464,7 +1465,7 @@ $(document).ready(function(){
       // console.log(nombre, img);
       $('#widget_nombre_sol').text(nombre);
       $('#widget_desc_sol').text(descripcion);
-      $('#widget_imagen_sol').attr('src', '../Util/Img/marca/' + img);
+      $('#widget_imagen_sol').attr('src', '/Centennials/Util/Img/marca/' + img);
       $('#nombre_mod_sol').val(nombre);
       $('#desc_mod_sol').val(descripcion);
       $('#id_marca_mod_sol').val(id);
@@ -1520,7 +1521,7 @@ $(document).ready(function(){
     async function eliminar_solicitud(id, nombre){
       let funcion = "eliminar_solicitud";
       let respuesta = '';
-      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
@@ -1569,7 +1570,7 @@ $(document).ready(function(){
       swalWithBootstrapButtons.fire({
         title: 'Desea eliminar la solicitud marca' + nombre + '?',
         text: "No podras revertir esto!",
-        imageUrl: '../Util/Img/marca/' + img,
+        imageUrl: '/Centennials/Util/Img/marca/' + img,
         imageWidth: 100,
         imageHeight: 100,
         showCancelButton: true,
@@ -1609,7 +1610,7 @@ $(document).ready(function(){
     /*Envio solicitudes Marca*/ 
     async function enviar_solicitud(id, nombre){
       let funcion = "enviar_solicitud";
-      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
@@ -1662,7 +1663,7 @@ $(document).ready(function(){
     async function aprobar_solicitud(id, nombre){
       let funcion = "aprobar_solicitud";
       let respuesta = '';
-      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
@@ -1712,7 +1713,7 @@ $(document).ready(function(){
       swalWithBootstrapButtons.fire({
         title: 'Desea aprobar la solicitud marca' + nombre + '?',
         text: "No podras revertir esto!",
-        imageUrl: '../Util/Img/marca/' + img,
+        imageUrl: '/Centennials/Util/Img/marca/' + img,
         imageWidth: 100,
         imageHeight: 100,
         showCancelButton: true,
@@ -1755,7 +1756,7 @@ $(document).ready(function(){
 
     /*Rechazar Solicitud*/
     async function rechazar_solicitud(datos){
-      let data = await fetch('../Controllers/SolicitudMarcaController.php', {
+      let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
         method:'POST',
         body: datos
       });
@@ -1815,7 +1816,7 @@ $(document).ready(function(){
       // console.log(nombre, img);
       $('#widget_nombre_sol_rechazar').text(nombre);
       $('#widget_desc_sol_rechazar').text(descripcion);
-      $('#widget_imagen_sol_rechazar').attr('src', '../Util/Img/marca/' + img);
+      $('#widget_imagen_sol_rechazar').attr('src', '/Centennials/Util/Img/marca/' + img);
       $('#solicitante').text(solicitante);
       $('#id_marca_rechazar_sol').val(id);
       $('#nombre_rechazar_sol').val(nombre);
@@ -1858,7 +1859,7 @@ $(document).ready(function(){
 
     async function obtener_contadores() {
       funcion = "obtener_contadores";
-      let data = await fetch('../Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion

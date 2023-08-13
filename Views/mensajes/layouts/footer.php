@@ -24,19 +24,19 @@
 <script src="../../Util/Js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../../Util/Js/demo.js"></script>
+<script src="../../Util/Js/sweetalert2.min.js"></script>
+<script src="../../Util/Js/toastr.min.js"></script> 
+<script src="../../Util/Js/bs-custom-file-input.min.js"></script>
 <!-- Moment Time Reseña -->
 <!--<script src="Util/Js/moment.min.js"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-
-
 <script src="../../Util/Js/bootstrap.min.js"></script>
 <script src="../../Util/Js/select2.min.js"></script>
-<script src="../../Util/Js/toastr.min.js"></script> 
 <script src="../../Util/Js/jquery.dataTables.min.js"></script>
 <!-- Necesarios para el modal datos, el form -->
 <script src="../../Util/Js/jquery.validate.min.js"></script>
 <script src="../../Util/Js/additional-methods.min.js"></script>
-<script src="../../Util/Js/sweetalert2.min.js"></script>
-<script src="../../Util/Js/bs-custom-file-input.min.js"></script>
+<script src="../../Util/Js/datatables.min.js"></script>
+
 </body>
 </html>

@@ -920,7 +920,7 @@ $(document).ready(function(){
 
     async function obtener_contadores() {
       funcion = "obtener_contadores";
-      let data = await fetch('../../Controllers/UsuarioController.php', {
+      let data = await fetch('../../Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion

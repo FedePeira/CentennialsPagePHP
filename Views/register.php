@@ -1,3 +1,6 @@
+<?php
+  session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +11,13 @@
   <!-- Google Font: Source Sans Pro -->
   <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">-->
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../Util/Css/css/all.min.css">
+  <link rel="stylesheet" href="/Centennials/Util/Css/css/all.min.css">
   <!-- icheck bootstrap -->
   <!-- Theme style -->
-  <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
-  <link rel="stylesheet" href="../Util/Css/toastr.min.css">
-  <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css">
+  <link rel="stylesheet" href="/Centennials/Util/Css/adminlte.min.css">
+  <link rel="stylesheet" href="/Centennials/Util/Css/toastr.min.css">
+  <link rel="stylesheet" href="/Centennials/Util/Css/sweetalert2.min.css">
+  <link rel="icon" type="image/png" href="/commerce/Util/img/logo.png">
 </head>
 <!-- Modal -->
 <div class="modal fade" id="terminos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -45,8 +49,8 @@
 <body class="hold-transition login-page">
 <div class="mt-5">
   <div class="login-logo">
-    <img src="../Util/Img/Logos/LogoCentennials.png" class="profile-user-img img-fluid img-circle">
-    <a href="../index.php"><b>Code</b>WAR</a>
+    <img src="/Centennials/Util/Img/Logos/LogoCentennials.png" class="profile-user-img img-fluid img-circle">
+    <a href="/Centennials/index.php"><b>Code</b>WAR</a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -113,21 +117,21 @@
 <!-- /.login-box -->
 
 <!-- jQuery -->
-<script src="../Util/Js/jquery.min.js"></script>
+<script src="/Centennials/Util/Js/jquery.min.js"></script>
 
 <!--<script src="login.js"></script>-->
 
 <!-- Bootstrap 4 -->
-<script src="../Util/Js/bootstrap.bundle.min.js"></script>
+<script src="/Centennials/Util/Js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../Util/Js/adminlte.min.js"></script>
+<script src="/Centennials/Util/Js/adminlte.min.js"></script>
 
-<script src="../Util/Js/toastr.min.js"></script>
+<script src="/Centennials/Util/Js/toastr.min.js"></script>
 
 <!-- Validate Querys -->
-<script src="../Util/Js/jquery.validate.min.js"></script>
-<script src="../Util/Js/additional-methods.min.js"></script>
-<script src="../Util/Js/sweetalert2.min.js"></script>
+<script src="/Centennials/Util/Js/jquery.validate.min.js"></script>
+<script src="/Centennials/Util/Js/additional-methods.min.js"></script>
+<script src="/Centennials/Util/Js/sweetalert2.min.js"></script>
 
 <script>
 $(document).ready(function () {
@@ -146,7 +150,7 @@ $(document).ready(function () {
 
   async function verificar_sesion() {
     funcion = "verificar_sesion";
-    let data = await fetch('../Controllers/UsuarioController.php', {
+    let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
       method:'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: 'funcion=' + funcion
@@ -155,7 +159,7 @@ $(document).ready(function () {
       let response = await data.text();
       try {
         if(response != ''){
-          location.href = '../index.php';
+          location.href = '/Centennials/index.php';
         } 
         CloseLoader();
       } catch(error) {
@@ -173,7 +177,7 @@ $(document).ready(function () {
 
   async function registrar(username, pass, nombres, apellidos, dni, email, telefono) {
     funcion = "registrar_usuario";
-    let data = await fetch('../Controllers/UsuarioController.php', {
+    let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
       method:'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: 'funcion=' + funcion + '$$username' + username + '$$pass' + pass + '$$nombres' + nombres + '$$apellidos' + apellidos + '$$dni' + dni + '$$email' + email + '$$telefono' + telefono
@@ -191,7 +195,7 @@ $(document).ready(function () {
             timer: 2500,
           }).then(function(){
             $('#form-register').trigger('reset');
-            location.href = '../Views/login.php'
+            location.href = '/Centennials/Views/login.php'
           })
         }
         CloseLoader();
@@ -228,7 +232,7 @@ $(document).ready(function () {
       let bandera;
       $.ajax({
         type: "POST",
-        url: "../Controllers/UsuarioController.php",
+        url: "/Centennials/Controllers/UsuarioController.php",
         data: 'funcion=' + funcion + '&&value=' + value,
         async: false,
         success: function(response) {
