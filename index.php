@@ -2,7 +2,7 @@
   session_start();
   include_once $_SERVER["DOCUMENT_ROOT"].'/Centennials/Views/Layouts/header.php';
 ?>
-    <title>Inicio | CodeWar</title>
+    <title>Inicio xd | CodeWar</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
