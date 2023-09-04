@@ -24,6 +24,8 @@
 <script src="/Centennials/Util/Js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/Centennials/Util/Js/demo.js"></script>
+<!-- Moment -->
+<script src="/Centennials/Util/Js/moment.min.js"></script>
 <!-- Toastr -->
 <script src="/Centennials/Util/Js/toastr.min.js"></script> 
 <script src="/Centennials/Util/Js/bootstrap.min.js"></script>

@@ -290,7 +290,7 @@
     </div>
 
     <!-- Marcas -->
-    <title>Marcas | CodeWar</title>
+    <title>Marcas | Centennials</title>
 
     <section class="content-header">
       <div class="container-fluid">
@@ -385,7 +385,7 @@ $(document).ready(function(){
     $('#btn_adm').hide();
     $('#btn_ven').hide();
 
-    bsCustomFileInput.init();
+    //bsCustomFileInput.init();
     verificar_sesion();
     // setTimeout(verificar_sesion, 2000);
     toastr.options = {
@@ -1399,6 +1399,7 @@ $(document).ready(function(){
         $(element).addClass('is-valid')
       }
     });
+
     /*Editar solicitudes Marca*/ 
     async function editar_solicitud(datos){
       let data = await fetch('/Centennials/Controllers/SolicitudMarcaController.php', {
@@ -1859,7 +1860,7 @@ $(document).ready(function(){
 
     async function obtener_contadores() {
       funcion = "obtener_contadores";
-      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion

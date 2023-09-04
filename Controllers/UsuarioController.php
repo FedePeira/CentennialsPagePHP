@@ -14,7 +14,8 @@
         $mensaje = '';
         if($usuario->objetos!=null){
             // Desencripto la contraseña asi puedo hacer el if 
-            $pass_bd = openssl_decrypt($usuario->objetos[0]->pass, CODE, KEY);
+            // $pass_bd = openssl_decrypt($usuario->objetos[0]->pass, CODE, KEY);
+            $pass_bd = $usuario->objetos[0]->pass;
             if($pass_bd == $pass){ 
                 $_SESSION['id']=$usuario->objetos[0]->id;
                 $_SESSION['user']=$usuario->objetos[0]->user;

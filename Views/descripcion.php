@@ -9,13 +9,17 @@ if(!empty($_GET['id'])&& $_GET['name']){
    // echo $_SESSION['product-verification'];
    include_once $_SERVER["DOCUMENT_ROOT"].'/Centennials/Views/Layouts/header.php';
 ?>
-<!-- Descripcion Page -->
-    <title><?php echo $_GET['name']?> | Codewar</title>
+    <!-- Description Page -->
+    <title><?php echo $_GET['name']?> | Centennials</title>
+
+    <!-- Style Css -->
     <style>
       .preguntas {
         height: 100% !important;
       }
     </style>
+
+    <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -110,6 +114,7 @@ if(!empty($_GET['id'])&& $_GET['name']){
       <!-- /.card -->
 
     </section>
+
 <?php
     include_once $_SERVER["DOCUMENT_ROOT"].'/Centennials/Views/Layouts/footer.php';
 }
@@ -143,7 +148,7 @@ $(document).ready(function(){
         // console.log(response);
         try {
           let notificaciones =  JSON.parse(response);
-          console.log(notificaciones);
+          // console.log(notificaciones);
           let template1 = '';
           let template = `
           <a class="nav-link" data-toggle="dropdown" href="#">`;
@@ -538,7 +543,7 @@ $(document).ready(function(){
         let response = await data.text();
         try {
           let producto = JSON.parse(response);
-          console.log(response);
+          // console.log(response);
           let template = '';
           if(producto.usuario_sesion != '') {
             if(producto.estado_favorito == ''){
@@ -750,7 +755,7 @@ $(document).ready(function(){
         let response = await data.text();
         try {
           let producto = JSON.parse(response);
-          console.log(response);
+          // console.log(response);
           let template = '';
           if(producto.bandera == '2'){
             template += `
@@ -771,7 +776,7 @@ $(document).ready(function(){
               <div class="direct-chat-messages direct-chat-danger preguntas">
           `;
           producto.preguntas.forEach(pregunta => {
-            console.log(pregunta);
+            // console.log(pregunta);
             template += `
                 <div class="direct-chat-msg">
                   <div class="direct-chat-infos clearfix">
@@ -949,7 +954,6 @@ $(document).ready(function(){
       }
     }
 
-
     // Enviar respuesta
     $(document).on('click', '.enviar_respuesta', (e) => {
       let elemento = $(this)[0].activeElement.parentElement.parentElement;
@@ -1011,9 +1015,10 @@ $(document).ready(function(){
       cambiar_estado_favorito(id_favorito, estado_favorito);
     });  
 
+    // Contadores 
     async function obtener_contadores() {
       funcion = "obtener_contadores";
-      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -1051,12 +1056,11 @@ $(document).ready(function(){
       }
     }
 
-
     // Loader
     function Loader(mensaje){
       if(mensaje==''||mensaje==null){
         mensaje = 'Cargano datos...';
-      }
+      } 
       Swal.fire({
           position: 'center',
           html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
@@ -1064,6 +1068,7 @@ $(document).ready(function(){
           showConfirmButton: false
       });
     }
+
     // Close Loader
     function CloseLoader(mensaje, tipo){
       if(mensaje==''||mensaje==null){

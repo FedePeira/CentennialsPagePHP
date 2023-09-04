@@ -2,24 +2,27 @@
   session_start();
   include_once $_SERVER["DOCUMENT_ROOT"].'/Centennials/Views/Layouts/header.php';
 ?>
-    <title>Inicio xd | CodeWar</title>
+    <title>Inicio | Centennials</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>InicioHome</h1>
+            <h1>Inicio</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="/Centennials/">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="/Centennials/index.php">Inicio</a></li>
               <li class="breadcrumb-item active"></li>
             </ol>
           </div>
         </div>
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
+
+    <!-- Style Css -->
     <style>
+      /* Titulo de Producto en function "llenar_productos()" */ 
       .titulo_producto{
         color: #000; 
       }
@@ -37,8 +40,9 @@
         color: #FFF;
       }
     </style>
-    <section class="content">
 
+    <!-- Main content -->
+    <section class="content">
       <!-- Default box -->
       <div class="card">
         <div class="card-header">
@@ -58,7 +62,6 @@
         <!-- /.card-footer-->
       </div>
       <!-- /.card -->
-
     </section>
 
     
@@ -83,7 +86,7 @@ $(document).ready(function() {
 
     async function read_notificaciones(){
       funcion = "read_notificaciones";
-      let data = await fetch('/commerce/Controllers/NotificacionController.php', {
+      let data = await fetch('/Centennials/Controllers/NotificacionController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -123,10 +126,10 @@ $(document).ready(function() {
           notificaciones.forEach(notificacion => {
             template += `
             <div class="dropdown-divider"></div>
-              <a href="/commerce/${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
+              <a href="/Centennials/${notificacion.url_1}&&noti=${notificacion.id}" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="/commerce/Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <img src="/Centennials/Util/Img/producto/${notificacion.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       ${notificacion.titulo}
@@ -142,7 +145,7 @@ $(document).ready(function() {
             `;
           });
           template += `
-              <a href="/commerce/Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
+              <a href="/Centennials/Views/notificaciones.php" class="dropdown-item dropdown-footer">ver todas las notificaciones</a>
               </div>`;
           $('#notificacion').html(template);
         } catch(error) {
@@ -161,7 +164,7 @@ $(document).ready(function() {
 
     async function read_favoritos(){
       funcion = "read_favoritos";
-      let data = await fetch('/commerce/Controllers/FavoritoController.php', {
+      let data = await fetch('/Centennials/Controllers/FavoritoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -201,10 +204,10 @@ $(document).ready(function() {
           favoritos.forEach(favorito => {
             template += `
             <div class="dropdown-divider"></div>
-              <a href="/commerce/${favorito.url}" class="dropdown-item">
+              <a href="/Centennials/${favorito.url}" class="dropdown-item">
                 <!-- Message Start -->
                 <div class="media">
-                  <img src="/commerce/Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                  <img src="/Centennials/Util/Img/producto/${favorito.imagen}" alt="User Avatar" class="img-size-50 img-circle mr-3">
                   <div class="media-body">
                     <h3 class="dropdown-item-title">
                       ${favorito.titulo}
@@ -219,7 +222,7 @@ $(document).ready(function() {
             `;
           });
           template += `
-              <a href="/commerce/Views/favoritos.php" class="dropdown-item dropdown-footer">ver todos tus favoritos</a>
+              <a href="/Centennials/Views/favoritos.php" class="dropdown-item dropdown-footer">ver todos tus favoritos</a>
             </div>`;
           $('#nav_cont_fav').html(template1);
           $('#favorito').html(template);
@@ -242,12 +245,12 @@ $(document).ready(function() {
       if(usuario===undefined || usuario == '' || usuario == null){
         template = `
         <li class="nav-item"> 
-          <a class="nav-link" href="/commerce/Views/register.php" role="button">
+          <a class="nav-link" href="/Centennials/Views/register.php" role="button">
             <i class="fas fa-user-plus"></i> Registrarse
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/commerce/Views/login.php" role="button">
+          <a class="nav-link" href="/Centennials/Views/login.php" role="button">
             <i class="far fa-user"></i> Iniciar Sesion
           </a>
         </li>
@@ -255,63 +258,63 @@ $(document).ready(function() {
       }
       else{
         template = `
-        <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-              <i class="fas fa-shopping-cart"></i>
-              <span class="badge badge-danger navbar-badge">3</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <a href="#" class="dropdown-item">
-                <!-- Message Start -->
-                <div class="media">
-                  <img src="../../dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                  <div class="media-body">
-                    <h3 class="dropdown-item-title">
-                      Brad Diesel
-                      <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                    </h3>
-                    <p class="text-sm">Call me whenever you can...</p>
-                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                  </div>
-                </div>
-                <!-- Message End -->
+          <li class="nav-item dropdown">
+              <a class="nav-link" data-toggle="dropdown" href="#">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="badge badge-danger navbar-badge">3</span>
               </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <!-- Message Start -->
-                <div class="media">
-                  <img src="../../dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                  <div class="media-body">
-                    <h3 class="dropdown-item-title">
-                      John Pierce
-                      <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                    </h3>
-                    <p class="text-sm">I got your message bro</p>
-                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="../../dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        Brad Diesel
+                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">Call me whenever you can...</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                    </div>
                   </div>
-                </div>
-                <!-- Message End -->
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <!-- Message Start -->
-                <div class="media">
-                  <img src="../../dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                  <div class="media-body">
-                    <h3 class="dropdown-item-title">
-                      Nora Silvester
-                      <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                    </h3>
-                    <p class="text-sm">The subject goes here</p>
-                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="../../dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        John Pierce
+                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">I got your message bro</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                    </div>
                   </div>
-                </div>
-                <!-- Message End -->
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-            </div>
-        </li>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="../../dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        Nora Silvester
+                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">The subject goes here</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                    </div>
+                  </div>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+              </div>
+          </li>
 
           <li id="notificacion" class="nav-item dropdown">
             
@@ -319,15 +322,16 @@ $(document).ready(function() {
           <li id="favorito" class="nav-item dropdown">
            
           </li>
+          
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="/commerce/Util/Img/Users/${usuario.avatar}" width="30" height="30" class="img-fluid img-circle">
+                <img src="/Centennials/Util/Img/Users/${usuario.avatar}" width="30" height="30" class="img-fluid img-circle">
                 <spa>${usuario.user}</span>
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li><a class="dropdown-item" href="/commerce/Views/mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-basket"></i> Mis pedidos</a></li>
-                <li><a class="dropdown-item" href="/commerce/Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesion</a></li>
+                <li><a class="dropdown-item" href="/Centennials/Views/mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a></li>
+                <li><a class="dropdown-item" href="#"><i class=F"fas fa-shopping-basket"></i> Mis pedidos</a></li>
+                <li><a class="dropdown-item" href="/Centennials/Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesion</a></li>
               </ul>
           </li>
         `;
@@ -345,7 +349,7 @@ $(document).ready(function() {
         template = `
         <li class="nav-header">Perfil</li>
           <li id="nav_notificaciones" class="nav-item">
-            <a id="active_nav_notificaciones" href="/commerce/Views/notificaciones.php" class="nav-link">
+            <a id="active_nav_notificaciones" href="/Centennials/Views/notificaciones.php" class="nav-link">
               <i class="nav-icon far fa-bell"></i>
               <p id="nav_cont_noti">
                 Notificaciones
@@ -353,7 +357,7 @@ $(document).ready(function() {
             </a>
           </li>
           <li id="nav_favoritos" class="nav-item">
-            <a id="active_fav_favoritos" href="/commerce/Views/favoritos.php" class="nav-link">
+            <a id="active_fav_favoritos" href="/Centennials/Views/favoritos.php" class="nav-link">
               <i class="nav-icon far fa-heart"></i>
               <p id="nav_cont_fav">
                 Favoritos
@@ -361,7 +365,7 @@ $(document).ready(function() {
             </a>
           </li>
           <li id="nav_mensajes" class="nav-item">
-            <a id="active_fav_mensajes" href="/commerce/Views/mensajes/index.php" class="nav-link">
+            <a id="active_fav_mensajes" href="/Centennials/Views/mensajes/index.php" class="nav-link">
               <i class="nav-icon far fa-envelope"></i>
               <p id="nav_cont_mens">
                 Mensajes
@@ -371,7 +375,7 @@ $(document).ready(function() {
           if(usuario.tipo_usuario == 1){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="/commerce/Views/marca.php" class="nav-link">
+              <a id="active_nav_marcas" href="/Centennials/Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -383,7 +387,7 @@ $(document).ready(function() {
           if(usuario.tipo_usuario == 2){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="/commerce/Views/marca.php" class="nav-link">
+              <a id="active_nav_marcas" href="/Centennials/Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -395,7 +399,7 @@ $(document).ready(function() {
           if(usuario.tipo_usuario == 3){
             template+= `<li class="nav-header">Producto</li>
             <li id="nav_marcas" class="nav-item">
-              <a id="active_nav_marcas" href="/commerce/Views/marca.php" class="nav-link">
+              <a id="active_nav_marcas" href="/Centennials/Views/marca.php" class="nav-link">
                 <i class="nav-icon fas fa-apple-alt"></i>
                 <p id="nav_cont_marcSS">
                   Marcas
@@ -411,7 +415,7 @@ $(document).ready(function() {
 
     async function verificar_sesion() {
       funcion = "verificar_sesion";
-      let data = await fetch('/commerce/Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -426,7 +430,7 @@ $(document).ready(function() {
             // console.log(sesion);
             llenar_menu_superior(sesion);
             llenar_menu_lateral(sesion);
-            $('#avatar_menu').attr('src', '/commerce/Util/Img/Users/' + sesion.avatar);
+            $('#avatar_menu').attr('src', '/Centennials/Util/Img/Users/' + sesion.avatar);
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();
@@ -453,7 +457,7 @@ $(document).ready(function() {
 
     async function llenar_productos(){
       funcion = "llenar_productos";
-      let data = await fetch('/commerce/Controllers/ProductoTiendaController.php', {
+      let data = await fetch('/Centennials/Controllers/ProductoTiendaController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
@@ -471,12 +475,12 @@ $(document).ready(function() {
                     <div class="card-body">
                       <div class="row">
                         <div class="col-sm-12">
-                          <img src="/commerce/Util/Img/Producto/${producto.imagen}" class="img-fluid" alt="">
+                          <img src="/Centennials/Util/Img/Producto/${producto.imagen}" class="img-fluid" alt="">
                         </div>
                         <div class="col-sm-12">
                           <span class="text-muted float-left">${producto.marca}</span></br>
                           <!-- Descripcion.php -> se le pasa el id y name del producto -->
-                          <a class="titulo_producto" href="/commerce/Views/descripcion.php?name=${producto.producto}&&id=${producto.id}">${producto.producto}
+                          <a class="titulo_producto" href="/Centennials/Views/descripcion.php?name=${producto.producto}&&id=${producto.id}">${producto.producto}
                           </a>`;
                 if(producto.envio == 'gratis'){
                   template += `</br>`;
@@ -525,13 +529,14 @@ $(document).ready(function() {
 
     async function obtener_contadores() {
       funcion = "obtener_contadores";
-      let data = await fetch('/commerce/Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion
       });
       if(data.ok){
         let response = await data.text();
+        // console.log(response);
         try {
           let contadores = JSON.parse(response);
           let template = ``;

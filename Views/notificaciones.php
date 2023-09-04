@@ -438,7 +438,7 @@ $(document).ready(function(){
         // console.log(response);
         try {
           let notificaciones =  JSON.parse(response);
-          console.log(notificaciones);
+          // console.log(notificaciones);
           let template = '';
           let notification = [];
           // let ejemplo = [{ celda: 'Hola primera celda' }, { celda: 'Adios' }];
@@ -519,7 +519,7 @@ $(document).ready(function(){
         // console.log(response);
         try {
           let respuesta =  JSON.parse(response);
-          console.log(respuesta);
+          // console.log(respuesta);
           if(respuesta.mensaje1 == "notificacion eliminada") {
             toastr.success('El item se elimino de sus notificaciones');
           }
@@ -553,7 +553,7 @@ $(document).ready(function(){
 
     async function obtener_contadores() {
       funcion = "obtener_contadores";
-      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion

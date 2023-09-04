@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/Centennials/Util/Css/adminlte.min.css">
   <link rel="stylesheet" href="/Centennials/Util/Css/toastr.min.css">
   <link rel="stylesheet" href="/Centennials/Util/Css/sweetalert2.min.css">
-  <link rel="icon" type="image/png" href="/commerce/Util/img/logo.png">
+  <link rel="icon" type="image/png" href="/Centennials/Util/img/logo.png">
 </head>
 <!-- Modal -->
 <div class="modal fade" id="terminos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

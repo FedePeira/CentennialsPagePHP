@@ -137,6 +137,7 @@
       });
       if(data.ok){
         let response = await data.text();
+        console.log(response);
         try {
             let respuesta =  JSON.parse(response);
              if(respuesta.mensaje == 'logueado'){
