@@ -38,7 +38,6 @@
       </div>
     </div>
   </div>
-
   <!-- Modal Datos Personales-->
   <!-- id="modal_datos" identificador -->
   <div class="modal fade" id="modal_datos" role="dialog" >
@@ -95,7 +94,7 @@
       </div>
     </div>
   </div>
-
+  <!-- Modal Direcciones -->
   <div class="modal fade" id="modal_direcciones" role="dialog" >
     <div class="modal-dialog">
       <div class="modal-content">
@@ -137,11 +136,10 @@
     </div>
   </div>
 
-  <!-- Modal -->
- <title>Mi Perfil | CodeWar</title>
+  <title>Mi Perfil | Centennials</title>
  <!-- Main content -->
- <section class="content">
-      <div class="container-fluid">
+  <section class="content">
+    <div class="container-fluid">
         <div class="row">
           <div class="col-md-3">
             <div id="card_usuario" class="card card-widget widget-user">
@@ -393,8 +391,9 @@
           <!-- /.col -->
         </div>
         <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </section>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
 
     
 <?php
@@ -404,7 +403,7 @@
 <script>
 $(document).ready(function() {
     var funcion;
-    bsCustomFileInput.init();
+    //bsCustomFileInput.init();
     Loader();
     // setTimeout(verificar_sesion, 2000);
     verificar_sesion();
@@ -1342,7 +1341,6 @@ $(document).ready(function() {
       }
     }) 
 
-
     async function editar_datos(datos){
       let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
         method:'POST',
@@ -1397,7 +1395,6 @@ $(document).ready(function() {
         editar_datos(datos);
       }
     });
-
 
     jQuery.validator.addMethod("letras",
       function(value, element){
@@ -1473,7 +1470,6 @@ $(document).ready(function() {
       }
     });
 
-
     async function cambiar_contra(funcion, pass_old, pass_new){
       let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
         method:'POST',
@@ -1530,7 +1526,6 @@ $(document).ready(function() {
         cambiar_contra(funcion, pass_old, pass_new);
       }
     });
-
 
     jQuery.validator.addMethod("letras",
     function(value, element){
@@ -1589,7 +1584,7 @@ $(document).ready(function() {
 
     async function obtener_contadores() {
       funcion = "obtener_contadores";
-      let data = await fetch('/Centennials/Controllers/UsuarioController.php', {
+      let data = await fetch('/Centennials/Controllers/DestinoController.php', {
         method:'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'funcion=' + funcion

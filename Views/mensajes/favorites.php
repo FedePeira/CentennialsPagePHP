@@ -35,7 +35,8 @@
         </div>
       </div>
     </div>
-    <title>Favoritos | CodeWar</title>
+
+    <title>Favoritos | Centennials</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -52,6 +53,7 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
+    <!-- Style Css -->
     <style>
       .model .model-right .modal-dialog{
         top: 320px;
@@ -864,6 +866,7 @@ $(document).ready(function(){
         });
       }
     }
+
     $.validator.setDefaults({
       submitHandler: function () {
         // alert('validado');

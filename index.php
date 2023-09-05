@@ -83,7 +83,8 @@ $(document).ready(function() {
       'fadeOut': 1000,
       'extendedTimeOut': 1000,
     }
-
+    /*--------------------------------*/
+    /* Page Design Ones you Enter */ 
     async function read_notificaciones(){
       funcion = "read_notificaciones";
       let data = await fetch('/Centennials/Controllers/NotificacionController.php', {
@@ -412,7 +413,7 @@ $(document).ready(function() {
       $('#loader_2').hide(500);
       $('#menu_lateral').html(template);
     }
-
+    /*--------------------------------*/
     async function verificar_sesion() {
       funcion = "verificar_sesion";
       let data = await fetch('/Centennials/Controllers/UsuarioController.php', {

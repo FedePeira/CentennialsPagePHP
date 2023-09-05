@@ -1,18 +1,21 @@
 </div>
   <!-- /.content-wrapper -->
 
+  <!-- Main Footer -->
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      <b>Version</b> 3.2.0
+      <b>Version</b> 1.1.0
     </div>
     <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
   </footer>
+  <!-- /.main-footer -->
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
   </aside>
   <!-- /.control-sidebar -->
+
 </div>
 <!-- ./wrapper -->
 
@@ -28,6 +31,7 @@
 <script src="/Centennials/Util/Js/moment.min.js"></script>
 <!-- Toastr -->
 <script src="/Centennials/Util/Js/toastr.min.js"></script> 
+<!-- Theme style -->
 <script src="/Centennials/Util/Js/bootstrap.min.js"></script>
 <script src="/Centennials/Util/Js/sweetalert2.min.js"></script>
 <script src="/Centennials/Util/Js/select2.min.js"></script>

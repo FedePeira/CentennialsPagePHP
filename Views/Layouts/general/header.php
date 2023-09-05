@@ -29,8 +29,10 @@
   }
 </style>
 <body class="sidebar-mini layout-footer-fixed layout-navbar-fixed">
+
 <!-- Site wrapper -->
 <div class="wrapper">
+
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-light bg-info">
     <!-- Left navbar links -->
@@ -39,7 +41,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="../../index.php" class="nav-link">Inicio</a>
+        <a href="../index.php" class="nav-link">Inicio</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contacto</a>
@@ -62,7 +64,7 @@
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
       <img src="../Util/Img/Logos/LogoCentennials.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">CodeWar</span>
+      <span class="brand-text font-weight-light">Centennials</span>
     </a>
 
     <!-- Sidebar -->
@@ -102,6 +104,7 @@
     </div>
     <!-- /.sidebar -->
   </aside>
+  <!-- /.main-sidebar -->
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">

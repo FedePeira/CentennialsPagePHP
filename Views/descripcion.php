@@ -28,7 +28,7 @@ if(!empty($_GET['id'])&& $_GET['name']){
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="/Centennials/">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="/Centennials/index.php">Inicio</a></li>
               <li class="breadcrumb-item active"><?php echo $_GET['name']?></li>
             </ol>
           </div>

@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login | CodeWar</title>
+  <title>Login | Centennials</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -19,16 +19,23 @@
   <link rel="icon" type="image/png" href="/Centennials/Util/img/logo.png">
 </head>
 <body class="hold-transition login-page">
+<!-- Login Box -->
 <div class="login-box">
+  
+  <!-- Login Logo -->
   <div class="login-logo">
     <img src="/Centennials/Util/Img/Logos/LogoCentennials.png" class="profile-user-img img-fluid img-circle">
-    <a href="/Centennials/index.php"><b>Code</b>WAR</a>
+    <a href="/Centennials/index.php"><b>Centenn</b>IALS</a>
   </div>
   <!-- /.login-logo -->
+
+  <!-- Card --> 
   <div class="card">
+    <!-- Card Login -->
     <div class="card-body login-card-body">
       <p class="login-box-msg">Inicie sesion</p>
 
+      <!-- Form Login -->
       <form id="form-login">
         <div class="input-group mb-3">
           <input id="user" type="text" class="form-control" placeholder="User" required>
@@ -51,23 +58,21 @@
             <div class="icheck-primary">
               <input type="checkbox" id="remember">
               <label for="remember">
-                Remember Me
+                Recordarme
               </label>
             </div>
           </div>
-          <!-- /.col -->
         </div>
         <div class="social-auth-links text-center mb-3">
 
-        <button type="submit" href="#" class="btn btn-block btn-primary">
-            Iniciar sesion
-        </button>
-      </div>
+          <button type="submit" href="#" class="btn btn-block btn-primary">
+              Iniciar sesion
+          </button>
+        </div>
       </form>
-
+      <!-- /.form-login -->
 
       <!-- /.social-auth-links -->
-
       <p class="mb-1">
         <a href="#">He olvidado la contraseña</a>
       </p>
@@ -77,6 +82,7 @@
     </div>
     <!-- /.login-card-body -->
   </div>
+  <!-- /.card -->
 </div>
 <!-- /.login-box -->
 

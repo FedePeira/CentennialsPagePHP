@@ -2,7 +2,7 @@
   session_start();
   include_once $_SERVER["DOCUMENT_ROOT"].'/Centennials/Views/Layouts/header.php';
 ?>
-    <title>Favoritos | CodeWar</title>
+    <title>Favoritos | Centennials</title>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -12,7 +12,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="/Centennials/">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="/Centennials/index.php">Inicio</a></li>
               <li class="breadcrumb-item active">Favoritos</li>
             </ol>
           </div>

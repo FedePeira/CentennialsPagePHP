@@ -6,13 +6,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Register | CodeWar</title>
+  <title>Register | Centennials</title>
 
   <!-- Google Font: Source Sans Pro -->
   <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">-->
   <!-- Font Awesome -->
   <link rel="stylesheet" href="/Centennials/Util/Css/css/all.min.css">
-  <!-- icheck bootstrap -->
   <!-- Theme style -->
   <link rel="stylesheet" href="/Centennials/Util/Css/adminlte.min.css">
   <link rel="stylesheet" href="/Centennials/Util/Css/toastr.min.css">
@@ -48,15 +47,23 @@
 
 <body class="hold-transition login-page">
 <div class="mt-5">
+
+  <!-- Login Logo -->
   <div class="login-logo">
     <img src="/Centennials/Util/Img/Logos/LogoCentennials.png" class="profile-user-img img-fluid img-circle">
-    <a href="/Centennials/index.php"><b>Code</b>WAR</a>
+    <a href="/Centennials/index.php"><b>Centenn</b>IALS</a>
   </div>
   <!-- /.login-logo -->
+
+  <!-- Card -->
   <div class="card">
+    <!-- Login Card Body -->
     <div class="card-body login-card-body">
+
       <p class="login-box-msg">Registrarse</p>
+
       <form id="form-register">
+            <!-- Card Body -->
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
@@ -106,28 +113,28 @@
                 </div>
             </div>
             <!-- /.card-body -->
+
+            <!-- Card Footer -->
             <div class="card-footer text-center">
                 <button type="submit" class="btn btn-lg bg-gradient-primary">Registrarme</button>
             </div>
+            <!-- /.card-footer -->
         </form>
     </div>
     <!-- /.login-card-body -->
   </div>
+  <!-- /.card -->
+
 </div>
 <!-- /.login-box -->
 
 <!-- jQuery -->
 <script src="/Centennials/Util/Js/jquery.min.js"></script>
-
-<!--<script src="login.js"></script>-->
-
 <!-- Bootstrap 4 -->
 <script src="/Centennials/Util/Js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="/Centennials/Util/Js/adminlte.min.js"></script>
-
 <script src="/Centennials/Util/Js/toastr.min.js"></script>
-
 <!-- Validate Querys -->
 <script src="/Centennials/Util/Js/jquery.validate.min.js"></script>
 <script src="/Centennials/Util/Js/additional-methods.min.js"></script>
