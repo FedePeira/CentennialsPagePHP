@@ -28,6 +28,7 @@
   .nav-link.active{
     background-color: #17A2B8 !important;
   }
+
 </style>
 <body class="sidebar-mini layout-footer-fixed layout-navbar-fixed">
 <!-- Site wrapper -->

@@ -13,6 +13,7 @@
         foreach($marca->objetos as $objeto){
             $json[]=array(
                 'id'=>openssl_encrypt($objeto->id, CODE, KEY),
+                // 'id'=>$objeto->id,
                 'nombre'=>$objeto->nombre,
                 'descripcion'=>$objeto->descripcion,
                 'imagen'=>$objeto->imagen,
@@ -51,6 +52,7 @@
         $img = $_FILES['imagen_mod']['name'];
         $formateado = str_replace(" ", "+",  $_POST['id_marca_mod']);
         $id_marca = openssl_decrypt($formateado, CODE, KEY);
+        // $id_marca = $formateado;
         $mensaje = '';
         $nombre_imagen = '';
         $datos_cambiados = 'ha hecho los siguiente cambios: ';
@@ -96,11 +98,32 @@
         }
     } 
 
+    if ($_POST['funcion'] == 'eliminar_marca') {
+        $id_usuario = $_SESSION['id'];
+        $nombre = $_POST['nombre'];
+        $formateado = str_replace(" ", "+", $_POST['id']);
+        $id_marca = openssl_decrypt($formateado, CODE, KEY);
+        if (is_numeric($id_marca)) {
+            $marca->eliminar_marca($id_marca);
+            $descripcion = 'Ha eliminado una marca, ' . $nombre;
+            $historial->crear_historial($descripcion, 3, 7, $id_usuario);
+            $mensaje = 'success';
+        } else {
+            $mensaje = 'error';
+        }
+        $json = array(
+            'mensaje' => $mensaje
+        );
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
+    }
+    /*
     if($_POST['funcion'] == 'eliminar_marca'){
         $id_usuario = $_SESSION['id'];
         $nombre = $_POST['nombre'];
         $formateado = str_replace(" ", "+",$_POST['id']);
-        $id_marca = openssl_decrypt($formateado, CODE, KEY);
+        // $id_marca = openssl_decrypt($formateado, CODE, KEY);
+        $id_marca = $formateado;
         if(is_numeric($id_marca)){
             $marca->eliminar_marca($id_marca);
             $descripcion='Ha eliminado una marca, '.$nombre;
@@ -115,5 +138,6 @@
             echo 'error';
         }
     } 
+    */
 
 ?>

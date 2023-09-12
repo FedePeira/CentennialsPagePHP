@@ -63,7 +63,7 @@
     if($_POST['funcion'] == 'registrar_usuario'){
         $username = $_POST['username'];
         // Incriptamos la clave para que en la base de datos no se pueda ver
-        $pass = openssl_encrypt($_POST['pass'],CODE,KEY);
+        $pass = $_POST['pass'];
         $nombres = $_POST['nombres'];
         $apellidos = $_POST['apellidos'];
         $dni = $_POST['dni'];
@@ -167,10 +167,11 @@
         // Si esta vacio significa que no existe el usuario
         if(!empty($usuario->objetos)){
             // Desencriptamos la contraseña y chequeamos que sea la misma que "$pass_old" si es llamamos a "cambiar_contra" y sino tiramos error
-            $pass_bd = openssl_decrypt($usuario->objetos[0]->pass, CODE, KEY);
+            $pass_bd = $usuario->objetos[0]->pass;
+            //$pass_bd = $usuario->objetos[0]->pass
             if($pass_bd == $pass_old){
                 // Encriptamos la nueva password ($pass_new)
-                $pass_new_encriptada = openssl_encrypt($pass_new,CODE,KEY);
+                $pass_new_encriptada = $pass_new;
                 // Como no esta vacio, osea existe el usuario, ahora si llama al "cambiar_contra" del model Usuario y le paso la new password
                 $usuario->cambiar_contra($id_usuario, $pass_new_encriptada);
                 $descripcion = 'Ha cambiado su password';

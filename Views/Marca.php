@@ -567,64 +567,6 @@ $(document).ready(function(){
       }
       else{
         template = `
-        <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-              <i class="fas fa-shopping-cart"></i>
-              <span class="badge badge-danger navbar-badge">3</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <a href="#" class="dropdown-item">
-                <!-- Message Start -->
-                <div class="media">
-                  <img src="/Centennials/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                  <div class="media-body">
-                    <h3 class="dropdown-item-title">
-                      Brad Diesel
-                      <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                    </h3>
-                    <p class="text-sm">Call me whenever you can...</p>
-                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                  </div>
-                </div>
-                <!-- Message End -->
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <!-- Message Start -->
-                <div class="media">
-                  <img src="/Centennials/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                  <div class="media-body">
-                    <h3 class="dropdown-item-title">
-                      John Pierce
-                      <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                    </h3>
-                    <p class="text-sm">I got your message bro</p>
-                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                  </div>
-                </div>
-                <!-- Message End -->
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <!-- Message Start -->
-                <div class="media">
-                  <img src="/Centennials/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                  <div class="media-body">
-                    <h3 class="dropdown-item-title">
-                      Nora Silvester
-                      <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                    </h3>
-                    <p class="text-sm">The subject goes here</p>
-                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                  </div>
-                </div>
-                <!-- Message End -->
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-            </div>
-        </li>
-
           <li id="notificacion" class="nav-item dropdown">
             
           </li>
@@ -848,7 +790,7 @@ $(document).ready(function(){
         //console.log(response);
         try {
           let solicitudes =  JSON.parse(response);
-          // console.log(solicitudes);
+          console.log(solicitudes);
           $('#mis_solicitudes_marcas').DataTable({
             data: solicitudes,
             "aaShorting": [],
@@ -1199,7 +1141,53 @@ $(document).ready(function(){
       }
     });
 
+    
     // Eliminar Marca
+    async function eliminar_marca(id, nombre) {
+      let funcion = "eliminar_marca";
+      let respuesta = '';
+      let data = await fetch('/Centennials/Controllers/MarcaController.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'funcion=' + funcion + '&&id=' + id + '&&nombre=' + nombre
+      });
+      if (data.ok) {
+          let response = await data.text();
+          console.log(response);
+          try {
+              respuesta = JSON.parse(response);
+              // console.log(respuesta);
+              // Ahora manejas la respuesta JSON
+              if (respuesta.mensaje === 'success') {
+                  // La eliminación de la marca fue exitosa, puedes hacer algo aquí si es necesario.
+              } else if (respuesta.mensaje === 'error') {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Cuidado!',
+                      text: 'No intente vulnerar el sistema, presione F5',
+                  });
+              } 
+          } catch (error) {
+              console.error(error);
+              console.log(response);
+              if (response === 'error') {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Cuidado!',
+                      text: 'No intente vulnerar el sistema, presione F5',
+                  });
+              }
+          }
+      } else {
+          Swal.fire({
+              icon: 'error',
+              title: data.statusText,
+              text: 'Hubo conflicto de código: ' + data.status,
+          });
+      }
+      return respuesta;
+    }
+    /*
     async function eliminar_marca(id, nombre){
       let funcion = "eliminar_marca";
       let respuesta = '';
@@ -1210,9 +1198,10 @@ $(document).ready(function(){
       });
       if(data.ok){
         let response = await data.text();
-        //console.log(response);
+        console.log(response);
         try {
           respuesta =  JSON.parse(response);
+          console.log(respuesta);
         } catch(error) {
           console.error(error);
           console.log(response);
@@ -1232,15 +1221,15 @@ $(document).ready(function(){
           text: 'Hubo conflicto de codigo: ' + data.status,
         });
       }
-
       return respuesta;
     }
+    */
     $(document).on('click', '.remove', (e)=> {
       let elemento = $(this)[0].activeElement;
       let id = $(elemento).attr('id');
       let nombre = $(elemento).attr('nombre');
       let img = $(elemento).attr('img');
-      // console.log(nombre, img);
+      console.log(nombre, img);
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: 'btn btn-success',
@@ -1248,7 +1237,6 @@ $(document).ready(function(){
         },
         buttonsStyling: false
       })
-
       swalWithBootstrapButtons.fire({
         title: 'Desea eliminar la marca' + nombre + '?',
         text: "No podras revertir esto!",
