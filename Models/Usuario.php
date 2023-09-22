@@ -31,6 +31,12 @@
             $query = $this->acceso->prepare($sql);
             $query->execute(array(':user'=>$username, ':pass'=>$pass, ':nombres'=>$nombres, ':apellidos'=>$apellidos, ':dni'=>$dni, ':email'=>$email, ':telefono'=>$telefono, ':id_tipo'=>'2'));
         }
+        
+        function consulta_usuario($nombre, $email, $mensaje){
+            $sql = "INSERT INTO consulta(nombre, email, mensaje) VALUES(:nombre, :email, :mensaje)";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':nombre'=>$nombre, ':email'=>$email, ':mensaje'=>$mensaje));
+        }
 
         function obtener_datos($user){
             $sql = "SELECT * FROM usuario

@@ -44,7 +44,7 @@
         <a href="../index.php" class="nav-link">Inicio</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contacto</a>
+        <a href="../Views/contacto.php" class="nav-link">Contacto</a>
       </li>
     </ul>
 

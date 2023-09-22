@@ -76,6 +76,18 @@
         $jsonstring= json_encode($json);
         echo $jsonstring;
     } 
+    
+    if($_POST['funcion'] == 'consulta_usuario'){
+        $nombre = $_POST['nombre'];
+        $email = $_POST['email'];
+        $mensaje = $_POST['mensaje'];
+        $usuario->consulta_usuario($nombre, $email, $mensaje);
+        $json = array(
+            'mensaje'=>'success'
+        );
+        $jsonstring= json_encode($json);
+        echo $jsonstring;
+    } 
 
     if($_POST['funcion'] == 'obtener_datos'){
         $usuario->obtener_datos($_SESSION['id']);
