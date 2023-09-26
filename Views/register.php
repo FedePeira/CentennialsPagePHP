@@ -51,7 +51,7 @@
   <!-- Login Logo -->
   <div class="login-logo">
     <img src="/Centennials/Util/Img/Logos/LogoCentennials.png" class="profile-user-img img-fluid img-circle">
-    <a href="/Centennials/index.php"><b>Centenn</b>IALS</a>
+    <a href="/Centennials/index.php"><b>Centennials</b></a>
   </div>
   <!-- /.login-logo -->
 

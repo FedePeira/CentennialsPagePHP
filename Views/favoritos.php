@@ -346,6 +346,7 @@ $(document).ready(function(){
             llenar_menu_lateral(sesion);
             $('#active_nav_favoritos').addClass('active');
             $('#avatar_menu').attr('src', '/Centennials/Util/Img/Users/' + sesion.avatar);
+            $('#username_menu').text(sesion.user);
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
             read_favoritos();

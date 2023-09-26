@@ -28,7 +28,9 @@
   .nav-link.active{
     background-color: #17A2B8 !important;
   }
-
+  .padding-1{
+    padding: 10px;
+  }
 </style>
 <body class="sidebar-mini layout-footer-fixed layout-navbar-fixed">
 <!-- Site wrapper -->
@@ -71,7 +73,8 @@
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img id="avatar_menu" src="/Centennials/Util/Img/avatar5.png" class="img-circle elevation-2" alt="User Image">
+          <img id="avatar_menu" src="" class="img-circle elevation-2" alt="User Image">
+          <span id="username_menu" class="brand-text font-weight-light padding-1" alt="User name"></span>
         </div>
         <div class="info">
           <a id="usuario_menu" href="#" class="d-block"></a>
