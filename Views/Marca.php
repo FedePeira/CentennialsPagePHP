@@ -1032,10 +1032,10 @@ $(document).ready(function(){
       });
       if(data.ok){
         let response = await data.text();
-        //console.log(response);
+        console.log(response);
         try {
           let respuesta =  JSON.parse(response);
-          // console.log(respuesta);
+          console.log(respuesta);
           if(respuesta.mensaje == 'success') {
             Swal.fire({
               position: 'center',

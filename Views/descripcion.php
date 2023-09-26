@@ -559,7 +559,7 @@ $(document).ready(function(){
       $('#informacion_envio').html(template);
     }
 
-    function mostrar_tienda(producto){
+    function mostrar_tienda(producto){  
       let template = `
         <h2 class="mb-0">
           <button class="btn btn-primary">
