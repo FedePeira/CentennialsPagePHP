@@ -68,15 +68,22 @@
                 }
                 if($img!='') {
                     $datos_cambiados.='Su imagen fue cambiada.';
-                    $nombre_imagen = uniqid().' - '.$img;
+                    $nombre_imagen = uniqid().'-'.$img;
                     $ruta = '../Util/Img/marca/'.$nombre_imagen;
+                    /*
                     $extension = pathinfo($img, PATHINFO_EXTENSION);
                     $nombre_imagen = $nombre_imagen.'.'.$extension;
+                    */
                     move_uploaded_file($_FILES['imagen_mod']['tmp_name'], $ruta);
                     $avatar_actual=$marca->objetos[0]->imagen;
                     if($avatar_actual!='marca_default.png') {
                         unlink('../Util/Img/marca/'.$avatar_actual);
-                    }   
+                    } 
+                    /*
+                    if ($avatar_actual != 'marca_default.png' && file_exists('../Util/Img/marca/' . $avatar_actual)) {
+                        unlink('../Util/Img/marca/' . $avatar_actual);
+                    }  
+                    */
                 }
                 $marca->editar($id_marca, $nombre, $desc, $nombre_imagen);
                 $descripcion='Ha editado una marca, '.$datos_cambiados;
