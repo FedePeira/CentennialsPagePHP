@@ -512,7 +512,7 @@ $(document).ready(function(){
             llenar_menu_superior(sesion);
             llenar_menu_lateral(sesion);
             $('#active_nav_mensajes').addClass('active');
-            $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
+            $('#avatar_menu').attr('src', '../../Util/Img/Users/' + sesion.avatar);
             $('#username_menu').text(sesion.user);
             $('usuario_menu').text(sesion.user);
             read_notificaciones();
